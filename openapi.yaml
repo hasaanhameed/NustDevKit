@@ -1,0 +1,473 @@
+openapi: 3.0.0
+info:
+  title: NUST LMS API
+  description: API documentation for NUST LMS (Moodle-based) dashboard endpoints
+  version: 1.0.0
+
+servers:
+  - url: https://lms.nust.edu.pk/portal/lib/ajax
+    description: NUST LMS Ajax Service
+
+components:
+  securitySchemes:
+    sesskey:
+      type: apiKey
+      in: query
+      name: sesskey
+      description: Session key obtained after logging into NUST LMS
+
+paths:
+  /service.php:
+    post:
+      summary: Moodle Ajax Service
+      description: All Moodle web service calls go through this single endpoint. The function is specified in the query parameter and the body contains the arguments.
+      security:
+        - sesskey: []
+      parameters:
+        - name: info
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The web service function name to call
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                  methodname:
+                    type: string
+                  args:
+                    type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                    data:
+                      type: object
+
+  /service.php?info=core_course_get_recent_courses:
+    post:
+      summary: Get Recent Courses
+      description: Returns a list of the most recently accessed courses by a user
+      security:
+        - sesskey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                    example: 0
+                  methodname:
+                    type: string
+                    example: core_course_get_recent_courses
+                  args:
+                    type: object
+                    properties:
+                      userid:
+                        type: integer
+                        description: ID of the user whose recent courses to fetch
+                        example: 162154
+                      limit:
+                        type: integer
+                        description: Max number of courses to return
+                        default: 10
+                        example: 10
+                      offset:
+                        type: integer
+                        description: Offset for pagination
+                        default: 0
+      responses:
+        "200":
+          description: List of recently accessed courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                      example: false
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: Course ID
+                          fullname:
+                            type: string
+                            description: Full name of the course
+                          shortname:
+                            type: string
+                            description: Short name of the course
+                          idnumber:
+                            type: string
+                            description: Course ID number
+                          summary:
+                            type: string
+                            description: Course summary
+                          summaryformat:
+                            type: integer
+                            description: Format of summary (1=HTML, 0=Moodle, 2=Plain, 4=Markdown)
+                          startdate:
+                            type: integer
+                            description: Course start date as Unix timestamp
+                          enddate:
+                            type: integer
+                            description: Course end date as Unix timestamp
+                          visible:
+                            type: boolean
+                            description: Whether the course is visible
+                          showactivitydates:
+                            type: boolean
+                          showcompletionconditions:
+                            type: boolean
+                          viewurl:
+                            type: string
+                            description: URL to view the course
+                          courseimage:
+                            type: string
+                            description: URL of the course image
+                          progress:
+                            type: number
+                            description: Course completion progress percentage
+                          hasprogress:
+                            type: boolean
+                          isfavourite:
+                            type: boolean
+                          hidden:
+                            type: boolean
+                          timeaccess:
+                            type: integer
+                            description: Last time user accessed this course
+
+  /service.php?info=core_fetch_notifications:
+    post:
+      summary: Fetch Notifications
+      description: Fetches notifications for the current user
+      security:
+        - sesskey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                    example: 0
+                  methodname:
+                    type: string
+                    example: core_fetch_notifications
+                  args:
+                    type: object
+                    properties:
+                      contextid:
+                        type: integer
+                        description: The context ID of the current page
+                        example: 1583361
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                      example: false
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          useridfrom:
+                            type: integer
+                          useridto:
+                            type: integer
+                          subject:
+                            type: string
+                          shortenedsubject:
+                            type: string
+                          text:
+                            type: string
+                          fullmessage:
+                            type: string
+                          fullmessageformat:
+                            type: integer
+                          fullmessagehtml:
+                            type: string
+                          smallmessage:
+                            type: string
+                          timecreated:
+                            type: integer
+                          timecreatedpretty:
+                            type: string
+                          timeread:
+                            type: integer
+                          read:
+                            type: boolean
+                          deleted:
+                            type: boolean
+                          iconurl:
+                            type: string
+                          contexturl:
+                            type: string
+                          contexturlname:
+                            type: string
+
+  /service.php?info=core_course_get_enrolled_courses_by_timeline_classification:
+    post:
+      summary: Get Enrolled Courses by Timeline
+      description: Returns courses matching a timeline classification (inprogress, future, past)
+      security:
+        - sesskey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                    example: 0
+                  methodname:
+                    type: string
+                    example: core_course_get_enrolled_courses_by_timeline_classification
+                  args:
+                    type: object
+                    properties:
+                      offset:
+                        type: integer
+                        default: 0
+                      limit:
+                        type: integer
+                        default: 10
+                      classification:
+                        type: string
+                        enum:
+                          [
+                            inprogress,
+                            future,
+                            past,
+                            favourite,
+                            hidden,
+                            allincludinghidden,
+                          ]
+                        description: Timeline classification filter
+                      sort:
+                        type: string
+                        description: Sort field e.g. fullname, shortname, ul.timeaccess
+                        default: ul.timeaccess desc
+                      searchvalue:
+                        type: string
+                        description: Optional search string
+      responses:
+        "200":
+          description: List of enrolled courses matching the timeline classification
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                    data:
+                      type: object
+                      properties:
+                        courses:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              fullname:
+                                type: string
+                              shortname:
+                                type: string
+                              idnumber:
+                                type: string
+                              summary:
+                                type: string
+                              startdate:
+                                type: integer
+                              enddate:
+                                type: integer
+                              visible:
+                                type: boolean
+                              progress:
+                                type: number
+                              hasprogress:
+                                type: boolean
+                              isfavourite:
+                                type: boolean
+                              hidden:
+                                type: boolean
+                              timeaccess:
+                                type: integer
+                              viewurl:
+                                type: string
+                              courseimage:
+                                type: string
+                        nextoffset:
+                          type: integer
+                          description: Offset to use for next page of results
+
+  /service.php?info=core_calendar_get_action_events_by_timesort:
+    post:
+      summary: Get Calendar Events by Time
+      description: Returns calendar action events sorted by time
+      security:
+        - sesskey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                    example: 0
+                  methodname:
+                    type: string
+                    example: core_calendar_get_action_events_by_timesort
+                  args:
+                    type: object
+                    properties:
+                      timesortfrom:
+                        type: integer
+                        description: Start time as Unix timestamp
+                      timesortto:
+                        type: integer
+                        description: End time as Unix timestamp
+                      aftereventid:
+                        type: integer
+                        description: Return events after this event ID
+                        default: 0
+                      limitnum:
+                        type: integer
+                        description: Max number of events to return
+                        default: 20
+                      limittononsuspendedevents:
+                        type: boolean
+                        description: Limit to non suspended events only
+      responses:
+        "200":
+          description: List of calendar action events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                    data:
+                      type: object
+                      properties:
+                        events:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              descriptionformat:
+                                type: integer
+                              location:
+                                type: string
+                              categoryid:
+                                type: integer
+                              groupid:
+                                type: integer
+                              userid:
+                                type: integer
+                              repeatid:
+                                type: integer
+                              eventcount:
+                                type: integer
+                              modulename:
+                                type: string
+                              instance:
+                                type: integer
+                              timestart:
+                                type: integer
+                              timeduration:
+                                type: integer
+                              timesort:
+                                type: integer
+                              timeusermidnight:
+                                type: integer
+                              visible:
+                                type: integer
+                              timemodified:
+                                type: integer
+                              overdue:
+                                type: boolean
+                              url:
+                                type: string
+                              islastday:
+                                type: boolean
+                              action:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  url:
+                                    type: string
+                                  itemcount:
+                                    type: integer
+                                  actionable:
+                                    type: boolean
+                                  showitemcount:
+                                    type: boolean
+                        firstid:
+                          type: integer
+                        lastid:
+                          type: integer
