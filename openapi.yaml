@@ -1,0 +1,1092 @@
+openapi: 3.0.0
+
+info:
+  title: NUST LMS API
+  version: 1.0.0
+  description: >
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+    Each path is virtual for clean SDK generation; NustDevKit resolves them to the
+    underlying Moodle AJAX service endpoint transparently.
+
+servers:
+  - url: https://lms.nust.edu.pk/portal
+    description: NUST LMS Portal
+
+security:
+  - SessKey: []
+
+tags:
+  - name: Courses
+    description: Course listing and enrollment operations
+  - name: Calendar
+    description: Calendar event operations
+  - name: Users
+    description: User profile and preferences operations
+  - name: Notifications
+    description: Notification retrieval operations
+
+components:
+  securitySchemes:
+    SessKey:
+      type: apiKey
+      in: query
+      name: sesskey
+      description: Session key obtained after authenticating with the LMS portal.
+
+  schemas:
+
+    MoodleWarning:
+      type: object
+      description: A non-fatal warning returned alongside a successful response.
+      properties:
+        item:
+          type: string
+          example: ""
+        itemid:
+          type: integer
+          example: 0
+        warningcode:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: ""
+
+    SiteNotification:
+      type: object
+      description: A site-level notification (structure varies by type).
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        type:
+          type: string
+
+    MoodleError:
+      type: object
+      description: Error returned by the LMS on a failed operation.
+      properties:
+        errorcode:
+          type: string
+          example: invalidrecord
+        message:
+          type: string
+          example: "Can't find data record in database table."
+        link:
+          type: string
+          example: ""
+        moreinfourl:
+          type: string
+          example: ""
+        debuginfo:
+          type: string
+          example: ""
+
+    Course:
+      type: object
+      description: An enrolled course.
+      required:
+        - id
+        - fullname
+        - shortname
+        - idnumber
+        - summary
+        - summaryformat
+        - startdate
+        - enddate
+        - visible
+        - fullnamedisplay
+        - viewurl
+        - progress
+        - hasprogress
+        - isfavourite
+        - hidden
+        - showshortname
+        - coursecategory
+      properties:
+        id:
+          type: integer
+          example: 49900
+        fullname:
+          type: string
+          example: "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+        shortname:
+          type: string
+          example: "CS-212-Sp'24 BSCS-13 2K23 ABC"
+        idnumber:
+          type: string
+          example: ""
+        summary:
+          type: string
+          description: HTML summary of the course.
+          example: ""
+        summaryformat:
+          type: integer
+          description: Format of the summary field (1 = HTML).
+          example: 1
+        startdate:
+          type: integer
+          description: Course start date as Unix timestamp.
+          example: 1706468400
+        enddate:
+          type: integer
+          description: Course end date as Unix timestamp. 0 means no end date.
+          example: 1717362000
+        visible:
+          type: boolean
+          example: true
+        fullnamedisplay:
+          type: string
+          description: Display name of the course (may differ from fullname for context).
+          example: "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+        viewurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/course/view.php?id=49900"
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Student's completion progress as a percentage.
+          example: 21
+        hasprogress:
+          type: boolean
+          example: true
+        isfavourite:
+          type: boolean
+          example: false
+        hidden:
+          type: boolean
+          example: false
+        showshortname:
+          type: boolean
+          example: false
+        coursecategory:
+          type: string
+          example: "2nd Semester (SP-2024)"
+
+    RecentCourse:
+      description: A recently accessed course, extending Course with the last-access timestamp.
+      allOf:
+        - $ref: '#/components/schemas/Course'
+        - type: object
+          required:
+            - timeaccess
+          properties:
+            timeaccess:
+              type: integer
+              description: Unix timestamp of the user's most recent access to this course.
+              example: 1781632422
+
+    EnrolledCoursesResponse:
+      type: object
+      description: Paginated enrolled-courses response.
+      required:
+        - courses
+        - nextoffset
+      properties:
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        nextoffset:
+          type: integer
+          description: Offset to pass on the next page request; -1 when no further pages exist.
+          example: 29
+
+    EventIcon:
+      type: object
+      description: Icon metadata for a calendar event.
+      required:
+        - key
+        - component
+        - alttext
+      properties:
+        key:
+          type: string
+          example: "icon"
+        component:
+          type: string
+          example: "assign"
+        alttext:
+          type: string
+          example: "Activity event"
+
+    EventSubscription:
+      type: object
+      description: Subscription display settings for a calendar event.
+      required:
+        - displayeventsource
+      properties:
+        displayeventsource:
+          type: boolean
+          example: false
+
+    EventAction:
+      type: object
+      description: Primary action button metadata for a calendar event.
+      required:
+        - name
+        - url
+        - itemcount
+        - actionable
+        - showitemcount
+      properties:
+        name:
+          type: string
+          example: "Add submission"
+        url:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission"
+        itemcount:
+          type: integer
+          example: 1
+        actionable:
+          type: boolean
+          example: true
+        showitemcount:
+          type: boolean
+          example: false
+
+    CalendarEvent:
+      type: object
+      description: A calendar action event tied to a course activity (e.g., an assignment deadline).
+      required:
+        - id
+        - name
+        - description
+        - descriptionformat
+        - location
+        - component
+        - modulename
+        - instance
+        - eventtype
+        - timestart
+        - timeduration
+        - timesort
+        - visible
+        - timemodified
+        - icon
+        - course
+        - subscription
+        - canedit
+        - candelete
+        - deleteurl
+        - editurl
+        - viewurl
+        - formattedtime
+        - isactionevent
+        - iscourseevent
+        - iscategoryevent
+        - normalisedeventtype
+        - normalisedeventtypetext
+        - url
+      properties:
+        id:
+          type: integer
+          example: 149885
+        name:
+          type: string
+          example: "Lab 1 BSCS 13C is due"
+        description:
+          type: string
+          example: "<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>"
+        descriptionformat:
+          type: integer
+          description: Text format of the description (1 = HTML).
+          example: 1
+        location:
+          type: string
+          example: ""
+        categoryid:
+          type: integer
+          nullable: true
+          example: null
+        groupid:
+          type: integer
+          nullable: true
+          example: null
+        userid:
+          type: integer
+          nullable: true
+          example: null
+        repeatid:
+          type: integer
+          nullable: true
+          example: null
+        eventcount:
+          type: integer
+          nullable: true
+          example: null
+        component:
+          type: string
+          example: "mod_assign"
+        modulename:
+          type: string
+          example: "assign"
+        instance:
+          type: integer
+          description: The course module instance ID.
+          example: 999404
+        eventtype:
+          type: string
+          example: "due"
+        timestart:
+          type: integer
+          description: Event start time as Unix timestamp.
+          example: 1706900340
+        timeduration:
+          type: integer
+          description: Duration in seconds; 0 for point-in-time events.
+          example: 0
+        timesort:
+          type: integer
+          description: Sort timestamp used for ordering events.
+          example: 1706900340
+        visible:
+          type: integer
+          enum:
+            - 0
+            - 1
+          description: Visibility flag (1 = visible, 0 = hidden).
+          example: 1
+        timemodified:
+          type: integer
+          description: Last modification time as Unix timestamp.
+          example: 1779088440
+        icon:
+          $ref: '#/components/schemas/EventIcon'
+        course:
+          $ref: '#/components/schemas/Course'
+        subscription:
+          $ref: '#/components/schemas/EventSubscription'
+        canedit:
+          type: boolean
+          example: false
+        candelete:
+          type: boolean
+          example: false
+        deleteurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900"
+        editurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX"
+        viewurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340"
+        formattedtime:
+          type: string
+          description: HTML-formatted human-readable event time string.
+          example: "<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>"
+        isactionevent:
+          type: boolean
+          example: true
+        iscourseevent:
+          type: boolean
+          example: false
+        iscategoryevent:
+          type: boolean
+          example: false
+        groupname:
+          type: string
+          nullable: true
+          example: null
+        normalisedeventtype:
+          type: string
+          example: "course"
+        normalisedeventtypetext:
+          type: string
+          example: "Course event"
+        action:
+          $ref: '#/components/schemas/EventAction'
+        url:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404"
+
+    CalendarEventsResponse:
+      type: object
+      description: A list of calendar events with pagination boundary IDs.
+      required:
+        - events
+        - firstid
+        - lastid
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalendarEvent'
+        firstid:
+          type: integer
+          description: Event ID of the first item in the result set.
+          example: 149885
+        lastid:
+          type: integer
+          description: Event ID of the last item in the result set.
+          example: 151886
+
+    CustomField:
+      type: object
+      description: A custom profile field value attached to a user.
+      required:
+        - type
+        - value
+        - name
+        - shortname
+      properties:
+        type:
+          type: string
+          example: "text"
+        value:
+          type: string
+          example: "SEECS"
+        name:
+          type: string
+          example: "Institute"
+        shortname:
+          type: string
+          example: "institution"
+
+    UserPreference:
+      type: object
+      description: A single user preference setting.
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          example: "block_myoverview_user_sort_preference"
+        value:
+          type: string
+          description: >
+            Preference value as a string. Note that the internal _lastloaded
+            preference is returned as an integer by the LMS.
+          example: "title"
+
+    UserProfile:
+      type: object
+      description: Complete user profile.
+      required:
+        - id
+        - username
+        - fullname
+        - email
+        - department
+        - institution
+        - idnumber
+        - auth
+        - confirmed
+        - lang
+        - theme
+        - timezone
+        - mailformat
+        - profileimageurlsmall
+        - profileimageurl
+      properties:
+        id:
+          type: integer
+          example: 162154
+        username:
+          type: string
+          example: "hhameed.bscs23seecs"
+        fullname:
+          type: string
+          example: "Hasaan Hameed"
+        email:
+          type: string
+          format: email
+          example: "hhameed.bscs23seecs@seecs.edu.pk"
+        department:
+          type: string
+          example: "FoC"
+        institution:
+          type: string
+          example: "SEECS"
+        idnumber:
+          type: string
+          example: "00000454987"
+        auth:
+          type: string
+          description: Authentication method (e.g., ldap, manual).
+          example: "ldap"
+        confirmed:
+          type: boolean
+          example: true
+        lang:
+          type: string
+          example: "en"
+        theme:
+          type: string
+          example: ""
+        timezone:
+          type: string
+          description: Timezone identifier. "99" means use the server default.
+          example: "99"
+        mailformat:
+          type: integer
+          description: Email format preference (1 = HTML).
+          example: 1
+        profileimageurlsmall:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894"
+        profileimageurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894"
+        customfields:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+        preferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPreference'
+
+    UserPreferencesResponse:
+      type: object
+      description: Response envelope for the user-preferences endpoint.
+      required:
+        - preferences
+        - warnings
+      properties:
+        preferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPreference'
+        warnings:
+          type: array
+          description: Array of warning objects. Empty when no warnings are present.
+          items:
+            $ref: '#/components/schemas/MoodleWarning'
+
+    Notification:
+      type: object
+      description: A popup notification message delivered to a user.
+      required:
+        - id
+        - useridfrom
+        - useridto
+        - subject
+        - shortenedsubject
+        - text
+        - fullmessage
+        - fullmessageformat
+        - fullmessagehtml
+        - smallmessage
+        - contexturl
+        - contexturlname
+        - timecreated
+        - timecreatedpretty
+        - read
+        - deleted
+        - iconurl
+        - component
+        - eventtype
+        - customdata
+      properties:
+        id:
+          type: integer
+          example: 4857819
+        useridfrom:
+          type: integer
+          description: User ID of the sender.
+          example: 198956
+        useridto:
+          type: integer
+          description: User ID of the recipient.
+          example: 162154
+        subject:
+          type: string
+          example: "CS-419-Deep Learning: Lab Sessional Finalization"
+        shortenedsubject:
+          type: string
+          example: "CS-419-Deep Learning: Lab Sessional Finalization"
+        text:
+          type: string
+          description: Short HTML excerpt of the notification.
+          example: "<p>Areeba Rameen posted in CS-419-Deep Learning...</p>"
+        fullmessage:
+          type: string
+          description: Full plain-text body of the notification.
+        fullmessageformat:
+          type: integer
+          description: Format identifier for fullmessagehtml (2 = Markdown source).
+          example: 2
+        fullmessagehtml:
+          type: string
+          description: Full HTML body of the notification email.
+        smallmessage:
+          type: string
+          description: Short plain-text preview.
+          example: "Areeba Rameen posted in CS-419-Deep Learning..."
+        contexturl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342"
+        contexturlname:
+          type: string
+          example: "Lab Sessional Finalization - (DL - Section D & E)"
+        timecreated:
+          type: integer
+          description: Unix timestamp when the notification was created.
+          example: 1780045085
+        timecreatedpretty:
+          type: string
+          description: Human-readable relative time string.
+          example: "19 days ago"
+        timeread:
+          type: integer
+          nullable: true
+          description: Unix timestamp when the notification was read; null if unread.
+          example: null
+        read:
+          type: boolean
+          example: false
+        deleted:
+          type: boolean
+          example: false
+        iconurl:
+          type: string
+          format: uri
+          example: "https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon"
+        component:
+          type: string
+          example: "mod_forum"
+        eventtype:
+          type: string
+          example: "posts"
+        customdata:
+          type: string
+          description: >
+            JSON-encoded string with additional notification metadata
+            (cmid, instance, discussionid, postid, etc.).
+          example: "{\"cmid\":\"1272420\",\"instance\":\"62569\",\"discussionid\":\"41767\"}"
+
+    PopupNotificationsResponse:
+      type: object
+      description: Response envelope for the popup-notifications endpoint.
+      required:
+        - notifications
+        - unreadcount
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        unreadcount:
+          type: integer
+          description: Total number of unread notifications for the user.
+          example: 1
+
+paths:
+
+  /service/core_course_get_recent_courses:
+    post:
+      operationId: getCoreRecentCourses
+      summary: Get recently accessed courses
+      description: >
+        Returns the courses the authenticated user has accessed most recently,
+        ordered by last access time.
+
+        Moodle method: `core_course_get_recent_courses`
+      tags:
+        - Courses
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - limit
+              properties:
+                limit:
+                  type: integer
+                  description: Maximum number of courses to return.
+                  default: 10
+                  example: 10
+      responses:
+        '200':
+          description: List of recently accessed courses ordered by last access.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecentCourse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_course_get_enrolled_courses_by_timeline_classification:
+    post:
+      operationId: getEnrolledCoursesByTimeline
+      summary: Get enrolled courses by timeline classification
+      description: >
+        Returns all courses the user is enrolled in, filtered by timeline
+        classification and sorted by a chosen field. Supports pagination via offset.
+
+        Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
+      tags:
+        - Courses
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - offset
+                - limit
+                - classification
+                - sort
+              properties:
+                offset:
+                  type: integer
+                  description: Zero-based pagination offset.
+                  default: 0
+                  example: 0
+                limit:
+                  type: integer
+                  description: Maximum number of courses to return.
+                  default: 50
+                  example: 50
+                classification:
+                  type: string
+                  description: Timeline filter for the courses.
+                  enum:
+                    - all
+                    - inprogress
+                    - past
+                    - future
+                    - favourite
+                    - hidden
+                    - allincludinghidden
+                  example: "all"
+                sort:
+                  type: string
+                  description: Field to sort results by.
+                  enum:
+                    - fullname
+                    - shortname
+                    - id
+                    - idnumber
+                    - timeaccess
+                  example: "fullname"
+      responses:
+        '200':
+          description: Paginated list of enrolled courses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrolledCoursesResponse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_fetch_notifications:
+    post:
+      operationId: fetchNotifications
+      summary: Fetch site-level notifications for a context
+      description: >
+        Returns pending site-level notifications for the given Moodle context.
+        Returns an empty array when there are no pending notifications.
+
+        Moodle method: `core_fetch_notifications`
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contextid
+              properties:
+                contextid:
+                  type: integer
+                  description: >
+                    Moodle context ID for which to fetch notifications.
+                    The user context ID can be found in the user profile image URL path segment.
+                  example: 1583361
+      responses:
+        '200':
+          description: Array of site notifications (empty array when none are pending).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteNotification'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_calendar_get_action_events_by_timesort:
+    post:
+      operationId: getCalendarEventsByTimesort
+      summary: Get global calendar action events sorted by time
+      description: >
+        Returns action events across all enrolled courses, ordered by their
+        sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+
+        Moodle method: `core_calendar_get_action_events_by_timesort`
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - limitnum
+                - timesortfrom
+              properties:
+                limitnum:
+                  type: integer
+                  description: Maximum number of events to return.
+                  example: 20
+                timesortfrom:
+                  type: integer
+                  description: >
+                    Only return events with timesort >= this Unix timestamp.
+                    Pass 0 for no lower bound.
+                  example: 0
+                timesortto:
+                  type: integer
+                  description: Only return events with timesort <= this Unix timestamp. Optional.
+                aftereventid:
+                  type: integer
+                  description: >
+                    Return events whose ID is greater than this value (cursor pagination).
+                    Optional.
+      responses:
+        '200':
+          description: Calendar events sorted by timesort.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventsResponse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_calendar_get_action_events_by_course:
+    post:
+      operationId: getCalendarEventsByCourse
+      summary: Get calendar action events for a specific course
+      description: >
+        Returns all action events (assignments, quizzes, etc.) for a single course.
+
+        Moodle method: `core_calendar_get_action_events_by_course`
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - courseid
+              properties:
+                courseid:
+                  type: integer
+                  description: ID of the course to fetch events for.
+                  example: 49906
+                timesortfrom:
+                  type: integer
+                  description: Only return events with timesort >= this Unix timestamp. Optional.
+                timesortto:
+                  type: integer
+                  description: Only return events with timesort <= this Unix timestamp. Optional.
+                aftereventid:
+                  type: integer
+                  description: Cursor pagination — return events after this event ID. Optional.
+                limitnum:
+                  type: integer
+                  description: Maximum number of events to return. Optional.
+      responses:
+        '200':
+          description: Calendar events for the specified course.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventsResponse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_user_get_users_by_field:
+    post:
+      operationId: getUsersByField
+      summary: Get users by a profile field value
+      description: >
+        Retrieves one or more user profiles by matching a specific profile field.
+        Commonly used to look up the authenticated user's own profile by their ID.
+
+        Moodle method: `core_user_get_users_by_field`
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - field
+                - values
+              properties:
+                field:
+                  type: string
+                  description: Profile field to match against.
+                  enum:
+                    - id
+                    - idnumber
+                    - username
+                    - email
+                  example: "id"
+                values:
+                  type: array
+                  description: >
+                    List of field values to look up. All values must be provided as strings
+                    even when the field is numeric (e.g., "162154" for an integer ID).
+                  items:
+                    type: string
+                  example:
+                    - "162154"
+      responses:
+        '200':
+          description: List of matching user profiles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/core_user_get_user_preferences:
+    post:
+      operationId: getUserPreferences
+      summary: Get user preferences
+      description: >
+        Returns all stored preference key/value pairs for the specified user.
+        Optionally filter to a single preference by name.
+
+        Moodle method: `core_user_get_user_preferences`
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userid
+              properties:
+                userid:
+                  type: integer
+                  description: ID of the user whose preferences to retrieve.
+                  example: 162154
+                name:
+                  type: string
+                  description: >
+                    Specific preference name to retrieve.
+                    Omit to retrieve all preferences.
+      responses:
+        '200':
+          description: User preferences list and optional warnings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferencesResponse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'
+
+  /service/message_popup_get_popup_notifications:
+    post:
+      operationId: getPopupNotifications
+      summary: Get popup notifications for a user
+      description: >
+        Returns the most recent popup notifications sent to a user, with support for
+        pagination. Also returns the total count of unread notifications.
+
+        Moodle method: `message_popup_get_popup_notifications`
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - useridto
+                - limit
+                - offset
+              properties:
+                useridto:
+                  type: string
+                  description: ID of the recipient user, passed as a string.
+                  example: "162154"
+                limit:
+                  type: integer
+                  description: Maximum number of notifications to return.
+                  example: 20
+                offset:
+                  type: integer
+                  description: Pagination offset.
+                  default: 0
+                  example: 0
+      responses:
+        '200':
+          description: Popup notifications and total unread count.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopupNotificationsResponse'
+        '400':
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodleError'

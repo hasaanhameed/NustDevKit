@@ -1,0 +1,17 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.egg-info/
+dist/
+.pytest_cache/
+
+# Node
+node_modules/
+apimatic-validator-mcp/build/
+
+# OS
+.DS_Store
+Thumbs.db
