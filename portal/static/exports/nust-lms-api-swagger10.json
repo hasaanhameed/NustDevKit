@@ -1,0 +1,1825 @@
+{
+  "swaggerVersion": "1.2",
+  "basePath": "https://lms.nust.edu.pk/portal",
+  "resourcePath": "/",
+  "apis": [
+    {
+      "path": "/service/core_course_get_recent_courses",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`\n",
+          "nickname": "getCoreRecentCourses",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters for the recent courses request.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetRecentCoursesRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "items": {
+            "$ref": "RecentCourse"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_course_get_enrolled_courses_by_timeline_classification",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`\n",
+          "nickname": "getEnrolledCoursesByTimeline",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters for the enrolled courses timeline request.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetEnrolledCoursesByTimelineRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "EnrolledCoursesResponse"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_calendar_get_action_events_by_timesort",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
+          "nickname": "getCalendarEventsByTimesort",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters for the time-sorted calendar events request.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetCalendarEventsByTimesortRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "CalendarEventsResponse"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_calendar_get_action_events_by_course",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
+          "nickname": "getCalendarEventsByCourse",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters for the course-specific calendar events request.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetCalendarEventsByCourseRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "CalendarEventsResponse"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_user_get_users_by_field",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n",
+          "nickname": "getUsersByField",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters specifying the profile field and values to match.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetUsersByFieldRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "items": {
+            "$ref": "UserProfile"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_user_get_user_preferences",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n",
+          "nickname": "getUserPreferences",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters specifying which user's preferences to retrieve.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetUserPreferencesRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "UserPreferencesResponse"
+        }
+      ]
+    },
+    {
+      "path": "/service/core_fetch_notifications",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n",
+          "nickname": "fetchNotifications",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters specifying the context to fetch notifications for.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "FetchNotificationsRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "items": {
+            "$ref": "SiteNotification"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/service/message_popup_get_popup_notifications",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`\n",
+          "nickname": "getPopupNotifications",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "Parameters for the popup notifications request.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "GetPopupNotificationsRequest"
+            }
+          ],
+          "authorizations": {
+            "SessKey": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "PopupNotificationsResponse"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "MoodleWarning": {
+      "id": "MoodleWarning",
+      "description": "A non-fatal warning returned alongside a successful response.",
+      "required": [],
+      "properties": {
+        "item": {
+          "description": "Item identifier related to the warning; empty string if not applicable.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "itemid": {
+          "description": "Numeric item ID related to the warning; 0 if not applicable.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "warningcode": {
+          "description": "Machine-readable warning code; empty string if no code.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "message": {
+          "description": "Human-readable warning description.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "SiteNotification": {
+      "id": "SiteNotification",
+      "description": "A site-level notification (structure varies by type).",
+      "required": [],
+      "properties": {
+        "id": {
+          "description": "Unique identifier for the site notification.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "description": "Notification message content.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "type": {
+          "description": "Notification type identifier.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "MoodleError": {
+      "id": "MoodleError",
+      "description": "Error returned by the LMS on a failed operation.",
+      "required": [],
+      "properties": {
+        "errorcode": {
+          "description": "Machine-readable error code identifier.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "message": {
+          "description": "Human-readable error description.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "link": {
+          "description": "Redirect URL for the user; empty string if not applicable.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "moreinfourl": {
+          "description": "URL to additional error documentation; empty string if not available.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "debuginfo": {
+          "description": "Additional debug information; empty string when not in debug mode.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "Course": {
+      "id": "Course",
+      "description": "An enrolled course.",
+      "required": [
+        "id",
+        "fullname",
+        "shortname",
+        "idnumber",
+        "summary",
+        "summaryformat",
+        "startdate",
+        "enddate",
+        "visible",
+        "fullnamedisplay",
+        "viewurl",
+        "progress",
+        "hasprogress",
+        "isfavourite",
+        "hidden",
+        "showshortname",
+        "coursecategory"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique course identifier.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "fullname": {
+          "description": "Full display name of the course.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "shortname": {
+          "description": "Short course code or abbreviated name.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "idnumber": {
+          "description": "Institution-assigned course ID number; empty string if not set.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "summary": {
+          "description": "HTML summary of the course.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "summaryformat": {
+          "description": "Format of the summary field (1 = HTML).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "startdate": {
+          "description": "Course start date as Unix timestamp.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "enddate": {
+          "description": "Course end date as Unix timestamp. 0 means no end date.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "visible": {
+          "description": "Whether the course is visible to enrolled students.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "fullnamedisplay": {
+          "description": "Display name of the course (may differ from fullname for context).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "viewurl": {
+          "description": "URL to the course page on the LMS portal.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "progress": {
+          "description": "Student's completion progress as a percentage.",
+          "minimum": "0",
+          "maximum": "100",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "hasprogress": {
+          "description": "Whether completion tracking is enabled for this course.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "isfavourite": {
+          "description": "Whether the user has marked this course as a favourite.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "hidden": {
+          "description": "Whether the user has hidden this course from their dashboard.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "showshortname": {
+          "description": "Whether the short name is displayed alongside the full name.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "coursecategory": {
+          "description": "Name of the category this course belongs to.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "RecentCourseFields": {
+      "id": "RecentCourseFields",
+      "description": "Additional fields specific to recently accessed courses.",
+      "required": [
+        "timeaccess"
+      ],
+      "properties": {
+        "timeaccess": {
+          "description": "Unix timestamp of the user's most recent access to this course.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "RecentCourse": {
+      "id": "RecentCourse",
+      "description": "A recently accessed course, extending Course with the last-access timestamp.",
+      "required": [
+        "id",
+        "fullname",
+        "shortname",
+        "idnumber",
+        "summary",
+        "summaryformat",
+        "startdate",
+        "enddate",
+        "visible",
+        "fullnamedisplay",
+        "viewurl",
+        "progress",
+        "hasprogress",
+        "isfavourite",
+        "hidden",
+        "showshortname",
+        "coursecategory",
+        "timeaccess"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique course identifier.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "fullname": {
+          "description": "Full display name of the course.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "shortname": {
+          "description": "Short course code or abbreviated name.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "idnumber": {
+          "description": "Institution-assigned course ID number; empty string if not set.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "summary": {
+          "description": "HTML summary of the course.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "summaryformat": {
+          "description": "Format of the summary field (1 = HTML).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "startdate": {
+          "description": "Course start date as Unix timestamp.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "enddate": {
+          "description": "Course end date as Unix timestamp. 0 means no end date.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "visible": {
+          "description": "Whether the course is visible to enrolled students.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "fullnamedisplay": {
+          "description": "Display name of the course (may differ from fullname for context).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "viewurl": {
+          "description": "URL to the course page on the LMS portal.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "progress": {
+          "description": "Student's completion progress as a percentage.",
+          "minimum": "0",
+          "maximum": "100",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "hasprogress": {
+          "description": "Whether completion tracking is enabled for this course.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "isfavourite": {
+          "description": "Whether the user has marked this course as a favourite.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "hidden": {
+          "description": "Whether the user has hidden this course from their dashboard.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "showshortname": {
+          "description": "Whether the short name is displayed alongside the full name.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "coursecategory": {
+          "description": "Name of the category this course belongs to.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timeaccess": {
+          "description": "Unix timestamp of the user's most recent access to this course.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "EnrolledCoursesResponse": {
+      "id": "EnrolledCoursesResponse",
+      "description": "Paginated enrolled-courses response.",
+      "required": [
+        "courses",
+        "nextoffset"
+      ],
+      "properties": {
+        "courses": {
+          "description": "List of enrolled courses for the current page.",
+          "items": {
+            "$ref": "Course"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        },
+        "nextoffset": {
+          "description": "Offset to pass on the next page request; -1 when no further pages exist.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "EventIcon": {
+      "id": "EventIcon",
+      "description": "Icon metadata for a calendar event.",
+      "required": [
+        "key",
+        "component",
+        "alttext"
+      ],
+      "properties": {
+        "key": {
+          "description": "Icon key name used to locate the icon asset.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "component": {
+          "description": "Moodle component that owns the icon (e.g., 'assign').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "alttext": {
+          "description": "Accessible alt text for the icon image.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "EventSubscription": {
+      "id": "EventSubscription",
+      "description": "Subscription display settings for a calendar event.",
+      "required": [
+        "displayeventsource"
+      ],
+      "properties": {
+        "displayeventsource": {
+          "description": "Whether to display the event source label on the calendar.",
+          "uniqueItems": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "EventAction": {
+      "id": "EventAction",
+      "description": "Primary action button metadata for a calendar event.",
+      "required": [
+        "name",
+        "url",
+        "itemcount",
+        "actionable",
+        "showitemcount"
+      ],
+      "properties": {
+        "name": {
+          "description": "Display label for the primary action button.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "url": {
+          "description": "URL the user should navigate to in order to perform the action.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "itemcount": {
+          "description": "Number of items associated with this action.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "actionable": {
+          "description": "Whether the action can currently be taken by the user.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "showitemcount": {
+          "description": "Whether to display the item count alongside the action label.",
+          "uniqueItems": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "CalendarEvent": {
+      "id": "CalendarEvent",
+      "description": "A calendar action event tied to a course activity (e.g., an assignment deadline).",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "descriptionformat",
+        "location",
+        "component",
+        "modulename",
+        "instance",
+        "eventtype",
+        "timestart",
+        "timeduration",
+        "timesort",
+        "visible",
+        "timemodified",
+        "icon",
+        "course",
+        "subscription",
+        "canedit",
+        "candelete",
+        "deleteurl",
+        "editurl",
+        "viewurl",
+        "formattedtime",
+        "isactionevent",
+        "iscourseevent",
+        "iscategoryevent",
+        "normalisedeventtype",
+        "normalisedeventtypetext",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique calendar event identifier.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Display name of the calendar event.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "description": {
+          "description": "HTML description body of the event.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "descriptionformat": {
+          "description": "Text format of the description (1 = HTML).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "location": {
+          "description": "Physical or virtual location of the event; empty string if not specified.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "categoryid": {
+          "description": "Course category ID; null if not a category event.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "groupid": {
+          "description": "Group ID if the event is group-specific; null otherwise.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "userid": {
+          "description": "User ID if the event is user-specific; null otherwise.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "repeatid": {
+          "description": "ID of the repeat group for recurring events; null if not recurring.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "eventcount": {
+          "description": "Total number of events in the repeat group; null if not applicable.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "component": {
+          "description": "Moodle component that created the event (e.g., 'mod_assign').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "modulename": {
+          "description": "Short name of the Moodle activity module (e.g., 'assign').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "instance": {
+          "description": "The course module instance ID.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "eventtype": {
+          "description": "Type of the event (e.g., 'due', 'open', 'close').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timestart": {
+          "description": "Event start time as Unix timestamp.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timeduration": {
+          "description": "Duration in seconds; 0 for point-in-time events.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timesort": {
+          "description": "Sort timestamp used for ordering events.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "visible": {
+          "description": "Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timemodified": {
+          "description": "Last modification time as Unix timestamp.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "icon": {
+          "description": "Icon metadata for a calendar event.",
+          "uniqueItems": false,
+          "$ref": "EventIcon"
+        },
+        "course": {
+          "description": "An enrolled course.",
+          "uniqueItems": false,
+          "$ref": "Course"
+        },
+        "subscription": {
+          "description": "Subscription display settings for a calendar event.",
+          "uniqueItems": false,
+          "$ref": "EventSubscription"
+        },
+        "canedit": {
+          "description": "Whether the current user can edit this event.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "candelete": {
+          "description": "Whether the current user can delete this event.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "deleteurl": {
+          "description": "URL to delete this calendar event.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "editurl": {
+          "description": "URL to edit the underlying course module associated with this event.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "viewurl": {
+          "description": "URL to view this event on the calendar.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "formattedtime": {
+          "description": "HTML-formatted human-readable event time string.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "isactionevent": {
+          "description": "Whether this is an action event requiring user interaction.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "iscourseevent": {
+          "description": "Whether this event is associated with a specific course.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "iscategoryevent": {
+          "description": "Whether this event is associated with a course category.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "groupname": {
+          "description": "Name of the group for group-specific events; null otherwise.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "normalisedeventtype": {
+          "description": "Normalised event type identifier used for display grouping.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "normalisedeventtypetext": {
+          "description": "Human-readable label for the normalised event type.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "action": {
+          "description": "Primary action button metadata for a calendar event.",
+          "uniqueItems": false,
+          "$ref": "EventAction"
+        },
+        "url": {
+          "description": "Direct URL to the course activity associated with this event.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "CalendarEventsResponse": {
+      "id": "CalendarEventsResponse",
+      "description": "A list of calendar events with pagination boundary IDs.",
+      "required": [
+        "events",
+        "firstid",
+        "lastid"
+      ],
+      "properties": {
+        "events": {
+          "description": "List of calendar action events for the current result set.",
+          "items": {
+            "$ref": "CalendarEvent"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        },
+        "firstid": {
+          "description": "Event ID of the first item in the result set.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "lastid": {
+          "description": "Event ID of the last item in the result set.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomField": {
+      "id": "CustomField",
+      "description": "A custom profile field value attached to a user.",
+      "required": [
+        "type",
+        "value",
+        "name",
+        "shortname"
+      ],
+      "properties": {
+        "type": {
+          "description": "Data type of the custom field (e.g., 'text', 'select').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "value": {
+          "description": "Value stored in the custom field.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "name": {
+          "description": "Display label of the custom field.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "shortname": {
+          "description": "Machine-readable shortname identifier for the custom field.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "UserPreference": {
+      "id": "UserPreference",
+      "description": "A single user preference setting.",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "description": "Unique key identifying the preference.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "value": {
+          "description": "Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "UserProfile": {
+      "id": "UserProfile",
+      "description": "Complete user profile.",
+      "required": [
+        "id",
+        "username",
+        "fullname",
+        "email",
+        "department",
+        "institution",
+        "idnumber",
+        "auth",
+        "confirmed",
+        "lang",
+        "theme",
+        "timezone",
+        "mailformat",
+        "profileimageurlsmall",
+        "profileimageurl"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique numeric user identifier.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "description": "Login username for the user.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "fullname": {
+          "description": "Full display name of the user.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the user.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "department": {
+          "description": "Department the user belongs to within the institution.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "institution": {
+          "description": "Name of the institution the user is affiliated with.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "idnumber": {
+          "description": "Institution-assigned student or staff ID number.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "auth": {
+          "description": "Authentication method used by the user (e.g., 'ldap', 'manual').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "confirmed": {
+          "description": "Whether the user's account has been confirmed.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "lang": {
+          "description": "Preferred interface language code (e.g., 'en').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "theme": {
+          "description": "Preferred LMS theme; empty string means use the site default.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timezone": {
+          "description": "Timezone identifier. \"99\" means use the server default.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "mailformat": {
+          "description": "Email format preference (1 = HTML).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "profileimageurlsmall": {
+          "description": "URL to the user's small profile image (thumbnail).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "profileimageurl": {
+          "description": "URL to the user's full-size profile image.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "customfields": {
+          "description": "List of custom profile field values for the user.",
+          "items": {
+            "$ref": "CustomField"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        },
+        "preferences": {
+          "description": "List of stored preference key/value pairs for the user.",
+          "items": {
+            "$ref": "UserPreference"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      }
+    },
+    "UserPreferencesResponse": {
+      "id": "UserPreferencesResponse",
+      "description": "Response envelope for the user-preferences endpoint.",
+      "required": [
+        "preferences",
+        "warnings"
+      ],
+      "properties": {
+        "preferences": {
+          "description": "List of user preference key/value pairs.",
+          "items": {
+            "$ref": "UserPreference"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        },
+        "warnings": {
+          "description": "Array of warning objects. Empty when no warnings are present.",
+          "items": {
+            "$ref": "MoodleWarning"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      }
+    },
+    "Notification": {
+      "id": "Notification",
+      "description": "A popup notification message delivered to a user.",
+      "required": [
+        "id",
+        "useridfrom",
+        "useridto",
+        "subject",
+        "shortenedsubject",
+        "text",
+        "fullmessage",
+        "fullmessageformat",
+        "fullmessagehtml",
+        "smallmessage",
+        "contexturl",
+        "contexturlname",
+        "timecreated",
+        "timecreatedpretty",
+        "read",
+        "deleted",
+        "iconurl",
+        "component",
+        "eventtype",
+        "customdata"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique notification identifier.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "useridfrom": {
+          "description": "User ID of the sender.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "useridto": {
+          "description": "User ID of the recipient.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "subject": {
+          "description": "Subject line of the notification.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "shortenedsubject": {
+          "description": "Shortened version of the notification subject for compact display.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "text": {
+          "description": "Short HTML excerpt of the notification.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "fullmessage": {
+          "description": "Full plain-text body of the notification.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "fullmessageformat": {
+          "description": "Format identifier for fullmessagehtml (2 = Markdown source).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "fullmessagehtml": {
+          "description": "Full HTML body of the notification email.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "smallmessage": {
+          "description": "Short plain-text preview of the notification.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "contexturl": {
+          "description": "URL to the relevant context for this notification (e.g., a forum post).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "contexturlname": {
+          "description": "Human-readable label for the context URL link.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timecreated": {
+          "description": "Unix timestamp when the notification was created.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timecreatedpretty": {
+          "description": "Human-readable relative time string (e.g., '19 days ago').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timeread": {
+          "description": "Unix timestamp when the notification was read; null if unread.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "read": {
+          "description": "Whether the notification has been read by the recipient.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "deleted": {
+          "description": "Whether the notification has been deleted by the recipient.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "iconurl": {
+          "description": "URL to the icon image representing the notification source.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "component": {
+          "description": "Moodle component that generated the notification (e.g., 'mod_forum').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "eventtype": {
+          "description": "Event type within the component that triggered the notification (e.g., 'posts').",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "customdata": {
+          "description": "JSON-encoded string with additional notification metadata (cmid, instance, discussionid, postid, etc.).",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "PopupNotificationsResponse": {
+      "id": "PopupNotificationsResponse",
+      "description": "Response envelope for the popup-notifications endpoint.",
+      "required": [
+        "notifications",
+        "unreadcount"
+      ],
+      "properties": {
+        "notifications": {
+          "description": "List of popup notifications for the user.",
+          "items": {
+            "$ref": "Notification"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        },
+        "unreadcount": {
+          "description": "Total number of unread notifications for the user.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetRecentCoursesRequest": {
+      "id": "GetRecentCoursesRequest",
+      "description": "Request parameters for retrieving recently accessed courses.",
+      "required": [
+        "limit"
+      ],
+      "properties": {
+        "limit": {
+          "description": "Maximum number of courses to return.",
+          "defaultValue": "10",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetEnrolledCoursesByTimelineRequest": {
+      "id": "GetEnrolledCoursesByTimelineRequest",
+      "description": "Request parameters for retrieving enrolled courses filtered by timeline classification.",
+      "required": [
+        "offset",
+        "limit",
+        "classification",
+        "sort"
+      ],
+      "properties": {
+        "offset": {
+          "description": "Zero-based pagination offset.",
+          "defaultValue": "0",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "limit": {
+          "description": "Maximum number of courses to return.",
+          "defaultValue": "50",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "classification": {
+          "description": "Timeline classification filter for enrolled courses.",
+          "enum": [
+            "all",
+            "inprogress",
+            "past",
+            "future",
+            "favourite",
+            "hidden",
+            "allincludinghidden"
+          ],
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "sort": {
+          "description": "Field used to sort enrolled course results.",
+          "enum": [
+            "fullname",
+            "shortname",
+            "id",
+            "idnumber",
+            "timeaccess"
+          ],
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "FetchNotificationsRequest": {
+      "id": "FetchNotificationsRequest",
+      "description": "Request parameters for fetching site-level notifications.",
+      "required": [
+        "contextid"
+      ],
+      "properties": {
+        "contextid": {
+          "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetCalendarEventsByTimesortRequest": {
+      "id": "GetCalendarEventsByTimesortRequest",
+      "description": "Request parameters for retrieving calendar action events sorted by time.",
+      "required": [
+        "limitnum",
+        "timesortfrom"
+      ],
+      "properties": {
+        "limitnum": {
+          "description": "Maximum number of events to return.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timesortfrom": {
+          "description": "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timesortto": {
+          "description": "Only return events with timesort <= this Unix timestamp. Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "aftereventid": {
+          "description": "Return events whose ID is greater than this value (cursor pagination). Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetCalendarEventsByCourseRequest": {
+      "id": "GetCalendarEventsByCourseRequest",
+      "description": "Request parameters for retrieving calendar action events for a specific course.",
+      "required": [
+        "courseid"
+      ],
+      "properties": {
+        "courseid": {
+          "description": "ID of the course to fetch events for.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timesortfrom": {
+          "description": "Only return events with timesort >= this Unix timestamp. Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "timesortto": {
+          "description": "Only return events with timesort <= this Unix timestamp. Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "aftereventid": {
+          "description": "Cursor-based pagination — return events after this event ID. Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "limitnum": {
+          "description": "Maximum number of events to return. Optional.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetUsersByFieldRequest": {
+      "id": "GetUsersByFieldRequest",
+      "description": "Request parameters for retrieving user profiles by a profile field value.",
+      "required": [
+        "field",
+        "values"
+      ],
+      "properties": {
+        "field": {
+          "description": "User profile field to match against when searching for users.",
+          "enum": [
+            "id",
+            "idnumber",
+            "username",
+            "email"
+          ],
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "values": {
+          "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID).",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      }
+    },
+    "GetUserPreferencesRequest": {
+      "id": "GetUserPreferencesRequest",
+      "description": "Request parameters for retrieving user preferences.",
+      "required": [
+        "userid"
+      ],
+      "properties": {
+        "userid": {
+          "description": "ID of the user whose preferences to retrieve.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Specific preference name to retrieve. Omit to retrieve all preferences.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "GetPopupNotificationsRequest": {
+      "id": "GetPopupNotificationsRequest",
+      "description": "Request parameters for retrieving popup notifications for a user.",
+      "required": [
+        "useridto",
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "useridto": {
+          "description": "ID of the recipient user, passed as a string.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "limit": {
+          "description": "Maximum number of notifications to return.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "offset": {
+          "description": "Pagination offset.",
+          "defaultValue": "0",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  },
+  "authorizations": {
+    "SessKey": {
+      "passAs": "query",
+      "keyname": "sesskey",
+      "type": "apiKey"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ]
+}

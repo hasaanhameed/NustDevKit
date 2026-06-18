@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="https://lms.nust.edu.pk/portal/schemas" xmlns:wsdl="https://lms.nust.edu.pk/portal/wsdl" targetNamespace="https://lms.nust.edu.pk/portal/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xs:schema xmlns:tns="https://lms.nust.edu.pk/portal/schemas" targetNamespace="https://lms.nust.edu.pk/portal/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="POST_getCoreRecentCourses_InputMessage" type="schemas:POST_getCoreRecentCourses_InputMessage" />
+      <xs:element name="POST_getCoreRecentCourses_OutputMessage" type="schemas:POST_getCoreRecentCourses_OutputMessage" />
+      <xs:element name="POST_getCoreRecentCourses_400" type="schemas:POST_getCoreRecentCourses_400" />
+      <xs:element name="POST_getEnrolledCoursesByTimeline_InputMessage" type="schemas:POST_getEnrolledCoursesByTimeline_InputMessage" />
+      <xs:element name="POST_getEnrolledCoursesByTimeline_OutputMessage" type="schemas:POST_getEnrolledCoursesByTimeline_OutputMessage" />
+      <xs:element name="POST_getEnrolledCoursesByTimeline_400" type="schemas:POST_getEnrolledCoursesByTimeline_400" />
+      <xs:element name="POST_getCalendarEventsByTimesort_InputMessage" type="schemas:POST_getCalendarEventsByTimesort_InputMessage" />
+      <xs:element name="POST_getCalendarEventsByTimesort_OutputMessage" type="schemas:POST_getCalendarEventsByTimesort_OutputMessage" />
+      <xs:element name="POST_getCalendarEventsByTimesort_400" type="schemas:POST_getCalendarEventsByTimesort_400" />
+      <xs:element name="POST_getCalendarEventsByCourse_InputMessage" type="schemas:POST_getCalendarEventsByCourse_InputMessage" />
+      <xs:element name="POST_getCalendarEventsByCourse_OutputMessage" type="schemas:POST_getCalendarEventsByCourse_OutputMessage" />
+      <xs:element name="POST_getCalendarEventsByCourse_400" type="schemas:POST_getCalendarEventsByCourse_400" />
+      <xs:element name="POST_getUsersByField_InputMessage" type="schemas:POST_getUsersByField_InputMessage" />
+      <xs:element name="POST_getUsersByField_OutputMessage" type="schemas:POST_getUsersByField_OutputMessage" />
+      <xs:element name="POST_getUsersByField_400" type="schemas:POST_getUsersByField_400" />
+      <xs:element name="POST_getUserPreferences_InputMessage" type="schemas:POST_getUserPreferences_InputMessage" />
+      <xs:element name="POST_getUserPreferences_OutputMessage" type="schemas:POST_getUserPreferences_OutputMessage" />
+      <xs:element name="POST_getUserPreferences_400" type="schemas:POST_getUserPreferences_400" />
+      <xs:element name="POST_fetchNotifications_InputMessage" type="schemas:POST_fetchNotifications_InputMessage" />
+      <xs:element name="POST_fetchNotifications_OutputMessage" type="schemas:POST_fetchNotifications_OutputMessage" />
+      <xs:element name="POST_fetchNotifications_400" type="schemas:POST_fetchNotifications_400" />
+      <xs:element name="POST_getPopupNotifications_InputMessage" type="schemas:POST_getPopupNotifications_InputMessage" />
+      <xs:element name="POST_getPopupNotifications_OutputMessage" type="schemas:POST_getPopupNotifications_OutputMessage" />
+      <xs:element name="POST_getPopupNotifications_400" type="schemas:POST_getPopupNotifications_400" />
+      <xs:simpleType name="CourseTimelineClassification">
+        <xs:annotation>
+          <xs:documentation>Timeline classification filter for enrolled courses.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="all" />
+          <xs:enumeration value="inprogress" />
+          <xs:enumeration value="past" />
+          <xs:enumeration value="future" />
+          <xs:enumeration value="favourite" />
+          <xs:enumeration value="hidden" />
+          <xs:enumeration value="allincludinghidden" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="CourseTimelineSortField">
+        <xs:annotation>
+          <xs:documentation>Field used to sort enrolled course results.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="fullname" />
+          <xs:enumeration value="shortname" />
+          <xs:enumeration value="id" />
+          <xs:enumeration value="idnumber" />
+          <xs:enumeration value="timeaccess" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="UserProfileField">
+        <xs:annotation>
+          <xs:documentation>User profile field to match against when searching for users.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="id" />
+          <xs:enumeration value="idnumber" />
+          <xs:enumeration value="username" />
+          <xs:enumeration value="email" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType name="MoodleWarning">
+        <xs:annotation>
+          <xs:documentation>A non-fatal warning returned alongside a successful response.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="item" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Item identifier related to the warning; empty string if not applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="itemid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Numeric item ID related to the warning; 0 if not applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="warningcode" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Machine-readable warning code; empty string if no code.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="message" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable warning description.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SiteNotification">
+        <xs:annotation>
+          <xs:documentation>A site-level notification (structure varies by type).</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique identifier for the site notification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="message" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Notification message content.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="type" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Notification type identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="MoodleError">
+        <xs:annotation>
+          <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="errorcode" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Machine-readable error code identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="message" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable error description.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="link" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Redirect URL for the user; empty string if not applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="moreinfourl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to additional error documentation; empty string if not available.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="debuginfo" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Additional debug information; empty string when not in debug mode.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Course">
+        <xs:annotation>
+          <xs:documentation>An enrolled course.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique course identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Full display name of the course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="shortname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Short course code or abbreviated name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="idnumber" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Institution-assigned course ID number; empty string if not set.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="summary" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML summary of the course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="summaryformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Format of the summary field (1 = HTML).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="startdate" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course start date as Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="enddate" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course end date as Unix timestamp. 0 means no end date.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="visible" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the course is visible to enrolled students.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullnamedisplay" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display name of the course (may differ from fullname for context).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="viewurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the course page on the LMS portal.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="progress">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>Student's completion progress as a percentage.</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer">
+                <xs:maxInclusive value="100" />
+                <xs:minInclusive value="0" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="hasprogress" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether completion tracking is enabled for this course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="isfavourite" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the user has marked this course as a favourite.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="hidden" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the user has hidden this course from their dashboard.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="showshortname" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the short name is displayed alongside the full name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="coursecategory" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the category this course belongs to.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RecentCourseFields">
+        <xs:annotation>
+          <xs:documentation>Additional fields specific to recently accessed courses.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="timeaccess" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unix timestamp of the user's most recent access to this course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RecentCourse">
+        <xs:annotation>
+          <xs:documentation>A recently accessed course, extending Course with the last-access timestamp.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique course identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Full display name of the course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="shortname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Short course code or abbreviated name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="idnumber" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Institution-assigned course ID number; empty string if not set.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="summary" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML summary of the course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="summaryformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Format of the summary field (1 = HTML).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="startdate" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course start date as Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="enddate" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course end date as Unix timestamp. 0 means no end date.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="visible" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the course is visible to enrolled students.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullnamedisplay" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display name of the course (may differ from fullname for context).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="viewurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the course page on the LMS portal.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="progress">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>Student's completion progress as a percentage.</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer">
+                <xs:maxInclusive value="100" />
+                <xs:minInclusive value="0" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="hasprogress" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether completion tracking is enabled for this course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="isfavourite" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the user has marked this course as a favourite.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="hidden" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the user has hidden this course from their dashboard.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="showshortname" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the short name is displayed alongside the full name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="coursecategory" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the category this course belongs to.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timeaccess" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unix timestamp of the user's most recent access to this course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EnrolledCoursesResponse">
+        <xs:annotation>
+          <xs:documentation>Paginated enrolled-courses response.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="courses" type="schemas:Course">
+            <xs:annotation>
+              <xs:documentation>List of enrolled courses for the current page.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="nextoffset" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Offset to pass on the next page request; -1 when no further pages exist.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EventIcon">
+        <xs:annotation>
+          <xs:documentation>Icon metadata for a calendar event.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="key" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Icon key name used to locate the icon asset.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="component" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle component that owns the icon (e.g., 'assign').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="alttext" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Accessible alt text for the icon image.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EventSubscription">
+        <xs:annotation>
+          <xs:documentation>Subscription display settings for a calendar event.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="displayeventsource" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether to display the event source label on the calendar.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EventAction">
+        <xs:annotation>
+          <xs:documentation>Primary action button metadata for a calendar event.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display label for the primary action button.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="url" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL the user should navigate to in order to perform the action.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="itemcount" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Number of items associated with this action.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="actionable" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the action can currently be taken by the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="showitemcount" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether to display the item count alongside the action label.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CalendarEvent">
+        <xs:annotation>
+          <xs:documentation>A calendar action event tied to a course activity (e.g., an assignment deadline).</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique calendar event identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display name of the calendar event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="description" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML description body of the event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="descriptionformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Text format of the description (1 = HTML).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="location" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Physical or virtual location of the event; empty string if not specified.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="categoryid" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course category ID; null if not a category event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="groupid" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Group ID if the event is group-specific; null otherwise.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="userid" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>User ID if the event is user-specific; null otherwise.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="repeatid" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>ID of the repeat group for recurring events; null if not recurring.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="eventcount" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Total number of events in the repeat group; null if not applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="component" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle component that created the event (e.g., 'mod_assign').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="modulename" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Short name of the Moodle activity module (e.g., 'assign').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="instance" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>The course module instance ID.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="eventtype" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Type of the event (e.g., 'due', 'open', 'close').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timestart" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Event start time as Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timeduration" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Duration in seconds; 0 for point-in-time events.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timesort" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Sort timestamp used for ordering events.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="visible" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timemodified" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Last modification time as Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="icon" type="schemas:EventIcon">
+            <xs:annotation>
+              <xs:documentation>Icon metadata for a calendar event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="course" type="schemas:Course">
+            <xs:annotation>
+              <xs:documentation>An enrolled course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="subscription" type="schemas:EventSubscription">
+            <xs:annotation>
+              <xs:documentation>Subscription display settings for a calendar event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="canedit" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the current user can edit this event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="candelete" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the current user can delete this event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="deleteurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to delete this calendar event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="editurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to edit the underlying course module associated with this event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="viewurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to view this event on the calendar.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="formattedtime" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML-formatted human-readable event time string.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="isactionevent" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether this is an action event requiring user interaction.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="iscourseevent" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether this event is associated with a specific course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="iscategoryevent" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether this event is associated with a course category.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="groupname" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the group for group-specific events; null otherwise.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="normalisedeventtype" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Normalised event type identifier used for display grouping.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="normalisedeventtypetext" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable label for the normalised event type.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="action" type="schemas:EventAction">
+            <xs:annotation>
+              <xs:documentation>Primary action button metadata for a calendar event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="url" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Direct URL to the course activity associated with this event.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CalendarEventsResponse">
+        <xs:annotation>
+          <xs:documentation>A list of calendar events with pagination boundary IDs.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="events" type="schemas:CalendarEvent">
+            <xs:annotation>
+              <xs:documentation>List of calendar action events for the current result set.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="firstid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Event ID of the first item in the result set.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="lastid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Event ID of the last item in the result set.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CustomField">
+        <xs:annotation>
+          <xs:documentation>A custom profile field value attached to a user.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="type" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Data type of the custom field (e.g., 'text', 'select').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="value" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Value stored in the custom field.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display label of the custom field.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="shortname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Machine-readable shortname identifier for the custom field.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="UserPreference">
+        <xs:annotation>
+          <xs:documentation>A single user preference setting.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Unique key identifying the preference.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="value" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="UserProfile">
+        <xs:annotation>
+          <xs:documentation>Complete user profile.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique numeric user identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="username" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Login username for the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Full display name of the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="email" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Email address of the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="department" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Department the user belongs to within the institution.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="institution" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the institution the user is affiliated with.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="idnumber" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Institution-assigned student or staff ID number.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="auth" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Authentication method used by the user (e.g., 'ldap', 'manual').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="confirmed" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the user's account has been confirmed.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="lang" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Preferred interface language code (e.g., 'en').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="theme" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Preferred LMS theme; empty string means use the site default.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timezone" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Timezone identifier. "99" means use the server default.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="mailformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Email format preference (1 = HTML).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="profileimageurlsmall" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the user's small profile image (thumbnail).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="profileimageurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the user's full-size profile image.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="customfields" type="schemas:CustomField">
+            <xs:annotation>
+              <xs:documentation>List of custom profile field values for the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="preferences" type="schemas:UserPreference">
+            <xs:annotation>
+              <xs:documentation>List of stored preference key/value pairs for the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="UserPreferencesResponse">
+        <xs:annotation>
+          <xs:documentation>Response envelope for the user-preferences endpoint.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="preferences" type="schemas:UserPreference">
+            <xs:annotation>
+              <xs:documentation>List of user preference key/value pairs.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="warnings" type="schemas:MoodleWarning">
+            <xs:annotation>
+              <xs:documentation>Array of warning objects. Empty when no warnings are present.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Notification">
+        <xs:annotation>
+          <xs:documentation>A popup notification message delivered to a user.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unique notification identifier.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="useridfrom" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>User ID of the sender.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="useridto" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>User ID of the recipient.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="subject" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Subject line of the notification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="shortenedsubject" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Shortened version of the notification subject for compact display.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="text" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Short HTML excerpt of the notification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullmessage" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Full plain-text body of the notification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullmessageformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Format identifier for fullmessagehtml (2 = Markdown source).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullmessagehtml" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Full HTML body of the notification email.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="smallmessage" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Short plain-text preview of the notification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="contexturl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the relevant context for this notification (e.g., a forum post).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="contexturlname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable label for the context URL link.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timecreated" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unix timestamp when the notification was created.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timecreatedpretty" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable relative time string (e.g., '19 days ago').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timeread" nillable="true" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unix timestamp when the notification was read; null if unread.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="read" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the notification has been read by the recipient.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="deleted" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the notification has been deleted by the recipient.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="iconurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL to the icon image representing the notification source.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="component" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle component that generated the notification (e.g., 'mod_forum').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="eventtype" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Event type within the component that triggered the notification (e.g., 'posts').</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="customdata" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>JSON-encoded string with additional notification metadata (cmid, instance, discussionid, postid, etc.).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PopupNotificationsResponse">
+        <xs:annotation>
+          <xs:documentation>Response envelope for the popup-notifications endpoint.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="notifications" type="schemas:Notification">
+            <xs:annotation>
+              <xs:documentation>List of popup notifications for the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="unreadcount" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Total number of unread notifications for the user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetRecentCoursesRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving recently accessed courses.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" default="10" name="limit" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of courses to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetEnrolledCoursesByTimelineRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving enrolled courses filtered by timeline classification.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" default="0" name="offset" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Zero-based pagination offset.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" default="50" name="limit" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of courses to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="classification" type="schemas:CourseTimelineClassification">
+            <xs:annotation>
+              <xs:documentation>Timeline classification filter for enrolled courses.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="sort" type="schemas:CourseTimelineSortField">
+            <xs:annotation>
+              <xs:documentation>Field used to sort enrolled course results.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="FetchNotificationsRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for fetching site-level notifications.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="contextid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetCalendarEventsByTimesortRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving calendar action events sorted by time.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="limitnum" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of events to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timesortfrom" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &gt;= this Unix timestamp. Pass 0 for no lower bound.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortto" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &lt;= this Unix timestamp. Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="aftereventid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Return events whose ID is greater than this value (cursor pagination). Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetCalendarEventsByCourseRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving calendar action events for a specific course.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="courseid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>ID of the course to fetch events for.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortfrom" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &gt;= this Unix timestamp. Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortto" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &lt;= this Unix timestamp. Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="aftereventid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Cursor-based pagination — return events after this event ID. Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="limitnum" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of events to return. Optional.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetUsersByFieldRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving user profiles by a profile field value.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="field" type="schemas:UserProfileField">
+            <xs:annotation>
+              <xs:documentation>User profile field to match against when searching for users.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="values" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetUserPreferencesRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving user preferences.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="userid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>ID of the user whose preferences to retrieve.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Specific preference name to retrieve. Omit to retrieve all preferences.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GetPopupNotificationsRequest">
+        <xs:annotation>
+          <xs:documentation>Request parameters for retrieving popup notifications for a user.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="useridto" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>ID of the recipient user, passed as a string.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="limit" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of notifications to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" default="0" name="offset" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Pagination offset.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCoreRecentCourses_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetRecentCoursesRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters for the recent courses request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCoreRecentCourses_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:RecentCourse">
+            <xs:annotation>
+              <xs:documentation>Recently accessed courses ordered by last access time.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCoreRecentCourses_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getEnrolledCoursesByTimeline_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetEnrolledCoursesByTimelineRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters for the enrolled courses timeline request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getEnrolledCoursesByTimeline_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:EnrolledCoursesResponse">
+            <xs:annotation>
+              <xs:documentation>Paginated enrolled-courses response.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getEnrolledCoursesByTimeline_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByTimesort_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByTimesortRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters for the time-sorted calendar events request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByTimesort_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
+            <xs:annotation>
+              <xs:documentation>A list of calendar events with pagination boundary IDs.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByTimesort_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByCourse_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByCourseRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters for the course-specific calendar events request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByCourse_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
+            <xs:annotation>
+              <xs:documentation>A list of calendar events with pagination boundary IDs.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getCalendarEventsByCourse_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUsersByField_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetUsersByFieldRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters specifying the profile field and values to match.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUsersByField_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:UserProfile">
+            <xs:annotation>
+              <xs:documentation>User profiles matching the specified field value.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUsersByField_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUserPreferences_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetUserPreferencesRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters specifying which user's preferences to retrieve.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUserPreferences_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:UserPreferencesResponse">
+            <xs:annotation>
+              <xs:documentation>Response envelope for the user-preferences endpoint.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getUserPreferences_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_fetchNotifications_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:FetchNotificationsRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters specifying the context to fetch notifications for.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_fetchNotifications_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:SiteNotification">
+            <xs:annotation>
+              <xs:documentation>Site-level notifications for the given context; empty array when none are pending.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_fetchNotifications_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getPopupNotifications_InputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
+          <xs:element minOccurs="1" name="body" type="schemas:GetPopupNotificationsRequest">
+            <xs:annotation>
+              <xs:documentation>Parameters for the popup notifications request.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getPopupNotifications_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:PopupNotificationsResponse">
+            <xs:annotation>
+              <xs:documentation>Response envelope for the popup-notifications endpoint.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="POST_getPopupNotifications_400">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </types>
+  <message name="POST_getCoreRecentCourses_InputMessage">
+    <part name="POST_getCoreRecentCourses_InputMessage" element="schemas:POST_getCoreRecentCourses_InputMessage" />
+  </message>
+  <message name="POST_getCoreRecentCourses_OutputMessage">
+    <part name="POST_getCoreRecentCourses_OutputMessage" element="schemas:POST_getCoreRecentCourses_OutputMessage" />
+  </message>
+  <message name="POST_getCoreRecentCourses_400">
+    <part name="POST_getCoreRecentCourses_400" element="schemas:POST_getCoreRecentCourses_400" />
+  </message>
+  <message name="POST_getEnrolledCoursesByTimeline_InputMessage">
+    <part name="POST_getEnrolledCoursesByTimeline_InputMessage" element="schemas:POST_getEnrolledCoursesByTimeline_InputMessage" />
+  </message>
+  <message name="POST_getEnrolledCoursesByTimeline_OutputMessage">
+    <part name="POST_getEnrolledCoursesByTimeline_OutputMessage" element="schemas:POST_getEnrolledCoursesByTimeline_OutputMessage" />
+  </message>
+  <message name="POST_getEnrolledCoursesByTimeline_400">
+    <part name="POST_getEnrolledCoursesByTimeline_400" element="schemas:POST_getEnrolledCoursesByTimeline_400" />
+  </message>
+  <message name="POST_getCalendarEventsByTimesort_InputMessage">
+    <part name="POST_getCalendarEventsByTimesort_InputMessage" element="schemas:POST_getCalendarEventsByTimesort_InputMessage" />
+  </message>
+  <message name="POST_getCalendarEventsByTimesort_OutputMessage">
+    <part name="POST_getCalendarEventsByTimesort_OutputMessage" element="schemas:POST_getCalendarEventsByTimesort_OutputMessage" />
+  </message>
+  <message name="POST_getCalendarEventsByTimesort_400">
+    <part name="POST_getCalendarEventsByTimesort_400" element="schemas:POST_getCalendarEventsByTimesort_400" />
+  </message>
+  <message name="POST_getCalendarEventsByCourse_InputMessage">
+    <part name="POST_getCalendarEventsByCourse_InputMessage" element="schemas:POST_getCalendarEventsByCourse_InputMessage" />
+  </message>
+  <message name="POST_getCalendarEventsByCourse_OutputMessage">
+    <part name="POST_getCalendarEventsByCourse_OutputMessage" element="schemas:POST_getCalendarEventsByCourse_OutputMessage" />
+  </message>
+  <message name="POST_getCalendarEventsByCourse_400">
+    <part name="POST_getCalendarEventsByCourse_400" element="schemas:POST_getCalendarEventsByCourse_400" />
+  </message>
+  <message name="POST_getUsersByField_InputMessage">
+    <part name="POST_getUsersByField_InputMessage" element="schemas:POST_getUsersByField_InputMessage" />
+  </message>
+  <message name="POST_getUsersByField_OutputMessage">
+    <part name="POST_getUsersByField_OutputMessage" element="schemas:POST_getUsersByField_OutputMessage" />
+  </message>
+  <message name="POST_getUsersByField_400">
+    <part name="POST_getUsersByField_400" element="schemas:POST_getUsersByField_400" />
+  </message>
+  <message name="POST_getUserPreferences_InputMessage">
+    <part name="POST_getUserPreferences_InputMessage" element="schemas:POST_getUserPreferences_InputMessage" />
+  </message>
+  <message name="POST_getUserPreferences_OutputMessage">
+    <part name="POST_getUserPreferences_OutputMessage" element="schemas:POST_getUserPreferences_OutputMessage" />
+  </message>
+  <message name="POST_getUserPreferences_400">
+    <part name="POST_getUserPreferences_400" element="schemas:POST_getUserPreferences_400" />
+  </message>
+  <message name="POST_fetchNotifications_InputMessage">
+    <part name="POST_fetchNotifications_InputMessage" element="schemas:POST_fetchNotifications_InputMessage" />
+  </message>
+  <message name="POST_fetchNotifications_OutputMessage">
+    <part name="POST_fetchNotifications_OutputMessage" element="schemas:POST_fetchNotifications_OutputMessage" />
+  </message>
+  <message name="POST_fetchNotifications_400">
+    <part name="POST_fetchNotifications_400" element="schemas:POST_fetchNotifications_400" />
+  </message>
+  <message name="POST_getPopupNotifications_InputMessage">
+    <part name="POST_getPopupNotifications_InputMessage" element="schemas:POST_getPopupNotifications_InputMessage" />
+  </message>
+  <message name="POST_getPopupNotifications_OutputMessage">
+    <part name="POST_getPopupNotifications_OutputMessage" element="schemas:POST_getPopupNotifications_OutputMessage" />
+  </message>
+  <message name="POST_getPopupNotifications_400">
+    <part name="POST_getPopupNotifications_400" element="schemas:POST_getPopupNotifications_400" />
+  </message>
+  <portType name="NUST_x0020_LMS_x0020_API_PortType">
+    <operation name="POST_getCoreRecentCourses">
+      <documentation>Returns the courses the authenticated user has accessed most recently, ordered by last access time.
+Moodle method: `core_course_get_recent_courses`
+</documentation>
+      <input message="wsdl:POST_getCoreRecentCourses_InputMessage" />
+      <output message="wsdl:POST_getCoreRecentCourses_OutputMessage">
+        <documentation>List of recently accessed courses ordered by last access.</documentation>
+      </output>
+      <fault name="POST_getCoreRecentCourses_400" message="wsdl:POST_getCoreRecentCourses_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getEnrolledCoursesByTimeline">
+      <documentation>Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
+Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
+</documentation>
+      <input message="wsdl:POST_getEnrolledCoursesByTimeline_InputMessage" />
+      <output message="wsdl:POST_getEnrolledCoursesByTimeline_OutputMessage">
+        <documentation>Paginated list of enrolled courses.</documentation>
+      </output>
+      <fault name="POST_getEnrolledCoursesByTimeline_400" message="wsdl:POST_getEnrolledCoursesByTimeline_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getCalendarEventsByTimesort">
+      <documentation>Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+Moodle method: `core_calendar_get_action_events_by_timesort`
+</documentation>
+      <input message="wsdl:POST_getCalendarEventsByTimesort_InputMessage" />
+      <output message="wsdl:POST_getCalendarEventsByTimesort_OutputMessage">
+        <documentation>Calendar events sorted by timesort.</documentation>
+      </output>
+      <fault name="POST_getCalendarEventsByTimesort_400" message="wsdl:POST_getCalendarEventsByTimesort_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getCalendarEventsByCourse">
+      <documentation>Returns all action events (assignments, quizzes, etc.) for a single course.
+Moodle method: `core_calendar_get_action_events_by_course`
+</documentation>
+      <input message="wsdl:POST_getCalendarEventsByCourse_InputMessage" />
+      <output message="wsdl:POST_getCalendarEventsByCourse_OutputMessage">
+        <documentation>Calendar events for the specified course.</documentation>
+      </output>
+      <fault name="POST_getCalendarEventsByCourse_400" message="wsdl:POST_getCalendarEventsByCourse_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getUsersByField">
+      <documentation>Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
+Moodle method: `core_user_get_users_by_field`
+</documentation>
+      <input message="wsdl:POST_getUsersByField_InputMessage" />
+      <output message="wsdl:POST_getUsersByField_OutputMessage">
+        <documentation>List of matching user profiles.</documentation>
+      </output>
+      <fault name="POST_getUsersByField_400" message="wsdl:POST_getUsersByField_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getUserPreferences">
+      <documentation>Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
+Moodle method: `core_user_get_user_preferences`
+</documentation>
+      <input message="wsdl:POST_getUserPreferences_InputMessage" />
+      <output message="wsdl:POST_getUserPreferences_OutputMessage">
+        <documentation>User preferences list and optional warnings.</documentation>
+      </output>
+      <fault name="POST_getUserPreferences_400" message="wsdl:POST_getUserPreferences_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_fetchNotifications">
+      <documentation>Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+Moodle method: `core_fetch_notifications`
+</documentation>
+      <input message="wsdl:POST_fetchNotifications_InputMessage" />
+      <output message="wsdl:POST_fetchNotifications_OutputMessage">
+        <documentation>Array of site notifications (empty array when none are pending).</documentation>
+      </output>
+      <fault name="POST_fetchNotifications_400" message="wsdl:POST_fetchNotifications_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+    <operation name="POST_getPopupNotifications">
+      <documentation>Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
+Moodle method: `message_popup_get_popup_notifications`
+</documentation>
+      <input message="wsdl:POST_getPopupNotifications_InputMessage" />
+      <output message="wsdl:POST_getPopupNotifications_OutputMessage">
+        <documentation>Popup notifications and total unread count.</documentation>
+      </output>
+      <fault name="POST_getPopupNotifications_400" message="wsdl:POST_getPopupNotifications_400">
+        <documentation>Bad request or Moodle exception.</documentation>
+      </fault>
+    </operation>
+  </portType>
+  <binding name="NUST_x0020_LMS_x0020_API_Binding" type="wsdl:NUST_x0020_LMS_x0020_API_PortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="POST_getCoreRecentCourses">
+      <soap:operation soapAction="POST_getCoreRecentCourses" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getCoreRecentCourses_400">
+        <soap:fault use="literal" name="POST_getCoreRecentCourses_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getEnrolledCoursesByTimeline">
+      <soap:operation soapAction="POST_getEnrolledCoursesByTimeline" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getEnrolledCoursesByTimeline_400">
+        <soap:fault use="literal" name="POST_getEnrolledCoursesByTimeline_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getCalendarEventsByTimesort">
+      <soap:operation soapAction="POST_getCalendarEventsByTimesort" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getCalendarEventsByTimesort_400">
+        <soap:fault use="literal" name="POST_getCalendarEventsByTimesort_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getCalendarEventsByCourse">
+      <soap:operation soapAction="POST_getCalendarEventsByCourse" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getCalendarEventsByCourse_400">
+        <soap:fault use="literal" name="POST_getCalendarEventsByCourse_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getUsersByField">
+      <soap:operation soapAction="POST_getUsersByField" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getUsersByField_400">
+        <soap:fault use="literal" name="POST_getUsersByField_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getUserPreferences">
+      <soap:operation soapAction="POST_getUserPreferences" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getUserPreferences_400">
+        <soap:fault use="literal" name="POST_getUserPreferences_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_fetchNotifications">
+      <soap:operation soapAction="POST_fetchNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_fetchNotifications_400">
+        <soap:fault use="literal" name="POST_fetchNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+    <operation name="POST_getPopupNotifications">
+      <soap:operation soapAction="POST_getPopupNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output>
+        <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+      <fault name="POST_getPopupNotifications_400">
+        <soap:fault use="literal" name="POST_getPopupNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="NUST_x0020_LMS_x0020_API">
+    <documentation>NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+</documentation>
+    <port name="default_Port" binding="wsdl:NUST_x0020_LMS_x0020_API_Binding">
+      <soap:address location="https://lms.nust.edu.pk/portal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

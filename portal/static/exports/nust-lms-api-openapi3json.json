@@ -1,0 +1,1928 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "NUST LMS API",
+    "description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.\n",
+    "contact": {
+      "name": "NustDevKit Support",
+      "url": "https://github.com/hasaanhameed52/NustDevKit"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lms.nust.edu.pk/portal",
+      "description": "NUST LMS Production Portal (Production Environment)",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/service/core_course_get_recent_courses": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "getCoreRecentCourses",
+        "description": "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`\n",
+        "operationId": "getCoreRecentCourses",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters for the recent courses request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetRecentCoursesRequest"
+                  },
+                  {
+                    "description": "Parameters for the recent courses request."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of recently accessed courses ordered by last access.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecentCourse"
+                  },
+                  "description": "Recently accessed courses ordered by last access time."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_course_get_enrolled_courses_by_timeline_classification": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "getEnrolledCoursesByTimeline",
+        "description": "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`\n",
+        "operationId": "getEnrolledCoursesByTimeline",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters for the enrolled courses timeline request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetEnrolledCoursesByTimelineRequest"
+                  },
+                  {
+                    "description": "Parameters for the enrolled courses timeline request."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Paginated list of enrolled courses.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/EnrolledCoursesResponse"
+                    },
+                    {
+                      "description": "Paginated enrolled-courses response."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_calendar_get_action_events_by_timesort": {
+      "post": {
+        "tags": [
+          "Calendar"
+        ],
+        "summary": "getCalendarEventsByTimesort",
+        "description": "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
+        "operationId": "getCalendarEventsByTimesort",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters for the time-sorted calendar events request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetCalendarEventsByTimesortRequest"
+                  },
+                  {
+                    "description": "Parameters for the time-sorted calendar events request."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar events sorted by timesort.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CalendarEventsResponse"
+                    },
+                    {
+                      "description": "A list of calendar events with pagination boundary IDs."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_calendar_get_action_events_by_course": {
+      "post": {
+        "tags": [
+          "Calendar"
+        ],
+        "summary": "getCalendarEventsByCourse",
+        "description": "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
+        "operationId": "getCalendarEventsByCourse",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters for the course-specific calendar events request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetCalendarEventsByCourseRequest"
+                  },
+                  {
+                    "description": "Parameters for the course-specific calendar events request."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar events for the specified course.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CalendarEventsResponse"
+                    },
+                    {
+                      "description": "A list of calendar events with pagination boundary IDs."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_user_get_users_by_field": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "getUsersByField",
+        "description": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n",
+        "operationId": "getUsersByField",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters specifying the profile field and values to match.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetUsersByFieldRequest"
+                  },
+                  {
+                    "description": "Parameters specifying the profile field and values to match."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of matching user profiles.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserProfile"
+                  },
+                  "description": "User profiles matching the specified field value."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_user_get_user_preferences": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "getUserPreferences",
+        "description": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n",
+        "operationId": "getUserPreferences",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters specifying which user's preferences to retrieve.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetUserPreferencesRequest"
+                  },
+                  {
+                    "description": "Parameters specifying which user's preferences to retrieve."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User preferences list and optional warnings.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/UserPreferencesResponse"
+                    },
+                    {
+                      "description": "Response envelope for the user-preferences endpoint."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/core_fetch_notifications": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "fetchNotifications",
+        "description": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n",
+        "operationId": "fetchNotifications",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters specifying the context to fetch notifications for.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FetchNotificationsRequest"
+                  },
+                  {
+                    "description": "Parameters specifying the context to fetch notifications for."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Array of site notifications (empty array when none are pending).",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SiteNotification"
+                  },
+                  "description": "Site-level notifications for the given context; empty array when none are pending."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/service/message_popup_get_popup_notifications": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "getPopupNotifications",
+        "description": "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`\n",
+        "operationId": "getPopupNotifications",
+        "parameters": [],
+        "requestBody": {
+          "description": "Parameters for the popup notifications request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GetPopupNotificationsRequest"
+                  },
+                  {
+                    "description": "Parameters for the popup notifications request."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Popup notifications and total unread count.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PopupNotificationsResponse"
+                    },
+                    {
+                      "description": "Response envelope for the popup-notifications endpoint."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or Moodle exception.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/MoodleError"
+                    },
+                    {
+                      "description": "Error returned by the LMS on a failed operation."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CourseTimelineClassification": {
+        "title": "CourseTimelineClassification",
+        "enum": [
+          "all",
+          "inprogress",
+          "past",
+          "future",
+          "favourite",
+          "hidden",
+          "allincludinghidden"
+        ],
+        "type": "string",
+        "description": "Timeline classification filter for enrolled courses."
+      },
+      "CourseTimelineSortField": {
+        "title": "CourseTimelineSortField",
+        "enum": [
+          "fullname",
+          "shortname",
+          "id",
+          "idnumber",
+          "timeaccess"
+        ],
+        "type": "string",
+        "description": "Field used to sort enrolled course results."
+      },
+      "UserProfileField": {
+        "title": "UserProfileField",
+        "enum": [
+          "id",
+          "idnumber",
+          "username",
+          "email"
+        ],
+        "type": "string",
+        "description": "User profile field to match against when searching for users."
+      },
+      "MoodleWarning": {
+        "title": "MoodleWarning",
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Item identifier related to the warning; empty string if not applicable."
+          },
+          "itemid": {
+            "type": "integer",
+            "description": "Numeric item ID related to the warning; 0 if not applicable.",
+            "format": "int32",
+            "example": 0
+          },
+          "warningcode": {
+            "type": "string",
+            "description": "Machine-readable warning code; empty string if no code."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable warning description."
+          }
+        },
+        "description": "A non-fatal warning returned alongside a successful response."
+      },
+      "SiteNotification": {
+        "title": "SiteNotification",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the site notification.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "Notification message content."
+          },
+          "type": {
+            "type": "string",
+            "description": "Notification type identifier."
+          }
+        },
+        "description": "A site-level notification (structure varies by type)."
+      },
+      "MoodleError": {
+        "title": "MoodleError",
+        "type": "object",
+        "properties": {
+          "errorcode": {
+            "type": "string",
+            "description": "Machine-readable error code identifier.",
+            "example": "invalidrecord"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error description.",
+            "example": "Can't find data record in database table."
+          },
+          "link": {
+            "type": "string",
+            "description": "Redirect URL for the user; empty string if not applicable."
+          },
+          "moreinfourl": {
+            "type": "string",
+            "description": "URL to additional error documentation; empty string if not available."
+          },
+          "debuginfo": {
+            "type": "string",
+            "description": "Additional debug information; empty string when not in debug mode."
+          }
+        },
+        "description": "Error returned by the LMS on a failed operation."
+      },
+      "Course": {
+        "title": "Course",
+        "required": [
+          "id",
+          "fullname",
+          "shortname",
+          "idnumber",
+          "summary",
+          "summaryformat",
+          "startdate",
+          "enddate",
+          "visible",
+          "fullnamedisplay",
+          "viewurl",
+          "progress",
+          "hasprogress",
+          "isfavourite",
+          "hidden",
+          "showshortname",
+          "coursecategory"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique course identifier.",
+            "format": "int32",
+            "example": 49900
+          },
+          "fullname": {
+            "type": "string",
+            "description": "Full display name of the course.",
+            "example": "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+          },
+          "shortname": {
+            "type": "string",
+            "description": "Short course code or abbreviated name.",
+            "example": "CS-212-Sp'24 BSCS-13 2K23 ABC"
+          },
+          "idnumber": {
+            "type": "string",
+            "description": "Institution-assigned course ID number; empty string if not set."
+          },
+          "summary": {
+            "type": "string",
+            "description": "HTML summary of the course."
+          },
+          "summaryformat": {
+            "type": "integer",
+            "description": "Format of the summary field (1 = HTML).",
+            "format": "int32",
+            "example": 1
+          },
+          "startdate": {
+            "type": "integer",
+            "description": "Course start date as Unix timestamp.",
+            "format": "int32",
+            "example": 1706468400
+          },
+          "enddate": {
+            "type": "integer",
+            "description": "Course end date as Unix timestamp. 0 means no end date.",
+            "format": "int32",
+            "example": 1717362000
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "Whether the course is visible to enrolled students.",
+            "example": true
+          },
+          "fullnamedisplay": {
+            "type": "string",
+            "description": "Display name of the course (may differ from fullname for context).",
+            "example": "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+          },
+          "viewurl": {
+            "type": "string",
+            "description": "URL to the course page on the LMS portal.",
+            "example": "https://lms.nust.edu.pk/portal/course/view.php?id=49900"
+          },
+          "progress": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "type": "integer",
+            "description": "Student's completion progress as a percentage.",
+            "format": "int32",
+            "example": 21
+          },
+          "hasprogress": {
+            "type": "boolean",
+            "description": "Whether completion tracking is enabled for this course.",
+            "example": true
+          },
+          "isfavourite": {
+            "type": "boolean",
+            "description": "Whether the user has marked this course as a favourite.",
+            "example": false
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Whether the user has hidden this course from their dashboard.",
+            "example": false
+          },
+          "showshortname": {
+            "type": "boolean",
+            "description": "Whether the short name is displayed alongside the full name.",
+            "example": false
+          },
+          "coursecategory": {
+            "type": "string",
+            "description": "Name of the category this course belongs to.",
+            "example": "2nd Semester (SP-2024)"
+          }
+        },
+        "description": "An enrolled course."
+      },
+      "RecentCourseFields": {
+        "title": "RecentCourseFields",
+        "required": [
+          "timeaccess"
+        ],
+        "type": "object",
+        "properties": {
+          "timeaccess": {
+            "type": "integer",
+            "description": "Unix timestamp of the user's most recent access to this course.",
+            "format": "int32",
+            "example": 1781632422
+          }
+        },
+        "description": "Additional fields specific to recently accessed courses."
+      },
+      "RecentCourse": {
+        "title": "RecentCourse",
+        "required": [
+          "id",
+          "fullname",
+          "shortname",
+          "idnumber",
+          "summary",
+          "summaryformat",
+          "startdate",
+          "enddate",
+          "visible",
+          "fullnamedisplay",
+          "viewurl",
+          "progress",
+          "hasprogress",
+          "isfavourite",
+          "hidden",
+          "showshortname",
+          "coursecategory",
+          "timeaccess"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique course identifier.",
+            "format": "int32",
+            "example": 49900
+          },
+          "fullname": {
+            "type": "string",
+            "description": "Full display name of the course.",
+            "example": "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+          },
+          "shortname": {
+            "type": "string",
+            "description": "Short course code or abbreviated name.",
+            "example": "CS-212-Sp'24 BSCS-13 2K23 ABC"
+          },
+          "idnumber": {
+            "type": "string",
+            "description": "Institution-assigned course ID number; empty string if not set."
+          },
+          "summary": {
+            "type": "string",
+            "description": "HTML summary of the course."
+          },
+          "summaryformat": {
+            "type": "integer",
+            "description": "Format of the summary field (1 = HTML).",
+            "format": "int32",
+            "example": 1
+          },
+          "startdate": {
+            "type": "integer",
+            "description": "Course start date as Unix timestamp.",
+            "format": "int32",
+            "example": 1706468400
+          },
+          "enddate": {
+            "type": "integer",
+            "description": "Course end date as Unix timestamp. 0 means no end date.",
+            "format": "int32",
+            "example": 1717362000
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "Whether the course is visible to enrolled students.",
+            "example": true
+          },
+          "fullnamedisplay": {
+            "type": "string",
+            "description": "Display name of the course (may differ from fullname for context).",
+            "example": "CS-212 Object Oriented Programming BSCS-13 2K23 ABC"
+          },
+          "viewurl": {
+            "type": "string",
+            "description": "URL to the course page on the LMS portal.",
+            "example": "https://lms.nust.edu.pk/portal/course/view.php?id=49900"
+          },
+          "progress": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "type": "integer",
+            "description": "Student's completion progress as a percentage.",
+            "format": "int32",
+            "example": 21
+          },
+          "hasprogress": {
+            "type": "boolean",
+            "description": "Whether completion tracking is enabled for this course.",
+            "example": true
+          },
+          "isfavourite": {
+            "type": "boolean",
+            "description": "Whether the user has marked this course as a favourite.",
+            "example": false
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Whether the user has hidden this course from their dashboard.",
+            "example": false
+          },
+          "showshortname": {
+            "type": "boolean",
+            "description": "Whether the short name is displayed alongside the full name.",
+            "example": false
+          },
+          "coursecategory": {
+            "type": "string",
+            "description": "Name of the category this course belongs to.",
+            "example": "2nd Semester (SP-2024)"
+          },
+          "timeaccess": {
+            "type": "integer",
+            "description": "Unix timestamp of the user's most recent access to this course.",
+            "format": "int32",
+            "example": 1781632422
+          }
+        },
+        "description": "A recently accessed course, extending Course with the last-access timestamp."
+      },
+      "EnrolledCoursesResponse": {
+        "title": "EnrolledCoursesResponse",
+        "required": [
+          "courses",
+          "nextoffset"
+        ],
+        "type": "object",
+        "properties": {
+          "courses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Course"
+            },
+            "description": "List of enrolled courses for the current page."
+          },
+          "nextoffset": {
+            "type": "integer",
+            "description": "Offset to pass on the next page request; -1 when no further pages exist.",
+            "format": "int32",
+            "example": 29
+          }
+        },
+        "description": "Paginated enrolled-courses response."
+      },
+      "EventIcon": {
+        "title": "EventIcon",
+        "required": [
+          "key",
+          "component",
+          "alttext"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Icon key name used to locate the icon asset.",
+            "example": "icon"
+          },
+          "component": {
+            "type": "string",
+            "description": "Moodle component that owns the icon (e.g., 'assign').",
+            "example": "assign"
+          },
+          "alttext": {
+            "type": "string",
+            "description": "Accessible alt text for the icon image.",
+            "example": "Activity event"
+          }
+        },
+        "description": "Icon metadata for a calendar event."
+      },
+      "EventSubscription": {
+        "title": "EventSubscription",
+        "required": [
+          "displayeventsource"
+        ],
+        "type": "object",
+        "properties": {
+          "displayeventsource": {
+            "type": "boolean",
+            "description": "Whether to display the event source label on the calendar.",
+            "example": false
+          }
+        },
+        "description": "Subscription display settings for a calendar event."
+      },
+      "EventAction": {
+        "title": "EventAction",
+        "required": [
+          "name",
+          "url",
+          "itemcount",
+          "actionable",
+          "showitemcount"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display label for the primary action button.",
+            "example": "Add submission"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL the user should navigate to in order to perform the action.",
+            "example": "https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission"
+          },
+          "itemcount": {
+            "type": "integer",
+            "description": "Number of items associated with this action.",
+            "format": "int32",
+            "example": 1
+          },
+          "actionable": {
+            "type": "boolean",
+            "description": "Whether the action can currently be taken by the user.",
+            "example": true
+          },
+          "showitemcount": {
+            "type": "boolean",
+            "description": "Whether to display the item count alongside the action label.",
+            "example": false
+          }
+        },
+        "description": "Primary action button metadata for a calendar event."
+      },
+      "CalendarEvent": {
+        "title": "CalendarEvent",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "descriptionformat",
+          "location",
+          "component",
+          "modulename",
+          "instance",
+          "eventtype",
+          "timestart",
+          "timeduration",
+          "timesort",
+          "visible",
+          "timemodified",
+          "icon",
+          "course",
+          "subscription",
+          "canedit",
+          "candelete",
+          "deleteurl",
+          "editurl",
+          "viewurl",
+          "formattedtime",
+          "isactionevent",
+          "iscourseevent",
+          "iscategoryevent",
+          "normalisedeventtype",
+          "normalisedeventtypetext",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique calendar event identifier.",
+            "format": "int32",
+            "example": 149885
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the calendar event.",
+            "example": "Lab 1 BSCS 13C is due"
+          },
+          "description": {
+            "type": "string",
+            "description": "HTML description body of the event.",
+            "example": "<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>"
+          },
+          "descriptionformat": {
+            "type": "integer",
+            "description": "Text format of the description (1 = HTML).",
+            "format": "int32",
+            "example": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Physical or virtual location of the event; empty string if not specified."
+          },
+          "categoryid": {
+            "type": "integer",
+            "description": "Course category ID; null if not a category event.",
+            "format": "int32",
+            "nullable": true
+          },
+          "groupid": {
+            "type": "integer",
+            "description": "Group ID if the event is group-specific; null otherwise.",
+            "format": "int32",
+            "nullable": true
+          },
+          "userid": {
+            "type": "integer",
+            "description": "User ID if the event is user-specific; null otherwise.",
+            "format": "int32",
+            "nullable": true
+          },
+          "repeatid": {
+            "type": "integer",
+            "description": "ID of the repeat group for recurring events; null if not recurring.",
+            "format": "int32",
+            "nullable": true
+          },
+          "eventcount": {
+            "type": "integer",
+            "description": "Total number of events in the repeat group; null if not applicable.",
+            "format": "int32",
+            "nullable": true
+          },
+          "component": {
+            "type": "string",
+            "description": "Moodle component that created the event (e.g., 'mod_assign').",
+            "example": "mod_assign"
+          },
+          "modulename": {
+            "type": "string",
+            "description": "Short name of the Moodle activity module (e.g., 'assign').",
+            "example": "assign"
+          },
+          "instance": {
+            "type": "integer",
+            "description": "The course module instance ID.",
+            "format": "int32",
+            "example": 999404
+          },
+          "eventtype": {
+            "type": "string",
+            "description": "Type of the event (e.g., 'due', 'open', 'close').",
+            "example": "due"
+          },
+          "timestart": {
+            "type": "integer",
+            "description": "Event start time as Unix timestamp.",
+            "format": "int32",
+            "example": 1706900340
+          },
+          "timeduration": {
+            "type": "integer",
+            "description": "Duration in seconds; 0 for point-in-time events.",
+            "format": "int32",
+            "example": 0
+          },
+          "timesort": {
+            "type": "integer",
+            "description": "Sort timestamp used for ordering events.",
+            "format": "int32",
+            "example": 1706900340
+          },
+          "visible": {
+            "type": "integer",
+            "description": "Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden.",
+            "format": "int32"
+          },
+          "timemodified": {
+            "type": "integer",
+            "description": "Last modification time as Unix timestamp.",
+            "format": "int32",
+            "example": 1779088440
+          },
+          "icon": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventIcon"
+              },
+              {
+                "description": "Icon metadata for a calendar event."
+              }
+            ]
+          },
+          "course": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Course"
+              },
+              {
+                "description": "An enrolled course."
+              }
+            ]
+          },
+          "subscription": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventSubscription"
+              },
+              {
+                "description": "Subscription display settings for a calendar event."
+              }
+            ]
+          },
+          "canedit": {
+            "type": "boolean",
+            "description": "Whether the current user can edit this event.",
+            "example": false
+          },
+          "candelete": {
+            "type": "boolean",
+            "description": "Whether the current user can delete this event.",
+            "example": false
+          },
+          "deleteurl": {
+            "type": "string",
+            "description": "URL to delete this calendar event.",
+            "example": "https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900"
+          },
+          "editurl": {
+            "type": "string",
+            "description": "URL to edit the underlying course module associated with this event.",
+            "example": "https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX"
+          },
+          "viewurl": {
+            "type": "string",
+            "description": "URL to view this event on the calendar.",
+            "example": "https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340"
+          },
+          "formattedtime": {
+            "type": "string",
+            "description": "HTML-formatted human-readable event time string.",
+            "example": "<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>"
+          },
+          "isactionevent": {
+            "type": "boolean",
+            "description": "Whether this is an action event requiring user interaction.",
+            "example": true
+          },
+          "iscourseevent": {
+            "type": "boolean",
+            "description": "Whether this event is associated with a specific course.",
+            "example": false
+          },
+          "iscategoryevent": {
+            "type": "boolean",
+            "description": "Whether this event is associated with a course category.",
+            "example": false
+          },
+          "groupname": {
+            "type": "string",
+            "description": "Name of the group for group-specific events; null otherwise.",
+            "nullable": true
+          },
+          "normalisedeventtype": {
+            "type": "string",
+            "description": "Normalised event type identifier used for display grouping.",
+            "example": "course"
+          },
+          "normalisedeventtypetext": {
+            "type": "string",
+            "description": "Human-readable label for the normalised event type.",
+            "example": "Course event"
+          },
+          "action": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventAction"
+              },
+              {
+                "description": "Primary action button metadata for a calendar event."
+              }
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "Direct URL to the course activity associated with this event.",
+            "example": "https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404"
+          }
+        },
+        "description": "A calendar action event tied to a course activity (e.g., an assignment deadline)."
+      },
+      "CalendarEventsResponse": {
+        "title": "CalendarEventsResponse",
+        "required": [
+          "events",
+          "firstid",
+          "lastid"
+        ],
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarEvent"
+            },
+            "description": "List of calendar action events for the current result set."
+          },
+          "firstid": {
+            "type": "integer",
+            "description": "Event ID of the first item in the result set.",
+            "format": "int32",
+            "example": 149885
+          },
+          "lastid": {
+            "type": "integer",
+            "description": "Event ID of the last item in the result set.",
+            "format": "int32",
+            "example": 151886
+          }
+        },
+        "description": "A list of calendar events with pagination boundary IDs."
+      },
+      "CustomField": {
+        "title": "CustomField",
+        "required": [
+          "type",
+          "value",
+          "name",
+          "shortname"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Data type of the custom field (e.g., 'text', 'select').",
+            "example": "text"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value stored in the custom field.",
+            "example": "SEECS"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display label of the custom field.",
+            "example": "Institute"
+          },
+          "shortname": {
+            "type": "string",
+            "description": "Machine-readable shortname identifier for the custom field.",
+            "example": "institution"
+          }
+        },
+        "description": "A custom profile field value attached to a user."
+      },
+      "UserPreference": {
+        "title": "UserPreference",
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique key identifying the preference.",
+            "example": "block_myoverview_user_sort_preference"
+          },
+          "value": {
+            "type": "string",
+            "description": "Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.",
+            "example": "title"
+          }
+        },
+        "description": "A single user preference setting."
+      },
+      "UserProfile": {
+        "title": "UserProfile",
+        "required": [
+          "id",
+          "username",
+          "fullname",
+          "email",
+          "department",
+          "institution",
+          "idnumber",
+          "auth",
+          "confirmed",
+          "lang",
+          "theme",
+          "timezone",
+          "mailformat",
+          "profileimageurlsmall",
+          "profileimageurl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique numeric user identifier.",
+            "format": "int32",
+            "example": 162154
+          },
+          "username": {
+            "type": "string",
+            "description": "Login username for the user.",
+            "example": "hhameed.bscs23seecs"
+          },
+          "fullname": {
+            "type": "string",
+            "description": "Full display name of the user.",
+            "example": "Hasaan Hameed"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the user.",
+            "example": "hhameed.bscs23seecs@seecs.edu.pk"
+          },
+          "department": {
+            "type": "string",
+            "description": "Department the user belongs to within the institution.",
+            "example": "FoC"
+          },
+          "institution": {
+            "type": "string",
+            "description": "Name of the institution the user is affiliated with.",
+            "example": "SEECS"
+          },
+          "idnumber": {
+            "type": "string",
+            "description": "Institution-assigned student or staff ID number.",
+            "example": "00000454987"
+          },
+          "auth": {
+            "type": "string",
+            "description": "Authentication method used by the user (e.g., 'ldap', 'manual').",
+            "example": "ldap"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Whether the user's account has been confirmed.",
+            "example": true
+          },
+          "lang": {
+            "type": "string",
+            "description": "Preferred interface language code (e.g., 'en').",
+            "example": "en"
+          },
+          "theme": {
+            "type": "string",
+            "description": "Preferred LMS theme; empty string means use the site default."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone identifier. \"99\" means use the server default.",
+            "example": "99"
+          },
+          "mailformat": {
+            "type": "integer",
+            "description": "Email format preference (1 = HTML).",
+            "format": "int32",
+            "example": 1
+          },
+          "profileimageurlsmall": {
+            "type": "string",
+            "description": "URL to the user's small profile image (thumbnail).",
+            "example": "https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894"
+          },
+          "profileimageurl": {
+            "type": "string",
+            "description": "URL to the user's full-size profile image.",
+            "example": "https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894"
+          },
+          "customfields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomField"
+            },
+            "description": "List of custom profile field values for the user."
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserPreference"
+            },
+            "description": "List of stored preference key/value pairs for the user."
+          }
+        },
+        "description": "Complete user profile."
+      },
+      "UserPreferencesResponse": {
+        "title": "UserPreferencesResponse",
+        "required": [
+          "preferences",
+          "warnings"
+        ],
+        "type": "object",
+        "properties": {
+          "preferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserPreference"
+            },
+            "description": "List of user preference key/value pairs."
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MoodleWarning"
+            },
+            "description": "Array of warning objects. Empty when no warnings are present."
+          }
+        },
+        "description": "Response envelope for the user-preferences endpoint."
+      },
+      "Notification": {
+        "title": "Notification",
+        "required": [
+          "id",
+          "useridfrom",
+          "useridto",
+          "subject",
+          "shortenedsubject",
+          "text",
+          "fullmessage",
+          "fullmessageformat",
+          "fullmessagehtml",
+          "smallmessage",
+          "contexturl",
+          "contexturlname",
+          "timecreated",
+          "timecreatedpretty",
+          "read",
+          "deleted",
+          "iconurl",
+          "component",
+          "eventtype",
+          "customdata"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique notification identifier.",
+            "format": "int32",
+            "example": 4857819
+          },
+          "useridfrom": {
+            "type": "integer",
+            "description": "User ID of the sender.",
+            "format": "int32",
+            "example": 198956
+          },
+          "useridto": {
+            "type": "integer",
+            "description": "User ID of the recipient.",
+            "format": "int32",
+            "example": 162154
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject line of the notification.",
+            "example": "CS-419-Deep Learning: Lab Sessional Finalization"
+          },
+          "shortenedsubject": {
+            "type": "string",
+            "description": "Shortened version of the notification subject for compact display.",
+            "example": "CS-419-Deep Learning: Lab Sessional Finalization"
+          },
+          "text": {
+            "type": "string",
+            "description": "Short HTML excerpt of the notification.",
+            "example": "<p>Areeba Rameen posted in CS-419-Deep Learning...</p>"
+          },
+          "fullmessage": {
+            "type": "string",
+            "description": "Full plain-text body of the notification."
+          },
+          "fullmessageformat": {
+            "type": "integer",
+            "description": "Format identifier for fullmessagehtml (2 = Markdown source).",
+            "format": "int32",
+            "example": 2
+          },
+          "fullmessagehtml": {
+            "type": "string",
+            "description": "Full HTML body of the notification email."
+          },
+          "smallmessage": {
+            "type": "string",
+            "description": "Short plain-text preview of the notification.",
+            "example": "Areeba Rameen posted in CS-419-Deep Learning..."
+          },
+          "contexturl": {
+            "type": "string",
+            "description": "URL to the relevant context for this notification (e.g., a forum post).",
+            "example": "https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342"
+          },
+          "contexturlname": {
+            "type": "string",
+            "description": "Human-readable label for the context URL link.",
+            "example": "Lab Sessional Finalization - (DL - Section D & E)"
+          },
+          "timecreated": {
+            "type": "integer",
+            "description": "Unix timestamp when the notification was created.",
+            "format": "int32",
+            "example": 1780045085
+          },
+          "timecreatedpretty": {
+            "type": "string",
+            "description": "Human-readable relative time string (e.g., '19 days ago').",
+            "example": "19 days ago"
+          },
+          "timeread": {
+            "type": "integer",
+            "description": "Unix timestamp when the notification was read; null if unread.",
+            "format": "int32",
+            "nullable": true
+          },
+          "read": {
+            "type": "boolean",
+            "description": "Whether the notification has been read by the recipient.",
+            "example": false
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Whether the notification has been deleted by the recipient.",
+            "example": false
+          },
+          "iconurl": {
+            "type": "string",
+            "description": "URL to the icon image representing the notification source.",
+            "example": "https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon"
+          },
+          "component": {
+            "type": "string",
+            "description": "Moodle component that generated the notification (e.g., 'mod_forum').",
+            "example": "mod_forum"
+          },
+          "eventtype": {
+            "type": "string",
+            "description": "Event type within the component that triggered the notification (e.g., 'posts').",
+            "example": "posts"
+          },
+          "customdata": {
+            "type": "string",
+            "description": "JSON-encoded string with additional notification metadata (cmid, instance, discussionid, postid, etc.).",
+            "example": {
+              "cmid": "1272420",
+              "instance": "62569",
+              "discussionid": "41767"
+            }
+          }
+        },
+        "description": "A popup notification message delivered to a user."
+      },
+      "PopupNotificationsResponse": {
+        "title": "PopupNotificationsResponse",
+        "required": [
+          "notifications",
+          "unreadcount"
+        ],
+        "type": "object",
+        "properties": {
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Notification"
+            },
+            "description": "List of popup notifications for the user."
+          },
+          "unreadcount": {
+            "type": "integer",
+            "description": "Total number of unread notifications for the user.",
+            "format": "int32",
+            "example": 1
+          }
+        },
+        "description": "Response envelope for the popup-notifications endpoint."
+      },
+      "GetRecentCoursesRequest": {
+        "title": "GetRecentCoursesRequest",
+        "required": [
+          "limit"
+        ],
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of courses to return.",
+            "format": "int32",
+            "example": 10
+          }
+        },
+        "description": "Request parameters for retrieving recently accessed courses."
+      },
+      "GetEnrolledCoursesByTimelineRequest": {
+        "title": "GetEnrolledCoursesByTimelineRequest",
+        "required": [
+          "offset",
+          "limit",
+          "classification",
+          "sort"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Zero-based pagination offset.",
+            "format": "int32",
+            "example": 0
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of courses to return.",
+            "format": "int32",
+            "example": 50
+          },
+          "classification": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CourseTimelineClassification"
+              },
+              {
+                "description": "Timeline classification filter for enrolled courses."
+              }
+            ]
+          },
+          "sort": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CourseTimelineSortField"
+              },
+              {
+                "description": "Field used to sort enrolled course results."
+              }
+            ]
+          }
+        },
+        "description": "Request parameters for retrieving enrolled courses filtered by timeline classification."
+      },
+      "FetchNotificationsRequest": {
+        "title": "FetchNotificationsRequest",
+        "required": [
+          "contextid"
+        ],
+        "type": "object",
+        "properties": {
+          "contextid": {
+            "type": "integer",
+            "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
+            "format": "int32",
+            "example": 1583361
+          }
+        },
+        "description": "Request parameters for fetching site-level notifications."
+      },
+      "GetCalendarEventsByTimesortRequest": {
+        "title": "GetCalendarEventsByTimesortRequest",
+        "required": [
+          "limitnum",
+          "timesortfrom"
+        ],
+        "type": "object",
+        "properties": {
+          "limitnum": {
+            "type": "integer",
+            "description": "Maximum number of events to return.",
+            "format": "int32",
+            "example": 20
+          },
+          "timesortfrom": {
+            "type": "integer",
+            "description": "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.",
+            "format": "int32",
+            "example": 0
+          },
+          "timesortto": {
+            "type": "integer",
+            "description": "Only return events with timesort <= this Unix timestamp. Optional.",
+            "format": "int32"
+          },
+          "aftereventid": {
+            "type": "integer",
+            "description": "Return events whose ID is greater than this value (cursor pagination). Optional.",
+            "format": "int32"
+          }
+        },
+        "description": "Request parameters for retrieving calendar action events sorted by time."
+      },
+      "GetCalendarEventsByCourseRequest": {
+        "title": "GetCalendarEventsByCourseRequest",
+        "required": [
+          "courseid"
+        ],
+        "type": "object",
+        "properties": {
+          "courseid": {
+            "type": "integer",
+            "description": "ID of the course to fetch events for.",
+            "format": "int32",
+            "example": 49906
+          },
+          "timesortfrom": {
+            "type": "integer",
+            "description": "Only return events with timesort >= this Unix timestamp. Optional.",
+            "format": "int32"
+          },
+          "timesortto": {
+            "type": "integer",
+            "description": "Only return events with timesort <= this Unix timestamp. Optional.",
+            "format": "int32"
+          },
+          "aftereventid": {
+            "type": "integer",
+            "description": "Cursor-based pagination — return events after this event ID. Optional.",
+            "format": "int32"
+          },
+          "limitnum": {
+            "type": "integer",
+            "description": "Maximum number of events to return. Optional.",
+            "format": "int32"
+          }
+        },
+        "description": "Request parameters for retrieving calendar action events for a specific course."
+      },
+      "GetUsersByFieldRequest": {
+        "title": "GetUsersByFieldRequest",
+        "required": [
+          "field",
+          "values"
+        ],
+        "type": "object",
+        "properties": {
+          "field": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserProfileField"
+              },
+              {
+                "description": "User profile field to match against when searching for users."
+              }
+            ]
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID).",
+            "example": [
+              "162154"
+            ]
+          }
+        },
+        "description": "Request parameters for retrieving user profiles by a profile field value."
+      },
+      "GetUserPreferencesRequest": {
+        "title": "GetUserPreferencesRequest",
+        "required": [
+          "userid"
+        ],
+        "type": "object",
+        "properties": {
+          "userid": {
+            "type": "integer",
+            "description": "ID of the user whose preferences to retrieve.",
+            "format": "int32",
+            "example": 162154
+          },
+          "name": {
+            "type": "string",
+            "description": "Specific preference name to retrieve. Omit to retrieve all preferences."
+          }
+        },
+        "description": "Request parameters for retrieving user preferences."
+      },
+      "GetPopupNotificationsRequest": {
+        "title": "GetPopupNotificationsRequest",
+        "required": [
+          "useridto",
+          "limit",
+          "offset"
+        ],
+        "type": "object",
+        "properties": {
+          "useridto": {
+            "type": "string",
+            "description": "ID of the recipient user, passed as a string.",
+            "example": "162154"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of notifications to return.",
+            "format": "int32",
+            "example": 20
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Pagination offset.",
+            "format": "int32",
+            "example": 0
+          }
+        },
+        "description": "Request parameters for retrieving popup notifications for a user."
+      }
+    },
+    "securitySchemes": {
+      "SessKey": {
+        "type": "apiKey",
+        "description": "Session key obtained after authenticating with the LMS portal.",
+        "name": "sesskey",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "SessKey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Courses",
+      "description": "Course listing and enrollment operations"
+    },
+    {
+      "name": "Calendar",
+      "description": "Calendar event operations"
+    },
+    {
+      "name": "Users",
+      "description": "User profile and preferences operations"
+    },
+    {
+      "name": "Notifications",
+      "description": "Notification retrieval operations"
+    }
+  ]
+}

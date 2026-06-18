@@ -1,0 +1,237 @@
+_type: export
+__export_format: 4
+__export_source: apimatic.transformer
+resources:
+- name: NUST LMS API
+  _type: workspace
+  _id: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  description: >
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+- name: Courses
+  _type: request_group
+  _id: fld_6562af3cf6894dcca8381c522b131202
+  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  description: Course listing and enrollment operations
+- name: Calendar
+  _type: request_group
+  _id: fld_d104034d60f2474baf33d479cf4bb004
+  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  description: Calendar event operations
+- name: Users
+  _type: request_group
+  _id: fld_e9dedf91c78646c998ad68f5c7fc09c3
+  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  description: User profile and preferences operations
+- name: Notifications
+  _type: request_group
+  _id: fld_7ae9821f0c38492d914bffb8d9e3cdca
+  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  description: Notification retrieval operations
+- name: getCoreRecentCourses
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_course_get_recent_courses
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "limit": 10
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey4
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_6a90177b6d6f4b90af77ef7f1aca57a4
+  parentId: fld_6562af3cf6894dcca8381c522b131202
+  description: >
+    Returns the courses the authenticated user has accessed most recently, ordered by last access time.
+
+    Moodle method: `core_course_get_recent_courses`
+- name: getEnrolledCoursesByTimeline
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_course_get_enrolled_courses_by_timeline_classification
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "offset": 0,
+        "limit": 50,
+        "classification": "favourite",
+        "sort": "id"
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey95
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_fbca7db05c454eab86359c70a4e301b6
+  parentId: fld_6562af3cf6894dcca8381c522b131202
+  description: >
+    Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
+
+    Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
+- name: getCalendarEventsByTimesort
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_timesort
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "limitnum": 20,
+        "timesortfrom": 0,
+        "timesortto": 71,
+        "aftereventid": 167
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey26
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_141301403e994ab5b932e982fe01138b
+  parentId: fld_d104034d60f2474baf33d479cf4bb004
+  description: >
+    Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+
+    Moodle method: `core_calendar_get_action_events_by_timesort`
+- name: getCalendarEventsByCourse
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_course
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "courseid": 49906,
+        "timesortfrom": 239,
+        "timesortto": 115,
+        "aftereventid": 27,
+        "limitnum": 156
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey82
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_09e54c68a69d461c970ff148552e1677
+  parentId: fld_d104034d60f2474baf33d479cf4bb004
+  description: >
+    Returns all action events (assignments, quizzes, etc.) for a single course.
+
+    Moodle method: `core_calendar_get_action_events_by_course`
+- name: getUsersByField
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_user_get_users_by_field
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "field": "id",
+        "values": [
+          "162154"
+        ]
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey97
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_e5882ca8bfed4c7cb4f86523722b9cbd
+  parentId: fld_e9dedf91c78646c998ad68f5c7fc09c3
+  description: >
+    Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
+
+    Moodle method: `core_user_get_users_by_field`
+- name: getUserPreferences
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_user_get_user_preferences
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "userid": 162154,
+        "name": "name89"
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey43
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_bb896f89753443e598fc6426d60343e8
+  parentId: fld_e9dedf91c78646c998ad68f5c7fc09c3
+  description: >
+    Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
+
+    Moodle method: `core_user_get_user_preferences`
+- name: fetchNotifications
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/core_fetch_notifications
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "contextid": 1583361
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey51
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_1fc55a16df724f889f2aa9960e28994c
+  parentId: fld_7ae9821f0c38492d914bffb8d9e3cdca
+  description: >
+    Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+
+    Moodle method: `core_fetch_notifications`
+- name: getPopupNotifications
+  method: POST
+  url: https://lms.nust.edu.pk/portal/service/message_popup_get_popup_notifications
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "useridto": "162154",
+        "limit": 20,
+        "offset": 0
+      }
+  parameters:
+  - name: sesskey
+    value: sesskey88
+    disabled: false
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  _type: request
+  _id: req_3cdaf53d8154437699c913cf6c70841c
+  parentId: fld_7ae9821f0c38492d914bffb8d9e3cdca
+  description: >
+    Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
+
+    Moodle method: `message_popup_get_popup_notifications`

@@ -1,0 +1,606 @@
+FORMAT: 1A
+HOST: https://lms.nust.edu.pk/portal
+
+# NUST LMS API
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+
+
+## Authentication
+This API uses Custom Query Parameter for its authentication.
+
+The parameters that are needed to be sent for this type of authentication are as follows:
++ `sesskey` - Session key obtained after authenticating with the LMS portal.
+
+# Group Courses
+
+Course listing and enrollment operations
+
+## Service Core Course Get Recent Courses [/service/core_course_get_recent_courses]
+
+### getCoreRecentCourses [POST]
+Returns the courses the authenticated user has accessed most recently, ordered by last access time.
+Moodle method: `core_course_get_recent_courses`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetRecentCoursesRequest)
+
+
+
++ Response 200 (application/json)
+
+        List of recently accessed courses ordered by last access.
+
+    + Attributes (array[RecentCourse])
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+## Service Core Course Get Enrolled Courses By Timeline Classification [/service/core_course_get_enrolled_courses_by_timeline_classification]
+
+### getEnrolledCoursesByTimeline [POST]
+Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
+Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetEnrolledCoursesByTimelineRequest)
+
+
+
++ Response 200 (application/json)
+
+        Paginated list of enrolled courses.
+
+    + Attributes (EnrolledCoursesResponse)
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+
+# Group Calendar
+
+Calendar event operations
+
+## Service Core Calendar Get Action Events By Timesort [/service/core_calendar_get_action_events_by_timesort]
+
+### getCalendarEventsByTimesort [POST]
+Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+Moodle method: `core_calendar_get_action_events_by_timesort`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetCalendarEventsByTimesortRequest)
+
+
+
++ Response 200 (application/json)
+
+        Calendar events sorted by timesort.
+
+    + Attributes (CalendarEventsResponse)
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+## Service Core Calendar Get Action Events By Course [/service/core_calendar_get_action_events_by_course]
+
+### getCalendarEventsByCourse [POST]
+Returns all action events (assignments, quizzes, etc.) for a single course.
+Moodle method: `core_calendar_get_action_events_by_course`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetCalendarEventsByCourseRequest)
+
+
+
++ Response 200 (application/json)
+
+        Calendar events for the specified course.
+
+    + Attributes (CalendarEventsResponse)
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+
+# Group Users
+
+User profile and preferences operations
+
+## Service Core User Get Users By Field [/service/core_user_get_users_by_field]
+
+### getUsersByField [POST]
+Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
+Moodle method: `core_user_get_users_by_field`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetUsersByFieldRequest)
+
+
+
++ Response 200 (application/json)
+
+        List of matching user profiles.
+
+    + Attributes (array[UserProfile])
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+## Service Core User Get User Preferences [/service/core_user_get_user_preferences]
+
+### getUserPreferences [POST]
+Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
+Moodle method: `core_user_get_user_preferences`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetUserPreferencesRequest)
+
+
+
++ Response 200 (application/json)
+
+        User preferences list and optional warnings.
+
+    + Attributes (UserPreferencesResponse)
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+
+# Group Notifications
+
+Notification retrieval operations
+
+## Service Core Fetch Notifications [/service/core_fetch_notifications]
+
+### fetchNotifications [POST]
+Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+Moodle method: `core_fetch_notifications`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (FetchNotificationsRequest)
+
+
+
++ Response 200 (application/json)
+
+        Array of site notifications (empty array when none are pending).
+
+    + Attributes (array[SiteNotification])
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+## Service Message Popup Get Popup Notifications [/service/message_popup_get_popup_notifications]
+
+### getPopupNotifications [POST]
+Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
+Moodle method: `message_popup_get_popup_notifications`
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (GetPopupNotificationsRequest)
+
+
+
++ Response 200 (application/json)
+
+        Popup notifications and total unread count.
+
+    + Attributes (PopupNotificationsResponse)
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
+
+# Data Structures
+
+## MoodleWarning (object)
+A non-fatal warning returned alongside a successful response.
+
+### Properties
++ `item` (string, optional) - Item identifier related to the warning; empty string if not applicable.
++ `itemid`: `0` (number, optional) - Numeric item ID related to the warning; 0 if not applicable.
++ `warningcode` (string, optional) - Machine-readable warning code; empty string if no code.
++ `message` (string, optional) - Human-readable warning description.
+
+
+## SiteNotification (object)
+A site-level notification (structure varies by type).
+
+### Properties
++ `id` (number, optional) - Unique identifier for the site notification.
++ `message` (string, optional) - Notification message content.
++ `type` (string, optional) - Notification type identifier.
+
+
+## MoodleError (object)
+Error returned by the LMS on a failed operation.
+
+### Properties
++ `errorcode`: `invalidrecord` (string, optional) - Machine-readable error code identifier.
++ `message`: `Can't find data record in database table.` (string, optional) - Human-readable error description.
++ `link` (string, optional) - Redirect URL for the user; empty string if not applicable.
++ `moreinfourl` (string, optional) - URL to additional error documentation; empty string if not available.
++ `debuginfo` (string, optional) - Additional debug information; empty string when not in debug mode.
+
+
+## Course (object)
+An enrolled course.
+
+### Properties
++ `id`: `49900` (number, required) - Unique course identifier.
++ `fullname`: `CS-212 Object Oriented Programming BSCS-13 2K23 ABC` (string, required) - Full display name of the course.
++ `shortname`: `CS-212-Sp'24 BSCS-13 2K23 ABC` (string, required) - Short course code or abbreviated name.
++ `idnumber` (string, required) - Institution-assigned course ID number; empty string if not set.
++ `summary` (string, required) - HTML summary of the course.
++ `summaryformat`: `1` (number, required) - Format of the summary field (1 = HTML).
++ `startdate`: `1706468400` (number, required) - Course start date as Unix timestamp.
++ `enddate`: `1717362000` (number, required) - Course end date as Unix timestamp. 0 means no end date.
++ `visible`: `true` (boolean, required) - Whether the course is visible to enrolled students.
++ `fullnamedisplay`: `CS-212 Object Oriented Programming BSCS-13 2K23 ABC` (string, required) - Display name of the course (may differ from fullname for context).
++ `viewurl`: `https://lms.nust.edu.pk/portal/course/view.php?id=49900` (string, required) - URL to the course page on the LMS portal.
++ `progress`: `21` (number, required) - Student's completion progress as a percentage.
++ `hasprogress`: `true` (boolean, required) - Whether completion tracking is enabled for this course.
++ `isfavourite`: `false` (boolean, required) - Whether the user has marked this course as a favourite.
++ `hidden`: `false` (boolean, required) - Whether the user has hidden this course from their dashboard.
++ `showshortname`: `false` (boolean, required) - Whether the short name is displayed alongside the full name.
++ `coursecategory`: `2nd Semester (SP-2024)` (string, required) - Name of the category this course belongs to.
+
+
+## RecentCourseFields (object)
+Additional fields specific to recently accessed courses.
+
+### Properties
++ `timeaccess`: `1781632422` (number, required) - Unix timestamp of the user's most recent access to this course.
+
+
+## RecentCourse (object)
+A recently accessed course, extending Course with the last-access timestamp.
+
+### Properties
++ `id`: `49900` (number, required) - Unique course identifier.
++ `fullname`: `CS-212 Object Oriented Programming BSCS-13 2K23 ABC` (string, required) - Full display name of the course.
++ `shortname`: `CS-212-Sp'24 BSCS-13 2K23 ABC` (string, required) - Short course code or abbreviated name.
++ `idnumber` (string, required) - Institution-assigned course ID number; empty string if not set.
++ `summary` (string, required) - HTML summary of the course.
++ `summaryformat`: `1` (number, required) - Format of the summary field (1 = HTML).
++ `startdate`: `1706468400` (number, required) - Course start date as Unix timestamp.
++ `enddate`: `1717362000` (number, required) - Course end date as Unix timestamp. 0 means no end date.
++ `visible`: `true` (boolean, required) - Whether the course is visible to enrolled students.
++ `fullnamedisplay`: `CS-212 Object Oriented Programming BSCS-13 2K23 ABC` (string, required) - Display name of the course (may differ from fullname for context).
++ `viewurl`: `https://lms.nust.edu.pk/portal/course/view.php?id=49900` (string, required) - URL to the course page on the LMS portal.
++ `progress`: `21` (number, required) - Student's completion progress as a percentage.
++ `hasprogress`: `true` (boolean, required) - Whether completion tracking is enabled for this course.
++ `isfavourite`: `false` (boolean, required) - Whether the user has marked this course as a favourite.
++ `hidden`: `false` (boolean, required) - Whether the user has hidden this course from their dashboard.
++ `showshortname`: `false` (boolean, required) - Whether the short name is displayed alongside the full name.
++ `coursecategory`: `2nd Semester (SP-2024)` (string, required) - Name of the category this course belongs to.
++ `timeaccess`: `1781632422` (number, required) - Unix timestamp of the user's most recent access to this course.
+
+
+## EnrolledCoursesResponse (object)
+Paginated enrolled-courses response.
+
+### Properties
++ `courses` (array[Course], required) - List of enrolled courses for the current page.
++ `nextoffset`: `29` (number, required) - Offset to pass on the next page request; -1 when no further pages exist.
+
+
+## EventIcon (object)
+Icon metadata for a calendar event.
+
+### Properties
++ `key`: `icon` (string, required) - Icon key name used to locate the icon asset.
++ `component`: `assign` (string, required) - Moodle component that owns the icon (e.g., 'assign').
++ `alttext`: `Activity event` (string, required) - Accessible alt text for the icon image.
+
+
+## EventSubscription (object)
+Subscription display settings for a calendar event.
+
+### Properties
++ `displayeventsource`: `false` (boolean, required) - Whether to display the event source label on the calendar.
+
+
+## EventAction (object)
+Primary action button metadata for a calendar event.
+
+### Properties
++ `name`: `Add submission` (string, required) - Display label for the primary action button.
++ `url`: `https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission` (string, required) - URL the user should navigate to in order to perform the action.
++ `itemcount`: `1` (number, required) - Number of items associated with this action.
++ `actionable`: `true` (boolean, required) - Whether the action can currently be taken by the user.
++ `showitemcount`: `false` (boolean, required) - Whether to display the item count alongside the action label.
+
+
+## CalendarEvent (object)
+A calendar action event tied to a course activity (e.g., an assignment deadline).
+
+### Properties
++ `id`: `149885` (number, required) - Unique calendar event identifier.
++ `name`: `Lab 1 BSCS 13C is due` (string, required) - Display name of the calendar event.
++ `description`: `<p dir="ltr">Lab 1 BSCS 13C<br /></p>` (string, required) - HTML description body of the event.
++ `descriptionformat`: `1` (number, required) - Text format of the description (1 = HTML).
++ `location` (string, required) - Physical or virtual location of the event; empty string if not specified.
++ `categoryid` (number, optional, nullable) - Course category ID; null if not a category event.
++ `groupid` (number, optional, nullable) - Group ID if the event is group-specific; null otherwise.
++ `userid` (number, optional, nullable) - User ID if the event is user-specific; null otherwise.
++ `repeatid` (number, optional, nullable) - ID of the repeat group for recurring events; null if not recurring.
++ `eventcount` (number, optional, nullable) - Total number of events in the repeat group; null if not applicable.
++ `component`: `mod_assign` (string, required) - Moodle component that created the event (e.g., 'mod_assign').
++ `modulename`: `assign` (string, required) - Short name of the Moodle activity module (e.g., 'assign').
++ `instance`: `999404` (number, required) - The course module instance ID.
++ `eventtype`: `due` (string, required) - Type of the event (e.g., 'due', 'open', 'close').
++ `timestart`: `1706900340` (number, required) - Event start time as Unix timestamp.
++ `timeduration`: `0` (number, required) - Duration in seconds; 0 for point-in-time events.
++ `timesort`: `1706900340` (number, required) - Sort timestamp used for ordering events.
++ `visible` (number, required) - Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden.
++ `timemodified`: `1779088440` (number, required) - Last modification time as Unix timestamp.
++ `icon` (EventIcon, required) - Icon metadata for a calendar event.
++ `course` (Course, required) - An enrolled course.
++ `subscription` (EventSubscription, required) - Subscription display settings for a calendar event.
++ `canedit`: `false` (boolean, required) - Whether the current user can edit this event.
++ `candelete`: `false` (boolean, required) - Whether the current user can delete this event.
++ `deleteurl`: `https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900` (string, required) - URL to delete this calendar event.
++ `editurl`: `https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX` (string, required) - URL to edit the underlying course module associated with this event.
++ `viewurl`: `https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340` (string, required) - URL to view this event on the calendar.
++ `formattedtime`: `<span class="dimmed_text">Friday, 2 February, 11:59 PM</span>` (string, required) - HTML-formatted human-readable event time string.
++ `isactionevent`: `true` (boolean, required) - Whether this is an action event requiring user interaction.
++ `iscourseevent`: `false` (boolean, required) - Whether this event is associated with a specific course.
++ `iscategoryevent`: `false` (boolean, required) - Whether this event is associated with a course category.
++ `groupname` (string, optional, nullable) - Name of the group for group-specific events; null otherwise.
++ `normalisedeventtype`: `course` (string, required) - Normalised event type identifier used for display grouping.
++ `normalisedeventtypetext`: `Course event` (string, required) - Human-readable label for the normalised event type.
++ `action` (EventAction, optional) - Primary action button metadata for a calendar event.
++ `url`: `https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404` (string, required) - Direct URL to the course activity associated with this event.
+
+
+## CalendarEventsResponse (object)
+A list of calendar events with pagination boundary IDs.
+
+### Properties
++ `events` (array[CalendarEvent], required) - List of calendar action events for the current result set.
++ `firstid`: `149885` (number, required) - Event ID of the first item in the result set.
++ `lastid`: `151886` (number, required) - Event ID of the last item in the result set.
+
+
+## CustomField (object)
+A custom profile field value attached to a user.
+
+### Properties
++ `type`: `text` (string, required) - Data type of the custom field (e.g., 'text', 'select').
++ `value`: `SEECS` (string, required) - Value stored in the custom field.
++ `name`: `Institute` (string, required) - Display label of the custom field.
++ `shortname`: `institution` (string, required) - Machine-readable shortname identifier for the custom field.
+
+
+## UserPreference (object)
+A single user preference setting.
+
+### Properties
++ `name`: `block_myoverview_user_sort_preference` (string, required) - Unique key identifying the preference.
++ `value`: `title` (string, required) - Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.
+
+
+## UserProfile (object)
+Complete user profile.
+
+### Properties
++ `id`: `162154` (number, required) - Unique numeric user identifier.
++ `username`: `hhameed.bscs23seecs` (string, required) - Login username for the user.
++ `fullname`: `Hasaan Hameed` (string, required) - Full display name of the user.
++ `email`: `hhameed.bscs23seecs@seecs.edu.pk` (string, required) - Email address of the user.
++ `department`: `FoC` (string, required) - Department the user belongs to within the institution.
++ `institution`: `SEECS` (string, required) - Name of the institution the user is affiliated with.
++ `idnumber`: `00000454987` (string, required) - Institution-assigned student or staff ID number.
++ `auth`: `ldap` (string, required) - Authentication method used by the user (e.g., 'ldap', 'manual').
++ `confirmed`: `true` (boolean, required) - Whether the user's account has been confirmed.
++ `lang`: `en` (string, required) - Preferred interface language code (e.g., 'en').
++ `theme` (string, required) - Preferred LMS theme; empty string means use the site default.
++ `timezone`: `99` (string, required) - Timezone identifier. "99" means use the server default.
++ `mailformat`: `1` (number, required) - Email format preference (1 = HTML).
++ `profileimageurlsmall`: `https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894` (string, required) - URL to the user's small profile image (thumbnail).
++ `profileimageurl`: `https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894` (string, required) - URL to the user's full-size profile image.
++ `customfields` (array[CustomField], optional) - List of custom profile field values for the user.
++ `preferences` (array[UserPreference], optional) - List of stored preference key/value pairs for the user.
+
+
+## UserPreferencesResponse (object)
+Response envelope for the user-preferences endpoint.
+
+### Properties
++ `preferences` (array[UserPreference], required) - List of user preference key/value pairs.
++ `warnings` (array[MoodleWarning], required) - Array of warning objects. Empty when no warnings are present.
+
+
+## Notification (object)
+A popup notification message delivered to a user.
+
+### Properties
++ `id`: `4857819` (number, required) - Unique notification identifier.
++ `useridfrom`: `198956` (number, required) - User ID of the sender.
++ `useridto`: `162154` (number, required) - User ID of the recipient.
++ `subject`: `CS-419-Deep Learning: Lab Sessional Finalization` (string, required) - Subject line of the notification.
++ `shortenedsubject`: `CS-419-Deep Learning: Lab Sessional Finalization` (string, required) - Shortened version of the notification subject for compact display.
++ `text`: `<p>Areeba Rameen posted in CS-419-Deep Learning...</p>` (string, required) - Short HTML excerpt of the notification.
++ `fullmessage` (string, required) - Full plain-text body of the notification.
++ `fullmessageformat`: `2` (number, required) - Format identifier for fullmessagehtml (2 = Markdown source).
++ `fullmessagehtml` (string, required) - Full HTML body of the notification email.
++ `smallmessage`: `Areeba Rameen posted in CS-419-Deep Learning...` (string, required) - Short plain-text preview of the notification.
++ `contexturl`: `https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342` (string, required) - URL to the relevant context for this notification (e.g., a forum post).
++ `contexturlname`: `Lab Sessional Finalization - (DL - Section D & E)` (string, required) - Human-readable label for the context URL link.
++ `timecreated`: `1780045085` (number, required) - Unix timestamp when the notification was created.
++ `timecreatedpretty`: `19 days ago` (string, required) - Human-readable relative time string (e.g., '19 days ago').
++ `timeread` (number, optional, nullable) - Unix timestamp when the notification was read; null if unread.
++ `read`: `false` (boolean, required) - Whether the notification has been read by the recipient.
++ `deleted`: `false` (boolean, required) - Whether the notification has been deleted by the recipient.
++ `iconurl`: `https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon` (string, required) - URL to the icon image representing the notification source.
++ `component`: `mod_forum` (string, required) - Moodle component that generated the notification (e.g., 'mod_forum').
++ `eventtype`: `posts` (string, required) - Event type within the component that triggered the notification (e.g., 'posts').
++ `customdata`: `{"cmid":"1272420","instance":"62569","discussionid":"41767"}` (string, required) - JSON-encoded string with additional notification metadata (cmid, instance, discussionid, postid, etc.).
+
+
+## PopupNotificationsResponse (object)
+Response envelope for the popup-notifications endpoint.
+
+### Properties
++ `notifications` (array[Notification], required) - List of popup notifications for the user.
++ `unreadcount`: `1` (number, required) - Total number of unread notifications for the user.
+
+
+## GetRecentCoursesRequest (object)
+Request parameters for retrieving recently accessed courses.
+
+### Properties
++ `limit`: `10` (number, required) - Maximum number of courses to return.
+
+
+## GetEnrolledCoursesByTimelineRequest (object)
+Request parameters for retrieving enrolled courses filtered by timeline classification.
+
+### Properties
++ `offset`: `0` (number, required) - Zero-based pagination offset.
++ `limit`: `50` (number, required) - Maximum number of courses to return.
++ `classification` (enum[string], required) - Timeline classification filter for enrolled courses.
+    + `all`
+    + `inprogress`
+    + `past`
+    + `future`
+    + `favourite`
+    + `hidden`
+    + `allincludinghidden`
++ `sort` (enum[string], required) - Field used to sort enrolled course results.
+    + `fullname`
+    + `shortname`
+    + `id`
+    + `idnumber`
+    + `timeaccess`
+
+
+## FetchNotificationsRequest (object)
+Request parameters for fetching site-level notifications.
+
+### Properties
++ `contextid`: `1583361` (number, required) - Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
+
+
+## GetCalendarEventsByTimesortRequest (object)
+Request parameters for retrieving calendar action events sorted by time.
+
+### Properties
++ `limitnum`: `20` (number, required) - Maximum number of events to return.
++ `timesortfrom`: `0` (number, required) - Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
++ `timesortto` (number, optional) - Only return events with timesort <= this Unix timestamp. Optional.
++ `aftereventid` (number, optional) - Return events whose ID is greater than this value (cursor pagination). Optional.
+
+
+## GetCalendarEventsByCourseRequest (object)
+Request parameters for retrieving calendar action events for a specific course.
+
+### Properties
++ `courseid`: `49906` (number, required) - ID of the course to fetch events for.
++ `timesortfrom` (number, optional) - Only return events with timesort >= this Unix timestamp. Optional.
++ `timesortto` (number, optional) - Only return events with timesort <= this Unix timestamp. Optional.
++ `aftereventid` (number, optional) - Cursor-based pagination — return events after this event ID. Optional.
++ `limitnum` (number, optional) - Maximum number of events to return. Optional.
+
+
+## GetUsersByFieldRequest (object)
+Request parameters for retrieving user profiles by a profile field value.
+
+### Properties
++ `field` (enum[string], required) - User profile field to match against when searching for users.
+    + `id`
+    + `idnumber`
+    + `username`
+    + `email`
++ `values`: `["162154"]` (array[string], required) - List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID).
+
+
+## GetUserPreferencesRequest (object)
+Request parameters for retrieving user preferences.
+
+### Properties
++ `userid`: `162154` (number, required) - ID of the user whose preferences to retrieve.
++ `name` (string, optional) - Specific preference name to retrieve. Omit to retrieve all preferences.
+
+
+## GetPopupNotificationsRequest (object)
+Request parameters for retrieving popup notifications for a user.
+
+### Properties
++ `useridto`: `162154` (string, required) - ID of the recipient user, passed as a string.
++ `limit`: `20` (number, required) - Maximum number of notifications to return.
++ `offset`: `0` (number, required) - Pagination offset.
+

@@ -1,0 +1,631 @@
+# API Name: "NUST LMS API"
+# Host: https://lms.nust.edu.pk/portal
+# NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+
+"Timeline classification filter for enrolled courses."
+enum CourseTimelineClassification {
+    ALL
+    ALLINCLUDINGHIDDEN
+    FAVOURITE
+    FUTURE
+    HIDDEN
+    INPROGRESS
+    PAST
+}
+
+"Field used to sort enrolled course results."
+enum CourseTimelineSortField {
+    FULLNAME
+    ID
+    IDNUMBER
+    SHORTNAME
+    TIMEACCESS
+}
+
+"User profile field to match against when searching for users."
+enum UserProfileField {
+    EMAIL
+    ID
+    IDNUMBER
+    USERNAME
+}
+
+"A non-fatal warning returned alongside a successful response."
+type MoodleWarning {
+    "Item identifier related to the warning; empty string if not applicable."
+    item: String!
+    "Numeric item ID related to the warning; 0 if not applicable."
+    itemid: Int!
+    "Machine-readable warning code; empty string if no code."
+    warningcode: String!
+    "Human-readable warning description."
+    message: String!
+}
+
+"A site-level notification (structure varies by type)."
+type SiteNotification {
+    "Unique identifier for the site notification."
+    id: Int!
+    "Notification message content."
+    message: String!
+    "Notification type identifier."
+    type: String!
+}
+
+"Error returned by the LMS on a failed operation."
+type MoodleError {
+    "Machine-readable error code identifier."
+    errorcode: String!
+    "Human-readable error description."
+    message: String!
+    "Redirect URL for the user; empty string if not applicable."
+    link: String!
+    "URL to additional error documentation; empty string if not available."
+    moreinfourl: String!
+    "Additional debug information; empty string when not in debug mode."
+    debuginfo: String!
+}
+
+"An enrolled course."
+type Course {
+    "Unique course identifier."
+    id: Int!
+    "Full display name of the course."
+    fullname: String!
+    "Short course code or abbreviated name."
+    shortname: String!
+    "Institution-assigned course ID number; empty string if not set."
+    idnumber: String!
+    "HTML summary of the course."
+    summary: String!
+    "Format of the summary field (1 = HTML)."
+    summaryformat: Int!
+    "Course start date as Unix timestamp."
+    startdate: Int!
+    "Course end date as Unix timestamp. 0 means no end date."
+    enddate: Int!
+    "Whether the course is visible to enrolled students."
+    visible: Boolean!
+    "Display name of the course (may differ from fullname for context)."
+    fullnamedisplay: String!
+    "URL to the course page on the LMS portal."
+    viewurl: String!
+    "Student's completion progress as a percentage."
+    progress: Int!
+    "Whether completion tracking is enabled for this course."
+    hasprogress: Boolean!
+    "Whether the user has marked this course as a favourite."
+    isfavourite: Boolean!
+    "Whether the user has hidden this course from their dashboard."
+    hidden: Boolean!
+    "Whether the short name is displayed alongside the full name."
+    showshortname: Boolean!
+    "Name of the category this course belongs to."
+    coursecategory: String!
+}
+
+"Additional fields specific to recently accessed courses."
+type RecentCourseFields {
+    "Unix timestamp of the user's most recent access to this course."
+    timeaccess: Int!
+}
+
+"A recently accessed course, extending Course with the last-access timestamp."
+type RecentCourse {
+    "Unique course identifier."
+    id: Int!
+    "Full display name of the course."
+    fullname: String!
+    "Short course code or abbreviated name."
+    shortname: String!
+    "Institution-assigned course ID number; empty string if not set."
+    idnumber: String!
+    "HTML summary of the course."
+    summary: String!
+    "Format of the summary field (1 = HTML)."
+    summaryformat: Int!
+    "Course start date as Unix timestamp."
+    startdate: Int!
+    "Course end date as Unix timestamp. 0 means no end date."
+    enddate: Int!
+    "Whether the course is visible to enrolled students."
+    visible: Boolean!
+    "Display name of the course (may differ from fullname for context)."
+    fullnamedisplay: String!
+    "URL to the course page on the LMS portal."
+    viewurl: String!
+    "Student's completion progress as a percentage."
+    progress: Int!
+    "Whether completion tracking is enabled for this course."
+    hasprogress: Boolean!
+    "Whether the user has marked this course as a favourite."
+    isfavourite: Boolean!
+    "Whether the user has hidden this course from their dashboard."
+    hidden: Boolean!
+    "Whether the short name is displayed alongside the full name."
+    showshortname: Boolean!
+    "Name of the category this course belongs to."
+    coursecategory: String!
+    "Unix timestamp of the user's most recent access to this course."
+    timeaccess: Int!
+}
+
+"Paginated enrolled-courses response."
+type EnrolledCoursesResponse {
+    "List of enrolled courses for the current page."
+    courses: [Course!]
+    "Offset to pass on the next page request; -1 when no further pages exist."
+    nextoffset: Int!
+}
+
+"Icon metadata for a calendar event."
+type EventIcon {
+    "Icon key name used to locate the icon asset."
+    key: String!
+    "Moodle component that owns the icon (e.g., 'assign')."
+    component: String!
+    "Accessible alt text for the icon image."
+    alttext: String!
+}
+
+"Subscription display settings for a calendar event."
+type EventSubscription {
+    "Whether to display the event source label on the calendar."
+    displayeventsource: Boolean!
+}
+
+"Primary action button metadata for a calendar event."
+type EventAction {
+    "Display label for the primary action button."
+    name: String!
+    "URL the user should navigate to in order to perform the action."
+    url: String!
+    "Number of items associated with this action."
+    itemcount: Int!
+    "Whether the action can currently be taken by the user."
+    actionable: Boolean!
+    "Whether to display the item count alongside the action label."
+    showitemcount: Boolean!
+}
+
+"A calendar action event tied to a course activity (e.g., an assignment deadline)."
+type CalendarEvent {
+    "Unique calendar event identifier."
+    id: Int!
+    "Display name of the calendar event."
+    name: String!
+    "HTML description body of the event."
+    description: String!
+    "Text format of the description (1 = HTML)."
+    descriptionformat: Int!
+    "Physical or virtual location of the event; empty string if not specified."
+    location: String!
+    "Course category ID; null if not a category event."
+    categoryid: Int
+    "Group ID if the event is group-specific; null otherwise."
+    groupid: Int
+    "User ID if the event is user-specific; null otherwise."
+    userid: Int
+    "ID of the repeat group for recurring events; null if not recurring."
+    repeatid: Int
+    "Total number of events in the repeat group; null if not applicable."
+    eventcount: Int
+    "Moodle component that created the event (e.g., 'mod_assign')."
+    component: String!
+    "Short name of the Moodle activity module (e.g., 'assign')."
+    modulename: String!
+    "The course module instance ID."
+    instance: Int!
+    "Type of the event (e.g., 'due', 'open', 'close')."
+    eventtype: String!
+    "Event start time as Unix timestamp."
+    timestart: Int!
+    "Duration in seconds; 0 for point-in-time events."
+    timeduration: Int!
+    "Sort timestamp used for ordering events."
+    timesort: Int!
+    "Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden."
+    visible: Int!
+    "Last modification time as Unix timestamp."
+    timemodified: Int!
+    "Icon metadata for a calendar event."
+    icon: EventIcon!
+    "An enrolled course."
+    course: Course!
+    "Subscription display settings for a calendar event."
+    subscription: EventSubscription!
+    "Whether the current user can edit this event."
+    canedit: Boolean!
+    "Whether the current user can delete this event."
+    candelete: Boolean!
+    "URL to delete this calendar event."
+    deleteurl: String!
+    "URL to edit the underlying course module associated with this event."
+    editurl: String!
+    "URL to view this event on the calendar."
+    viewurl: String!
+    "HTML-formatted human-readable event time string."
+    formattedtime: String!
+    "Whether this is an action event requiring user interaction."
+    isactionevent: Boolean!
+    "Whether this event is associated with a specific course."
+    iscourseevent: Boolean!
+    "Whether this event is associated with a course category."
+    iscategoryevent: Boolean!
+    "Name of the group for group-specific events; null otherwise."
+    groupname: String
+    "Normalised event type identifier used for display grouping."
+    normalisedeventtype: String!
+    "Human-readable label for the normalised event type."
+    normalisedeventtypetext: String!
+    "Primary action button metadata for a calendar event."
+    action: EventAction!
+    "Direct URL to the course activity associated with this event."
+    url: String!
+}
+
+"A list of calendar events with pagination boundary IDs."
+type CalendarEventsResponse {
+    "List of calendar action events for the current result set."
+    events: [CalendarEvent!]
+    "Event ID of the first item in the result set."
+    firstid: Int!
+    "Event ID of the last item in the result set."
+    lastid: Int!
+}
+
+"A custom profile field value attached to a user."
+type CustomField {
+    "Data type of the custom field (e.g., 'text', 'select')."
+    type: String!
+    "Value stored in the custom field."
+    value: String!
+    "Display label of the custom field."
+    name: String!
+    "Machine-readable shortname identifier for the custom field."
+    shortname: String!
+}
+
+"A single user preference setting."
+type UserPreference {
+    "Unique key identifying the preference."
+    name: String!
+    "Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS."
+    value: String!
+}
+
+"Complete user profile."
+type UserProfile {
+    "Unique numeric user identifier."
+    id: Int!
+    "Login username for the user."
+    username: String!
+    "Full display name of the user."
+    fullname: String!
+    "Email address of the user."
+    email: String!
+    "Department the user belongs to within the institution."
+    department: String!
+    "Name of the institution the user is affiliated with."
+    institution: String!
+    "Institution-assigned student or staff ID number."
+    idnumber: String!
+    "Authentication method used by the user (e.g., 'ldap', 'manual')."
+    auth: String!
+    "Whether the user's account has been confirmed."
+    confirmed: Boolean!
+    "Preferred interface language code (e.g., 'en')."
+    lang: String!
+    "Preferred LMS theme; empty string means use the site default."
+    theme: String!
+    "Timezone identifier. \"99\" means use the server default."
+    timezone: String!
+    "Email format preference (1 = HTML)."
+    mailformat: Int!
+    "URL to the user's small profile image (thumbnail)."
+    profileimageurlsmall: String!
+    "URL to the user's full-size profile image."
+    profileimageurl: String!
+    "List of custom profile field values for the user."
+    customfields: [CustomField!]
+    "List of stored preference key/value pairs for the user."
+    preferences: [UserPreference!]
+}
+
+"Response envelope for the user-preferences endpoint."
+type UserPreferencesResponse {
+    "List of user preference key/value pairs."
+    preferences: [UserPreference!]
+    "Array of warning objects. Empty when no warnings are present."
+    warnings: [MoodleWarning!]
+}
+
+"A popup notification message delivered to a user."
+type Notification {
+    "Unique notification identifier."
+    id: Int!
+    "User ID of the sender."
+    useridfrom: Int!
+    "User ID of the recipient."
+    useridto: Int!
+    "Subject line of the notification."
+    subject: String!
+    "Shortened version of the notification subject for compact display."
+    shortenedsubject: String!
+    "Short HTML excerpt of the notification."
+    text: String!
+    "Full plain-text body of the notification."
+    fullmessage: String!
+    "Format identifier for fullmessagehtml (2 = Markdown source)."
+    fullmessageformat: Int!
+    "Full HTML body of the notification email."
+    fullmessagehtml: String!
+    "Short plain-text preview of the notification."
+    smallmessage: String!
+    "URL to the relevant context for this notification (e.g., a forum post)."
+    contexturl: String!
+    "Human-readable label for the context URL link."
+    contexturlname: String!
+    "Unix timestamp when the notification was created."
+    timecreated: Int!
+    "Human-readable relative time string (e.g., '19 days ago')."
+    timecreatedpretty: String!
+    "Unix timestamp when the notification was read; null if unread."
+    timeread: Int
+    "Whether the notification has been read by the recipient."
+    read: Boolean!
+    "Whether the notification has been deleted by the recipient."
+    deleted: Boolean!
+    "URL to the icon image representing the notification source."
+    iconurl: String!
+    "Moodle component that generated the notification (e.g., 'mod_forum')."
+    component: String!
+    "Event type within the component that triggered the notification (e.g., 'posts')."
+    eventtype: String!
+    "JSON-encoded string with additional notification metadata (cmid, instance, discussionid, postid, etc.)."
+    customdata: String!
+}
+
+"Response envelope for the popup-notifications endpoint."
+type PopupNotificationsResponse {
+    "List of popup notifications for the user."
+    notifications: [Notification!]
+    "Total number of unread notifications for the user."
+    unreadcount: Int!
+}
+
+"Request parameters for retrieving recently accessed courses."
+type GetRecentCoursesRequest {
+    "Maximum number of courses to return."
+    limit: Int!
+}
+
+"Request parameters for retrieving enrolled courses filtered by timeline classification."
+type GetEnrolledCoursesByTimelineRequest {
+    "Zero-based pagination offset."
+    offset: Int!
+    "Maximum number of courses to return."
+    limit: Int!
+    "Timeline classification filter for enrolled courses."
+    classification: CourseTimelineClassification!
+    "Field used to sort enrolled course results."
+    sort: CourseTimelineSortField!
+}
+
+"Request parameters for fetching site-level notifications."
+type FetchNotificationsRequest {
+    "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment."
+    contextid: Int!
+}
+
+"Request parameters for retrieving calendar action events sorted by time."
+type GetCalendarEventsByTimesortRequest {
+    "Maximum number of events to return."
+    limitnum: Int!
+    "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound."
+    timesortfrom: Int!
+    "Only return events with timesort <= this Unix timestamp. Optional."
+    timesortto: Int!
+    "Return events whose ID is greater than this value (cursor pagination). Optional."
+    aftereventid: Int!
+}
+
+"Request parameters for retrieving calendar action events for a specific course."
+type GetCalendarEventsByCourseRequest {
+    "ID of the course to fetch events for."
+    courseid: Int!
+    "Only return events with timesort >= this Unix timestamp. Optional."
+    timesortfrom: Int!
+    "Only return events with timesort <= this Unix timestamp. Optional."
+    timesortto: Int!
+    "Cursor-based pagination — return events after this event ID. Optional."
+    aftereventid: Int!
+    "Maximum number of events to return. Optional."
+    limitnum: Int!
+}
+
+"Request parameters for retrieving user profiles by a profile field value."
+type GetUsersByFieldRequest {
+    "User profile field to match against when searching for users."
+    field: UserProfileField!
+    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID)."
+    values: [String!]
+}
+
+"Request parameters for retrieving user preferences."
+type GetUserPreferencesRequest {
+    "ID of the user whose preferences to retrieve."
+    userid: Int!
+    "Specific preference name to retrieve. Omit to retrieve all preferences."
+    name: String!
+}
+
+"Request parameters for retrieving popup notifications for a user."
+type GetPopupNotificationsRequest {
+    "ID of the recipient user, passed as a string."
+    useridto: String!
+    "Maximum number of notifications to return."
+    limit: Int!
+    "Pagination offset."
+    offset: Int!
+}
+
+"Request parameters for retrieving recently accessed courses."
+input GetRecentCoursesRequestInput {
+    "Maximum number of courses to return."
+    limit: Int!
+}
+
+input CreateGetcorerecentcoursesInput {
+    contentType: String!
+    "Parameters for the recent courses request."
+    body: GetRecentCoursesRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving enrolled courses filtered by timeline classification."
+input GetEnrolledCoursesByTimelineRequestInput {
+    "Zero-based pagination offset."
+    offset: Int!
+    "Maximum number of courses to return."
+    limit: Int!
+    "Timeline classification filter for enrolled courses."
+    classification: CourseTimelineClassification!
+    "Field used to sort enrolled course results."
+    sort: CourseTimelineSortField!
+}
+
+input CreateGetenrolledcoursesbytimelineInput {
+    contentType: String!
+    "Parameters for the enrolled courses timeline request."
+    body: GetEnrolledCoursesByTimelineRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving calendar action events sorted by time."
+input GetCalendarEventsByTimesortRequestInput {
+    "Maximum number of events to return."
+    limitnum: Int!
+    "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound."
+    timesortfrom: Int!
+    "Only return events with timesort <= this Unix timestamp. Optional."
+    timesortto: Int!
+    "Return events whose ID is greater than this value (cursor pagination). Optional."
+    aftereventid: Int!
+}
+
+input CreateGetcalendareventsbytimesortInput {
+    contentType: String!
+    "Parameters for the time-sorted calendar events request."
+    body: GetCalendarEventsByTimesortRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving calendar action events for a specific course."
+input GetCalendarEventsByCourseRequestInput {
+    "ID of the course to fetch events for."
+    courseid: Int!
+    "Only return events with timesort >= this Unix timestamp. Optional."
+    timesortfrom: Int!
+    "Only return events with timesort <= this Unix timestamp. Optional."
+    timesortto: Int!
+    "Cursor-based pagination — return events after this event ID. Optional."
+    aftereventid: Int!
+    "Maximum number of events to return. Optional."
+    limitnum: Int!
+}
+
+input CreateGetcalendareventsbycourseInput {
+    contentType: String!
+    "Parameters for the course-specific calendar events request."
+    body: GetCalendarEventsByCourseRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving user profiles by a profile field value."
+input GetUsersByFieldRequestInput {
+    "User profile field to match against when searching for users."
+    field: UserProfileField!
+    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID)."
+    values: [String!]
+}
+
+input CreateGetusersbyfieldInput {
+    contentType: String!
+    "Parameters specifying the profile field and values to match."
+    body: GetUsersByFieldRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving user preferences."
+input GetUserPreferencesRequestInput {
+    "ID of the user whose preferences to retrieve."
+    userid: Int!
+    "Specific preference name to retrieve. Omit to retrieve all preferences."
+    name: String!
+}
+
+input CreateGetuserpreferencesInput {
+    contentType: String!
+    "Parameters specifying which user's preferences to retrieve."
+    body: GetUserPreferencesRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for fetching site-level notifications."
+input FetchNotificationsRequestInput {
+    "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment."
+    contextid: Int!
+}
+
+input CreateFetchnotificationsInput {
+    contentType: String!
+    "Parameters specifying the context to fetch notifications for."
+    body: FetchNotificationsRequestInput!
+    sesskey: String!
+}
+
+"Request parameters for retrieving popup notifications for a user."
+input GetPopupNotificationsRequestInput {
+    "ID of the recipient user, passed as a string."
+    useridto: String!
+    "Maximum number of notifications to return."
+    limit: Int!
+    "Pagination offset."
+    offset: Int!
+}
+
+input CreateGetpopupnotificationsInput {
+    contentType: String!
+    "Parameters for the popup notifications request."
+    body: GetPopupNotificationsRequestInput!
+    sesskey: String!
+}
+
+type Query {
+    _: Boolean
+}
+
+type Mutation {
+    "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`"
+    createGetcorerecentcourses(input: CreateGetcorerecentcoursesInput!): [RecentCourse!]
+    "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"
+    createGetenrolledcoursesbytimeline(input: CreateGetenrolledcoursesbytimelineInput!): EnrolledCoursesResponse!
+    "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
+    createGetcalendareventsbytimesort(input: CreateGetcalendareventsbytimesortInput!): CalendarEventsResponse!
+    "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`"
+    createGetcalendareventsbycourse(input: CreateGetcalendareventsbycourseInput!): CalendarEventsResponse!
+    "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`"
+    createGetusersbyfield(input: CreateGetusersbyfieldInput!): [UserProfile!]
+    "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`"
+    createGetuserpreferences(input: CreateGetuserpreferencesInput!): UserPreferencesResponse!
+    "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`"
+    createFetchnotifications(input: CreateFetchnotificationsInput!): [SiteNotification!]
+    "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`"
+    createGetpopupnotifications(input: CreateGetpopupnotificationsInput!): PopupNotificationsResponse!
+}
+
+schema {
+    mutation: Mutation
+    query: Query
+}
