@@ -4,28 +4,28 @@ __export_source: apimatic.transformer
 resources:
 - name: NUST LMS API
   _type: workspace
-  _id: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  _id: wrk_fa4d544837f145adac4f2374576341e4
   description: >
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
 - name: Courses
   _type: request_group
-  _id: fld_6562af3cf6894dcca8381c522b131202
-  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  _id: fld_9ad58c9cea364b75a8d59dbeb168d9ee
+  parentId: wrk_fa4d544837f145adac4f2374576341e4
   description: Course listing and enrollment operations
 - name: Calendar
   _type: request_group
-  _id: fld_d104034d60f2474baf33d479cf4bb004
-  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  _id: fld_dfc92f958c3d491dbbee1d118f626a72
+  parentId: wrk_fa4d544837f145adac4f2374576341e4
   description: Calendar event operations
 - name: Users
   _type: request_group
-  _id: fld_e9dedf91c78646c998ad68f5c7fc09c3
-  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  _id: fld_c434906fc2464de2a5aa0470a0bc5cb6
+  parentId: wrk_fa4d544837f145adac4f2374576341e4
   description: User profile and preferences operations
 - name: Notifications
   _type: request_group
-  _id: fld_7ae9821f0c38492d914bffb8d9e3cdca
-  parentId: wrk_b7123ba0ca3146dda32a19d46a7446ed
+  _id: fld_61e799f2daad4ae0b6807e16d951ec50
+  parentId: wrk_fa4d544837f145adac4f2374576341e4
   description: Notification retrieval operations
 - name: getCoreRecentCourses
   method: POST
@@ -38,15 +38,15 @@ resources:
       }
   parameters:
   - name: sesskey
-    value: sesskey4
+    value: sesskey55
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_6a90177b6d6f4b90af77ef7f1aca57a4
-  parentId: fld_6562af3cf6894dcca8381c522b131202
+  _id: req_7ddb0c23d8604129b2c7dbc222ab197e
+  parentId: fld_9ad58c9cea364b75a8d59dbeb168d9ee
   description: >
     Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
@@ -60,20 +60,20 @@ resources:
       {
         "offset": 0,
         "limit": 50,
-        "classification": "favourite",
+        "classification": "hidden",
         "sort": "id"
       }
   parameters:
   - name: sesskey
-    value: sesskey95
+    value: sesskey32
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_fbca7db05c454eab86359c70a4e301b6
-  parentId: fld_6562af3cf6894dcca8381c522b131202
+  _id: req_d01499d4e3104aad9fe62ee596077cf3
+  parentId: fld_9ad58c9cea364b75a8d59dbeb168d9ee
   description: >
     Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
@@ -87,20 +87,20 @@ resources:
       {
         "limitnum": 20,
         "timesortfrom": 0,
-        "timesortto": 71,
-        "aftereventid": 167
+        "timesortto": 53,
+        "aftereventid": 218
       }
   parameters:
   - name: sesskey
-    value: sesskey26
+    value: sesskey24
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_141301403e994ab5b932e982fe01138b
-  parentId: fld_d104034d60f2474baf33d479cf4bb004
+  _id: req_e3d52b0d0c4545abb21f4336d2a8c9a8
+  parentId: fld_dfc92f958c3d491dbbee1d118f626a72
   description: >
     Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
 
@@ -113,22 +113,22 @@ resources:
     text: >-
       {
         "courseid": 49906,
-        "timesortfrom": 239,
-        "timesortto": 115,
-        "aftereventid": 27,
-        "limitnum": 156
+        "timesortfrom": 12,
+        "timesortto": 9,
+        "aftereventid": 249,
+        "limitnum": 219
       }
   parameters:
   - name: sesskey
-    value: sesskey82
+    value: sesskey74
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_09e54c68a69d461c970ff148552e1677
-  parentId: fld_d104034d60f2474baf33d479cf4bb004
+  _id: req_b8620b782fb14263b57b5d3b318885a1
+  parentId: fld_dfc92f958c3d491dbbee1d118f626a72
   description: >
     Returns all action events (assignments, quizzes, etc.) for a single course.
 
@@ -147,15 +147,15 @@ resources:
       }
   parameters:
   - name: sesskey
-    value: sesskey97
+    value: sesskey60
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_e5882ca8bfed4c7cb4f86523722b9cbd
-  parentId: fld_e9dedf91c78646c998ad68f5c7fc09c3
+  _id: req_cce282172bc74c08bec5f49301f52d81
+  parentId: fld_c434906fc2464de2a5aa0470a0bc5cb6
   description: >
     Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
@@ -168,19 +168,19 @@ resources:
     text: >-
       {
         "userid": 162154,
-        "name": "name89"
+        "name": "name42"
       }
   parameters:
   - name: sesskey
-    value: sesskey43
+    value: sesskey56
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_bb896f89753443e598fc6426d60343e8
-  parentId: fld_e9dedf91c78646c998ad68f5c7fc09c3
+  _id: req_3787259a17784084b2fbe803362da1cd
+  parentId: fld_c434906fc2464de2a5aa0470a0bc5cb6
   description: >
     Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
@@ -196,15 +196,15 @@ resources:
       }
   parameters:
   - name: sesskey
-    value: sesskey51
+    value: sesskey95
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_1fc55a16df724f889f2aa9960e28994c
-  parentId: fld_7ae9821f0c38492d914bffb8d9e3cdca
+  _id: req_30986a662a324cc297df476add833940
+  parentId: fld_61e799f2daad4ae0b6807e16d951ec50
   description: >
     Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
@@ -222,15 +222,15 @@ resources:
       }
   parameters:
   - name: sesskey
-    value: sesskey88
+    value: sesskey25
     disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
   _type: request
-  _id: req_3cdaf53d8154437699c913cf6c70841c
-  parentId: fld_7ae9821f0c38492d914bffb8d9e3cdca
+  _id: req_ad02474c7c644ca89e37b70e15a1ff11
+  parentId: fld_61e799f2daad4ae0b6807e16d951ec50
   description: >
     Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 

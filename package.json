@@ -1,0 +1,12 @@
+{
+  "name": "nustdevkit-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Scalar-based developer docs frontend for the NUST LMS API (NustDevKit).",
+  "scripts": {
+    "sync": "node scripts/sync-spec.mjs",
+    "build": "npm run sync",
+    "dev": "npm run sync && node scripts/dev-server.mjs"
+  }
+}

@@ -1,54 +1,54 @@
 {
-  "id": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+  "id": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
   "name": "NUST LMS API",
   "description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.\n",
   "order": [],
   "folders": [
     {
-      "id": "7fc5e7db-69f1-4ab2-b721-292df34379db",
+      "id": "9acbc76f-24c6-4452-955c-2c0101bf970f",
       "name": "Courses",
       "description": "Course listing and enrollment operations",
       "order": [
-        "0219fe20-33b4-4ee5-a611-c5334e305153",
-        "736916aa-b50a-414c-85ee-bb6499dbe33d"
+        "4fa9f90a-5ef1-45a7-99f7-5bfab2bf46a1",
+        "3a56aa64-e265-4d08-a9eb-2085b6ea8412"
       ],
-      "collection_id": "3c540eec-7e0e-49a1-af0a-dd806c46032e"
+      "collection_id": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d"
     },
     {
-      "id": "4623781f-ed17-45cc-a1ab-eb40b42ebf02",
+      "id": "f149e864-99f6-4530-a337-bcbb5c3196b7",
       "name": "Calendar",
       "description": "Calendar event operations",
       "order": [
-        "7dba6d54-4b23-4b6b-99f6-62f815f79006",
-        "d1555785-5057-4865-a3bf-36894f98afb1"
+        "e5918392-67e1-4757-98fe-b3bfb16a034e",
+        "450dcd7a-2747-4826-905a-cd01af4dfa16"
       ],
-      "collection_id": "3c540eec-7e0e-49a1-af0a-dd806c46032e"
+      "collection_id": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d"
     },
     {
-      "id": "8d2db109-113a-40d4-82ff-34ba5cf271f8",
+      "id": "f5ffb1e5-bec6-4633-81ed-c80a7ec3a842",
       "name": "Users",
       "description": "User profile and preferences operations",
       "order": [
-        "ad8640e6-9297-4bb2-abff-c0655156d7fd",
-        "9ed9ead8-c2f8-4dd1-a4e3-4bfc67f1b737"
+        "b108f1e4-8d11-4b70-b15b-5647e535d2d7",
+        "1798390c-7f26-4374-94e1-1f1ba89e162b"
       ],
-      "collection_id": "3c540eec-7e0e-49a1-af0a-dd806c46032e"
+      "collection_id": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d"
     },
     {
-      "id": "6cb130bb-0e72-4a41-bd6e-fb5f5f99d9d9",
+      "id": "6e7bacc2-9466-4a46-b474-159e1a7be14f",
       "name": "Notifications",
       "description": "Notification retrieval operations",
       "order": [
-        "af79d097-deca-4d5d-9aa9-73cb7432ec8e",
-        "f9beb651-565a-41da-8b6b-94a31e8d0d4a"
+        "54faecbf-dccd-4f93-8a22-be8c0107853f",
+        "9f403b7d-e6f3-4241-83af-805b93d3e3ee"
       ],
-      "collection_id": "3c540eec-7e0e-49a1-af0a-dd806c46032e"
+      "collection_id": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d"
     }
   ],
   "requests": [
     {
-      "folder": "7fc5e7db-69f1-4ab2-b721-292df34379db",
-      "id": "0219fe20-33b4-4ee5-a611-c5334e305153",
+      "folder": "9acbc76f-24c6-4452-955c-2c0101bf970f",
+      "id": "4fa9f90a-5ef1-45a7-99f7-5bfab2bf46a1",
       "name": "getCoreRecentCourses",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -60,8 +60,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_course_get_recent_courses",
       "responses": [
         {
-          "request": "0219fe20-33b4-4ee5-a611-c5334e305153",
-          "id": "3b8ed920-78e1-4e63-9e9a-2cc1df12022a",
+          "request": "4fa9f90a-5ef1-45a7-99f7-5bfab2bf46a1",
+          "id": "2251436e-d942-4282-ad5d-e43379b57f38",
           "name": "Response_200",
           "status": "List of recently accessed courses ordered by last access.",
           "responseCode": {
@@ -76,13 +76,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "[\n  {\n    \"id\": 49900,\n    \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n    \"idnumber\": \"idnumber78\",\n    \"summary\": \"summary0\",\n    \"summaryformat\": 1,\n    \"startdate\": 1706468400,\n    \"enddate\": 1717362000,\n    \"visible\": true,\n    \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n    \"progress\": 21,\n    \"hasprogress\": true,\n    \"isfavourite\": false,\n    \"hidden\": false,\n    \"showshortname\": false,\n    \"coursecategory\": \"2nd Semester (SP-2024)\",\n    \"timeaccess\": 1781632422\n  }\n]",
+          "text": "[\n  {\n    \"id\": 49900,\n    \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n    \"idnumber\": \"idnumber49\",\n    \"summary\": \"summary48\",\n    \"summaryformat\": 1,\n    \"startdate\": 1706468400,\n    \"enddate\": 1717362000,\n    \"visible\": true,\n    \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n    \"progress\": 21,\n    \"hasprogress\": true,\n    \"isfavourite\": false,\n    \"hidden\": false,\n    \"showshortname\": false,\n    \"coursecategory\": \"2nd Semester (SP-2024)\",\n    \"timeaccess\": 1781632422\n  }\n]",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
       "rawModeData": "{\n  \"limit\": 10\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -98,8 +98,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "7fc5e7db-69f1-4ab2-b721-292df34379db",
-      "id": "736916aa-b50a-414c-85ee-bb6499dbe33d",
+      "folder": "9acbc76f-24c6-4452-955c-2c0101bf970f",
+      "id": "3a56aa64-e265-4d08-a9eb-2085b6ea8412",
       "name": "getEnrolledCoursesByTimeline",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -111,8 +111,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_course_get_enrolled_courses_by_timeline_classification",
       "responses": [
         {
-          "request": "736916aa-b50a-414c-85ee-bb6499dbe33d",
-          "id": "6bbcdebb-d847-4a44-aa7d-47fe5e64ed9b",
+          "request": "3a56aa64-e265-4d08-a9eb-2085b6ea8412",
+          "id": "82bdf105-4985-46d9-8d8a-ea650269302c",
           "name": "Response_200",
           "status": "Paginated list of enrolled courses.",
           "responseCode": {
@@ -127,13 +127,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "{\n  \"courses\": [\n    {\n      \"id\": 49900,\n      \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n      \"idnumber\": \"idnumber74\",\n      \"summary\": \"summary97\",\n      \"summaryformat\": 1,\n      \"startdate\": 1706468400,\n      \"enddate\": 1717362000,\n      \"visible\": true,\n      \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n      \"progress\": 21,\n      \"hasprogress\": true,\n      \"isfavourite\": false,\n      \"hidden\": false,\n      \"showshortname\": false,\n      \"coursecategory\": \"2nd Semester (SP-2024)\"\n    }\n  ],\n  \"nextoffset\": 29\n}",
+          "text": "{\n  \"courses\": [\n    {\n      \"id\": 49900,\n      \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n      \"idnumber\": \"idnumber35\",\n      \"summary\": \"summary4\",\n      \"summaryformat\": 1,\n      \"startdate\": 1706468400,\n      \"enddate\": 1717362000,\n      \"visible\": true,\n      \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n      \"progress\": 21,\n      \"hasprogress\": true,\n      \"isfavourite\": false,\n      \"hidden\": false,\n      \"showshortname\": false,\n      \"coursecategory\": \"2nd Semester (SP-2024)\"\n    }\n  ],\n  \"nextoffset\": 29\n}",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
-      "rawModeData": "{\n  \"offset\": 0,\n  \"limit\": 50,\n  \"classification\": \"favourite\",\n  \"sort\": \"id\"\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "rawModeData": "{\n  \"offset\": 0,\n  \"limit\": 50,\n  \"classification\": \"favourite\",\n  \"sort\": \"fullname\"\n}",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -149,8 +149,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "4623781f-ed17-45cc-a1ab-eb40b42ebf02",
-      "id": "7dba6d54-4b23-4b6b-99f6-62f815f79006",
+      "folder": "f149e864-99f6-4530-a337-bcbb5c3196b7",
+      "id": "e5918392-67e1-4757-98fe-b3bfb16a034e",
       "name": "getCalendarEventsByTimesort",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -162,8 +162,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_timesort",
       "responses": [
         {
-          "request": "7dba6d54-4b23-4b6b-99f6-62f815f79006",
-          "id": "197201ed-8ddf-4dfc-8b04-2621f0e51cf7",
+          "request": "e5918392-67e1-4757-98fe-b3bfb16a034e",
+          "id": "4d43259f-5e06-40d0-a7b9-fc08b92efd22",
           "name": "Response_200",
           "status": "Calendar events sorted by timesort.",
           "responseCode": {
@@ -178,13 +178,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location74\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 21,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber74\",\"summary\": \"summary97\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 136,\"groupid\": 25,\"userid\": 49,\"repeatid\": 209,\"eventcount\": 49,\"groupname\": \"groupname93\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
+          "text": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location43\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 105,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber35\",\"summary\": \"summary4\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 106,\"groupid\": 199,\"userid\": 35,\"repeatid\": 31,\"eventcount\": 74,\"groupname\": \"groupname47\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
-      "rawModeData": "{\n  \"limitnum\": 20,\n  \"timesortfrom\": 0,\n  \"timesortto\": 115,\n  \"aftereventid\": 183\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "rawModeData": "{\n  \"limitnum\": 20,\n  \"timesortfrom\": 0,\n  \"timesortto\": 61,\n  \"aftereventid\": 85\n}",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -200,8 +200,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "4623781f-ed17-45cc-a1ab-eb40b42ebf02",
-      "id": "d1555785-5057-4865-a3bf-36894f98afb1",
+      "folder": "f149e864-99f6-4530-a337-bcbb5c3196b7",
+      "id": "450dcd7a-2747-4826-905a-cd01af4dfa16",
       "name": "getCalendarEventsByCourse",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -213,8 +213,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_course",
       "responses": [
         {
-          "request": "d1555785-5057-4865-a3bf-36894f98afb1",
-          "id": "65b19273-48f1-463b-b907-92db78933f51",
+          "request": "450dcd7a-2747-4826-905a-cd01af4dfa16",
+          "id": "b1a42059-8f40-4441-9f8d-f3b1c4b7b142",
           "name": "Response_200",
           "status": "Calendar events for the specified course.",
           "responseCode": {
@@ -229,13 +229,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location74\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 21,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber74\",\"summary\": \"summary97\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 136,\"groupid\": 25,\"userid\": 49,\"repeatid\": 209,\"eventcount\": 49,\"groupname\": \"groupname93\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
+          "text": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location43\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 105,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber35\",\"summary\": \"summary4\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 106,\"groupid\": 199,\"userid\": 35,\"repeatid\": 31,\"eventcount\": 74,\"groupname\": \"groupname47\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
-      "rawModeData": "{\n  \"courseid\": 49906,\n  \"timesortfrom\": 108,\n  \"timesortto\": 46,\n  \"aftereventid\": 136,\n  \"limitnum\": 181\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "rawModeData": "{\n  \"courseid\": 49906,\n  \"timesortfrom\": 7,\n  \"timesortto\": 79,\n  \"aftereventid\": 251,\n  \"limitnum\": 11\n}",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -251,8 +251,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "8d2db109-113a-40d4-82ff-34ba5cf271f8",
-      "id": "ad8640e6-9297-4bb2-abff-c0655156d7fd",
+      "folder": "f5ffb1e5-bec6-4633-81ed-c80a7ec3a842",
+      "id": "b108f1e4-8d11-4b70-b15b-5647e535d2d7",
       "name": "getUsersByField",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -264,8 +264,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_user_get_users_by_field",
       "responses": [
         {
-          "request": "ad8640e6-9297-4bb2-abff-c0655156d7fd",
-          "id": "6c114dab-a5dd-4374-b7b4-75d54e274085",
+          "request": "b108f1e4-8d11-4b70-b15b-5647e535d2d7",
+          "id": "1d30f16b-99c2-40ef-a2f7-821a27805093",
           "name": "Response_200",
           "status": "List of matching user profiles.",
           "responseCode": {
@@ -280,13 +280,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "[\n  {\n    \"id\": 162154,\n    \"username\": \"hhameed.bscs23seecs\",\n    \"fullname\": \"Hasaan Hameed\",\n    \"email\": \"hhameed.bscs23seecs@seecs.edu.pk\",\n    \"department\": \"FoC\",\n    \"institution\": \"SEECS\",\n    \"idnumber\": \"00000454987\",\n    \"auth\": \"ldap\",\n    \"confirmed\": true,\n    \"lang\": \"en\",\n    \"theme\": \"theme38\",\n    \"timezone\": \"99\",\n    \"mailformat\": 1,\n    \"profileimageurlsmall\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894\",\n    \"profileimageurl\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894\",\n    \"customfields\": [\n      {\n        \"type\": \"text\",\n        \"value\": \"SEECS\",\n        \"name\": \"Institute\",\n        \"shortname\": \"institution\"\n      }\n    ],\n    \"preferences\": [\n      {\n        \"name\": \"block_myoverview_user_sort_preference\",\n        \"value\": \"title\"\n      }\n    ]\n  }\n]",
+          "text": "[\n  {\n    \"id\": 162154,\n    \"username\": \"hhameed.bscs23seecs\",\n    \"fullname\": \"Hasaan Hameed\",\n    \"email\": \"hhameed.bscs23seecs@seecs.edu.pk\",\n    \"department\": \"FoC\",\n    \"institution\": \"SEECS\",\n    \"idnumber\": \"00000454987\",\n    \"auth\": \"ldap\",\n    \"confirmed\": true,\n    \"lang\": \"en\",\n    \"theme\": \"theme28\",\n    \"timezone\": \"99\",\n    \"mailformat\": 1,\n    \"profileimageurlsmall\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894\",\n    \"profileimageurl\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894\",\n    \"customfields\": [\n      {\n        \"type\": \"text\",\n        \"value\": \"SEECS\",\n        \"name\": \"Institute\",\n        \"shortname\": \"institution\"\n      }\n    ],\n    \"preferences\": [\n      {\n        \"name\": \"block_myoverview_user_sort_preference\",\n        \"value\": \"title\"\n      }\n    ]\n  }\n]",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
-      "rawModeData": "{\n  \"field\": \"username\",\n  \"values\": [\n    \"162154\"\n  ]\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "rawModeData": "{\n  \"field\": \"id\",\n  \"values\": [\n    \"162154\"\n  ]\n}",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -302,8 +302,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "8d2db109-113a-40d4-82ff-34ba5cf271f8",
-      "id": "9ed9ead8-c2f8-4dd1-a4e3-4bfc67f1b737",
+      "folder": "f5ffb1e5-bec6-4633-81ed-c80a7ec3a842",
+      "id": "1798390c-7f26-4374-94e1-1f1ba89e162b",
       "name": "getUserPreferences",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -315,8 +315,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_user_get_user_preferences",
       "responses": [
         {
-          "request": "9ed9ead8-c2f8-4dd1-a4e3-4bfc67f1b737",
-          "id": "6610833b-f0d2-43c4-8492-4c4559c55ef1",
+          "request": "1798390c-7f26-4374-94e1-1f1ba89e162b",
+          "id": "c006fa2e-2217-43fc-a057-c3dff17bf683",
           "name": "Response_200",
           "status": "User preferences list and optional warnings.",
           "responseCode": {
@@ -331,13 +331,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "{\n  \"preferences\": [\n    {\n      \"name\": \"block_myoverview_user_sort_preference\",\n      \"value\": \"title\"\n    }\n  ],\n  \"warnings\": [\n    {\n      \"item\": \"item38\",\n      \"itemid\": 0,\n      \"warningcode\": \"warningcode75\",\n      \"message\": \"message61\"\n    }\n  ]\n}",
+          "text": "{\n  \"preferences\": [\n    {\n      \"name\": \"block_myoverview_user_sort_preference\",\n      \"value\": \"title\"\n    }\n  ],\n  \"warnings\": [\n    {\n      \"item\": \"item27\",\n      \"itemid\": 0,\n      \"warningcode\": \"warningcode63\",\n      \"message\": \"message88\"\n    }\n  ]\n}",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
-      "rawModeData": "{\n  \"userid\": 162154,\n  \"name\": \"name4\"\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "rawModeData": "{\n  \"userid\": 162154,\n  \"name\": \"name47\"\n}",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -353,8 +353,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "6cb130bb-0e72-4a41-bd6e-fb5f5f99d9d9",
-      "id": "af79d097-deca-4d5d-9aa9-73cb7432ec8e",
+      "folder": "6e7bacc2-9466-4a46-b474-159e1a7be14f",
+      "id": "54faecbf-dccd-4f93-8a22-be8c0107853f",
       "name": "fetchNotifications",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -366,8 +366,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/core_fetch_notifications",
       "responses": [
         {
-          "request": "af79d097-deca-4d5d-9aa9-73cb7432ec8e",
-          "id": "de566b2a-a053-4cf4-b947-d1f111a8033d",
+          "request": "54faecbf-dccd-4f93-8a22-be8c0107853f",
+          "id": "696d0408-5e39-4e0b-bf79-9efc2099599b",
           "name": "Response_200",
           "status": "Array of site notifications (empty array when none are pending).",
           "responseCode": {
@@ -382,13 +382,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "[\n  {\n    \"id\": 250,\n    \"message\": \"message88\",\n    \"type\": \"type69\"\n  }\n]",
+          "text": "[\n  {\n    \"id\": 31,\n    \"message\": \"message61\",\n    \"type\": \"type41\"\n  }\n]",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
       "rawModeData": "{\n  \"contextid\": 1583361\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -404,8 +404,8 @@
       "pathVariableData": []
     },
     {
-      "folder": "6cb130bb-0e72-4a41-bd6e-fb5f5f99d9d9",
-      "id": "f9beb651-565a-41da-8b6b-94a31e8d0d4a",
+      "folder": "6e7bacc2-9466-4a46-b474-159e1a7be14f",
+      "id": "9f403b7d-e6f3-4241-83af-805b93d3e3ee",
       "name": "getPopupNotifications",
       "dataMode": "raw",
       "dataDisabled": false,
@@ -417,8 +417,8 @@
       "url": "https://lms.nust.edu.pk/portal/service/message_popup_get_popup_notifications",
       "responses": [
         {
-          "request": "f9beb651-565a-41da-8b6b-94a31e8d0d4a",
-          "id": "58c3fe69-5997-4165-9f4a-049c70437997",
+          "request": "9f403b7d-e6f3-4241-83af-805b93d3e3ee",
+          "id": "9fab9f5c-7c9f-4dff-8b21-ccddf057aca4",
           "name": "Response_200",
           "status": "Popup notifications and total unread count.",
           "responseCode": {
@@ -433,13 +433,13 @@
             }
           ],
           "mime": "application/json",
-          "text": "{\"notifications\": [{\"id\": 4857819,\"useridfrom\": 198956,\"useridto\": 162154,\"subject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"shortenedsubject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"text\": \"<p>Areeba Rameen posted in CS-419-Deep Learning...</p>\",\"fullmessage\": \"fullmessage95\",\"fullmessageformat\": 2,\"fullmessagehtml\": \"fullmessagehtml42\",\"smallmessage\": \"Areeba Rameen posted in CS-419-Deep Learning...\",\"contexturl\": \"https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342\",\"contexturlname\": \"Lab Sessional Finalization - (DL - Section D & E)\",\"timecreated\": 1780045085,\"timecreatedpretty\": \"19 days ago\",\"read\": false,\"deleted\": false,\"iconurl\": \"https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon\",\"component\": \"mod_forum\",\"eventtype\": \"posts\",\"customdata\": \"{\"cmid\":\"1272420\",\"instance\":\"62569\",\"discussionid\":\"41767\"}\",\"timeread\": 183}],\"unreadcount\": 1}",
+          "text": "{\"notifications\": [{\"id\": 4857819,\"useridfrom\": 198956,\"useridto\": 162154,\"subject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"shortenedsubject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"text\": \"<p>Areeba Rameen posted in CS-419-Deep Learning...</p>\",\"fullmessage\": \"fullmessage82\",\"fullmessageformat\": 2,\"fullmessagehtml\": \"fullmessagehtml37\",\"smallmessage\": \"Areeba Rameen posted in CS-419-Deep Learning...\",\"contexturl\": \"https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342\",\"contexturlname\": \"Lab Sessional Finalization - (DL - Section D & E)\",\"timecreated\": 1780045085,\"timecreatedpretty\": \"19 days ago\",\"read\": false,\"deleted\": false,\"iconurl\": \"https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon\",\"component\": \"mod_forum\",\"eventtype\": \"posts\",\"customdata\": \"{\"cmid\":\"1272420\",\"instance\":\"62569\",\"discussionid\":\"41767\"}\",\"timeread\": 119}],\"unreadcount\": 1}",
           "language": "Text",
           "rawDataType": "text"
         }
       ],
       "rawModeData": "{\n  \"useridto\": \"162154\",\n  \"limit\": 20,\n  \"offset\": 0\n}",
-      "collectionId": "3c540eec-7e0e-49a1-af0a-dd806c46032e",
+      "collectionId": "b81c7e8a-04b2-4cce-8965-95fb6b5a5d0d",
       "queryParams": [],
       "headerData": [
         {
@@ -471,7 +471,7 @@
       },
       {
         "key": "value",
-        "value": "sesskey84",
+        "value": "sesskey36",
         "type": "string"
       }
     ]

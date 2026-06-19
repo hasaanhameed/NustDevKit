@@ -12,6 +12,11 @@ dist/
 node_modules/
 apimatic-validator-mcp/build/
 
+# Scalar docs build artifacts (synced from canonical sources by scripts/sync-spec.mjs)
+docs/openapi.yaml
+docs/nust-logo.png
+docs/favicon.ico
+
 # Claude Code
 .claude/
 

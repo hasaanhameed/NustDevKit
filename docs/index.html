@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NustDevKit — NUST LMS API</title>
+    <meta
+      name="description"
+      content="NustDevKit: a developer-friendly REST API and SDKs for the NUST Learning Management System."
+    />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <style>
+      :root {
+        /* NUST brand palette — owned by us, not the docs engine */
+        --nust-navy: #00305b;
+        --nust-navy-deep: #001f3d;
+        --nust-blue: #0a5fa8;
+        --nust-sky: #5aa9e6;
+        --nust-header-h: 56px;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      /* ---- Our custom header: this is the frontend we now fully control ---- */
+      .ndk-header {
+        height: var(--nust-header-h);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 18px;
+        background: linear-gradient(
+          90deg,
+          var(--nust-navy-deep) 0%,
+          var(--nust-navy) 100%
+        );
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .ndk-header img.logo {
+        height: 34px;
+        width: auto;
+        display: block;
+      }
+
+      .ndk-brand {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+
+      .ndk-brand .title {
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.2px;
+      }
+
+      .ndk-brand .subtitle {
+        font-weight: 400;
+        font-size: 11.5px;
+        color: var(--nust-sky);
+      }
+
+      .ndk-divider {
+        width: 1px;
+        height: 26px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .ndk-spacer {
+        flex: 1 1 auto;
+      }
+
+      .ndk-header a.ndk-link {
+        color: #dceaf7;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: background 0.15s ease;
+      }
+
+      .ndk-header a.ndk-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* ---- Scalar fills the rest of the viewport below our header ---- */
+      #app {
+        height: calc(100vh - var(--nust-header-h));
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="ndk-header">
+      <img class="logo" src="./nust-logo.png" alt="NUST" />
+      <div class="ndk-divider"></div>
+      <div class="ndk-brand">
+        <span class="title">NustDevKit</span>
+        <span class="subtitle">NUST LMS API &amp; SDKs</span>
+      </div>
+      <div class="ndk-spacer"></div>
+      <a
+        class="ndk-link"
+        href="https://github.com/hasaanhameed52/NustDevKit"
+        target="_blank"
+        rel="noopener"
+        >GitHub</a
+      >
+    </header>
+
+    <div id="app"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+    <script>
+      Scalar.createApiReference("#app", {
+        url: "./openapi.yaml",
+        theme: "default",
+        layout: "modern",
+        favicon: "./favicon.ico",
+        hideDarkModeToggle: false,
+        defaultHttpClient: { targetKey: "shell", clientKey: "curl" },
+        metaData: {
+          title: "NustDevKit — NUST LMS API",
+        },
+        // NUST accent overrides — Scalar exposes its theme via CSS variables,
+        // which is exactly the control surface the APIMatic widget hid.
+        customCss: `
+          .light-mode {
+            --scalar-color-accent: #0a5fa8;
+            --scalar-color-1: #0f1b2d;
+            --scalar-background-2: #f5f8fc;
+            --scalar-sidebar-item-active-background: #e7f0fa;
+            --scalar-sidebar-color-active: #0a5fa8;
+            --scalar-button-1: #00305b;
+          }
+          .dark-mode {
+            --scalar-color-accent: #5aa9e6;
+            --scalar-sidebar-color-active: #5aa9e6;
+          }
+        `,
+      });
+    </script>
+  </body>
+</html>
