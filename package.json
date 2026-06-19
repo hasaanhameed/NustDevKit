@@ -5,8 +5,12 @@
   "type": "module",
   "description": "Scalar-based developer docs frontend for the NUST LMS API (NustDevKit).",
   "scripts": {
-    "sync": "node scripts/sync-spec.mjs",
+    "sync": "node scripts/sync-spec.mjs && node scripts/inject-code-samples.mjs",
     "build": "npm run sync",
     "dev": "npm run sync && node scripts/dev-server.mjs"
+  },
+  "devDependencies": {
+    "adm-zip": "^0.5.17",
+    "yaml": "^2.9.0"
   }
 }

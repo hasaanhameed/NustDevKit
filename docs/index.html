@@ -3,20 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NustDevKit — NUST LMS API</title>
+    <title>NUST LMS Developer Hub</title>
     <meta
       name="description"
-      content="NustDevKit: a developer-friendly REST API and SDKs for the NUST Learning Management System."
+      content="NUST LMS Developer Hub: a developer-friendly REST API and SDKs for the NUST Learning Management System."
     />
     <link rel="shortcut icon" href="./favicon.ico" />
     <style>
       :root {
         /* NUST brand palette — owned by us, not the docs engine */
-        --nust-navy: #00305b;
-        --nust-navy-deep: #001f3d;
-        --nust-blue: #0a5fa8;
-        --nust-sky: #5aa9e6;
-        --nust-header-h: 56px;
+        --nust-navy: #042c53; /* midnight navy: header, footer, nav backgrounds */
+        --nust-blue: #378add; /* primary blue: buttons, links, accents */
+        --nust-sky: #e6f1fb; /* pale sky: section backgrounds, cards, hover */
+        --nust-header-h: 72px;
       }
 
       html,
@@ -33,48 +32,41 @@
         box-sizing: border-box;
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 0 18px;
-        background: linear-gradient(
-          90deg,
-          var(--nust-navy-deep) 0%,
-          var(--nust-navy) 100%
-        );
-        color: #fff;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        position: sticky;
+        gap: 16px;
+        padding: 0 22px;
+        background: #fff;
+        color: var(--nust-navy);
+        border-bottom: 1px solid #d6e4f3;
+        /* Fixed so it stays pinned while the Scalar panel scrolls underneath. */
+        position: fixed;
         top: 0;
-        z-index: 50;
+        left: 0;
+        right: 0;
+        z-index: 1000;
       }
 
       .ndk-header img.logo {
-        height: 34px;
+        height: 48px;
         width: auto;
         display: block;
       }
 
       .ndk-brand {
         display: flex;
-        flex-direction: column;
+        align-items: center;
         line-height: 1.15;
       }
 
       .ndk-brand .title {
         font-weight: 700;
-        font-size: 15px;
+        font-size: 18px;
         letter-spacing: 0.2px;
-      }
-
-      .ndk-brand .subtitle {
-        font-weight: 400;
-        font-size: 11.5px;
-        color: var(--nust-sky);
       }
 
       .ndk-divider {
         width: 1px;
-        height: 26px;
-        background: rgba(255, 255, 255, 0.18);
+        height: 34px;
+        background: #d6e4f3;
       }
 
       .ndk-spacer {
@@ -82,22 +74,29 @@
       }
 
       .ndk-header a.ndk-link {
-        color: #dceaf7;
+        display: inline-flex;
+        align-items: center;
+        color: var(--nust-navy);
         text-decoration: none;
-        font-size: 13px;
-        font-weight: 500;
-        padding: 6px 12px;
+        padding: 8px;
         border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
         transition: background 0.15s ease;
       }
 
       .ndk-header a.ndk-link:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--nust-sky);
       }
 
-      /* ---- Scalar fills the rest of the viewport below our header ---- */
+      .ndk-header a.ndk-link svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+        display: block;
+      }
+
+      /* ---- Scalar fills the rest of the viewport below our fixed header ---- */
       #app {
+        margin-top: var(--nust-header-h);
         height: calc(100vh - var(--nust-header-h));
       }
     </style>
@@ -108,8 +107,7 @@
       <img class="logo" src="./nust-logo.png" alt="NUST" />
       <div class="ndk-divider"></div>
       <div class="ndk-brand">
-        <span class="title">NustDevKit</span>
-        <span class="subtitle">NUST LMS API &amp; SDKs</span>
+        <span class="title">NUST LMS Developer Hub</span>
       </div>
       <div class="ndk-spacer"></div>
       <a
@@ -117,8 +115,14 @@
         href="https://github.com/hasaanhameed52/NustDevKit"
         target="_blank"
         rel="noopener"
-        >GitHub</a
+        aria-label="GitHub repository"
       >
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+          />
+        </svg>
+      </a>
     </header>
 
     <div id="app"></div>
@@ -127,28 +131,59 @@
     <script>
       Scalar.createApiReference("#app", {
         url: "./openapi.yaml",
-        theme: "default",
+        theme: "none", // disable Scalar's built-in theme so our NUST CSS wins
         layout: "modern",
         favicon: "./favicon.ico",
-        hideDarkModeToggle: false,
-        defaultHttpClient: { targetKey: "shell", clientKey: "curl" },
+        // Single blue/white theme — no dark mode.
+        darkMode: false,
+        forceDarkModeState: "light",
+        hideDarkModeToggle: true,
+        // The real SDK examples come from x-codeSamples (injected from APIMatic's
+        // generated SDKs) and render in their own "Code Examples" panel. Hide ALL of
+        // Scalar's auto-generated snippet clients so the noisy invented languages
+        // (JavaScript/Rust/Dart/etc.) don't appear alongside them.
+        hiddenClients: true,
         metaData: {
-          title: "NustDevKit — NUST LMS API",
+          title: "NUST LMS Developer Hub",
         },
-        // NUST accent overrides — Scalar exposes its theme via CSS variables,
-        // which is exactly the control surface the APIMatic widget hid.
+        // NUST single light theme. Scalar exposes its theme via CSS variables —
+        // exactly the control surface the APIMatic widget hid from us.
         customCss: `
-          .light-mode {
-            --scalar-color-accent: #0a5fa8;
-            --scalar-color-1: #0f1b2d;
-            --scalar-background-2: #f5f8fc;
-            --scalar-sidebar-item-active-background: #e7f0fa;
-            --scalar-sidebar-color-active: #0a5fa8;
-            --scalar-button-1: #00305b;
+          :root {
+            /* Force the light palette only; we never expose a dark variant. */
+            --scalar-color-accent: #378add;
+            --scalar-color-1: #042c53;
+            --scalar-color-2: #2a4a6b;
+            --scalar-color-3: #5a7798;
+            --scalar-background-1: #ffffff;
+            --scalar-background-2: #e6f1fb;
+            --scalar-background-3: #e6f1fb;
+            --scalar-background-accent: #e6f1fb;
+            --scalar-border-color: #d6e4f3;
+
+            --scalar-button-1: #042c53;
+            --scalar-link-color: #378add;
+
+            /* White sidebar (the "navbar") with pale-sky hover/active. */
+            --scalar-sidebar-background-1: #ffffff;
+            --scalar-sidebar-color-1: #042c53;
+            --scalar-sidebar-color-2: #5a7798;
+            --scalar-sidebar-border-color: #d6e4f3;
+            --scalar-sidebar-item-hover-background: #e6f1fb;
+            --scalar-sidebar-item-hover-color: #042c53;
+            --scalar-sidebar-item-active-background: #e6f1fb;
+            --scalar-sidebar-color-active: #378add;
+            --scalar-sidebar-search-background: #f5f9fd;
+            --scalar-sidebar-search-border-color: #d6e4f3;
           }
-          .dark-mode {
-            --scalar-color-accent: #5aa9e6;
-            --scalar-sidebar-color-active: #5aa9e6;
+
+          /* Pin the sidebar so it stays put while the main content scrolls.
+             It gets its own independent scroll for long navigation lists. */
+          .t-doc__sidebar {
+            position: sticky;
+            top: 0;
+            height: calc(100vh - var(--nust-header-h, 72px));
+            overflow-y: auto;
           }
         `,
       });
