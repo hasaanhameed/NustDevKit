@@ -24,8 +24,8 @@ Additional fields specific to recently accessed courses.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.RecentCourseFields;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.RecentCourseFields;
 
 RecentCourseFields recentCourseFields = new RecentCourseFields.Builder(
     1781632422

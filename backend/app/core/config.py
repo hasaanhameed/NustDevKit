@@ -21,7 +21,15 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 720  # 12 hours
 
     # --- Upstream NUST LMS (Moodle) ---
-    lms_base_url: str = "https://lms.nust.edu.pk"
+    # Includes the /portal path segment; login + AJAX endpoints hang off this.
+    lms_base_url: str = "https://lms.nust.edu.pk/portal"
+    # NUST LMS has TLS chain quirks; the proven NustPulse client disables verify.
+    lms_verify_ssl: bool = False
+    lms_user_agent: str = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    )
 
     # --- CORS ---
     cors_origins: list[str] = ["*"]

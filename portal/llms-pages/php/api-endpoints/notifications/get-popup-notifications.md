@@ -12,7 +12,7 @@ function getPopupNotifications(GetPopupNotificationsRequest $body): ApiResponse
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/php/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

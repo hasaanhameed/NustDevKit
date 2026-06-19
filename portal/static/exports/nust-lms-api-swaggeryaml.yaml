@@ -3,25 +3,62 @@ info:
   version: '1.0.0'
   title: NUST LMS API
   description: >
-    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+
+    Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
   contact:
     name: NustDevKit Support
     url: https://github.com/hasaanhameed52/NustDevKit
-host: lms.nust.edu.pk
-basePath: /portal
-securityDefinitions:
-  SessKey:
-    type: apiKey
-    description: Session key obtained after authenticating with the LMS portal.
-    name: sesskey
-    in: query
+host: 127.0.0.1:8000
+basePath: /
+securityDefinitions: {}
 schemes:
+- http
 - https
 consumes:
 - application/json
 produces:
 - application/json
 paths:
+  /auth/login:
+    post:
+      description: >
+        Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
+      summary: login
+      tags:
+      - Authentication
+      operationId: login
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: true
+        description: NUST LMS credentials.
+        schema:
+          $ref: '#/definitions/LoginRequest'
+      responses:
+        '200':
+          description: Authentication succeeded; bearer token issued.
+          schema:
+            $ref: '#/definitions/TokenResponse'
+          headers: {}
+        '401':
+          description: Invalid LMS credentials.
+          schema:
+            $ref: '#/definitions/AuthLogin401Error1'
+          headers: {}
+      security: []
   /service/core_course_get_recent_courses:
     post:
       description: >
@@ -38,6 +75,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -80,6 +122,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -120,6 +167,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -160,6 +212,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -200,6 +257,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -242,6 +304,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -282,6 +349,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -324,6 +396,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
       - name: Content-Type
         in: header
         required: false
@@ -349,6 +426,37 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
 definitions:
+  LoginRequest:
+    title: LoginRequest
+    description: NUST LMS credentials used to obtain a gateway bearer token.
+    type: object
+    properties:
+      email:
+        description: NUST LMS username or email.
+        example: john.doe@student.nust.edu.pk
+        type: string
+      password:
+        description: NUST LMS password.
+        type: string
+        format: password
+    required:
+    - email
+    - password
+  TokenResponse:
+    title: TokenResponse
+    description: Bearer token issued by the gateway after a successful login.
+    type: object
+    properties:
+      access_token:
+        description: 'JWT to send as `Authorization: Bearer <token>` on subsequent requests.'
+        type: string
+      token_type:
+        example: bearer
+        type: string
+        default: bearer
+    required:
+    - access_token
+    - token_type
   CourseTimelineClassification:
     title: CourseTimelineClassification
     description: Timeline classification filter for enrolled courses.
@@ -1396,9 +1504,17 @@ definitions:
     - useridto
     - limit
     - offset
-security:
-- SessKey: []
+  AuthLogin401Error1:
+    title: AuthLogin401Error1
+    type: object
+    properties:
+      detail:
+        example: Invalid LMS credentials.
+        type: string
+security: []
 tags:
+- name: Authentication
+  description: Exchange NUST LMS credentials for a gateway bearer token
 - name: Courses
   description: Course listing and enrollment operations
 - name: Calendar

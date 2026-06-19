@@ -1,6 +1,6 @@
 # API Name: "NUST LMS API"
-# Host: https://lms.nust.edu.pk/portal
-# NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+# Host: http://127.0.0.1:8000
+# NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).\nAuthenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 "Timeline classification filter for enrolled courses."
 enum CourseTimelineClassification {
@@ -28,6 +28,21 @@ enum UserProfileField {
     ID
     IDNUMBER
     USERNAME
+}
+
+"NUST LMS credentials used to obtain a gateway bearer token."
+type LoginRequest {
+    "NUST LMS username or email."
+    email: String!
+    "NUST LMS password."
+    password: String!
+}
+
+"Bearer token issued by the gateway after a successful login."
+type TokenResponse {
+    "JWT to send as `Authorization: Bearer <token>` on subsequent requests."
+    accessToken: String!
+    tokenType: String!
 }
 
 "A non-fatal warning returned alongside a successful response."
@@ -470,6 +485,24 @@ type GetPopupNotificationsRequest {
     offset: Int!
 }
 
+type AuthLogin401Error1 {
+    detail: String!
+}
+
+"NUST LMS credentials used to obtain a gateway bearer token."
+input LoginRequestInput {
+    "NUST LMS username or email."
+    email: String!
+    "NUST LMS password."
+    password: String!
+}
+
+input CreateLoginInput {
+    contentType: String!
+    "NUST LMS credentials."
+    body: LoginRequestInput!
+}
+
 "Request parameters for retrieving recently accessed courses."
 input GetRecentCoursesRequestInput {
     "Maximum number of courses to return."
@@ -480,7 +513,6 @@ input CreateGetcorerecentcoursesInput {
     contentType: String!
     "Parameters for the recent courses request."
     body: GetRecentCoursesRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving enrolled courses filtered by timeline classification."
@@ -499,7 +531,6 @@ input CreateGetenrolledcoursesbytimelineInput {
     contentType: String!
     "Parameters for the enrolled courses timeline request."
     body: GetEnrolledCoursesByTimelineRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving calendar action events sorted by time."
@@ -518,7 +549,6 @@ input CreateGetcalendareventsbytimesortInput {
     contentType: String!
     "Parameters for the time-sorted calendar events request."
     body: GetCalendarEventsByTimesortRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving calendar action events for a specific course."
@@ -539,7 +569,6 @@ input CreateGetcalendareventsbycourseInput {
     contentType: String!
     "Parameters for the course-specific calendar events request."
     body: GetCalendarEventsByCourseRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving user profiles by a profile field value."
@@ -554,7 +583,6 @@ input CreateGetusersbyfieldInput {
     contentType: String!
     "Parameters specifying the profile field and values to match."
     body: GetUsersByFieldRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving user preferences."
@@ -569,7 +597,6 @@ input CreateGetuserpreferencesInput {
     contentType: String!
     "Parameters specifying which user's preferences to retrieve."
     body: GetUserPreferencesRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for fetching site-level notifications."
@@ -582,7 +609,6 @@ input CreateFetchnotificationsInput {
     contentType: String!
     "Parameters specifying the context to fetch notifications for."
     body: FetchNotificationsRequestInput!
-    sesskey: String!
 }
 
 "Request parameters for retrieving popup notifications for a user."
@@ -599,7 +625,6 @@ input CreateGetpopupnotificationsInput {
     contentType: String!
     "Parameters for the popup notifications request."
     body: GetPopupNotificationsRequestInput!
-    sesskey: String!
 }
 
 type Query {
@@ -607,6 +632,8 @@ type Query {
 }
 
 type Mutation {
+    "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation."
+    createLogin(input: CreateLoginInput!): TokenResponse!
     "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`"
     createGetcorerecentcourses(input: CreateGetcorerecentcoursesInput!): [RecentCourse!]
     "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"

@@ -26,10 +26,10 @@ Response envelope for the user-preferences endpoint.
 ```java
 import java.io.IOException;
 import java.util.Arrays;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.MoodleWarning;
-import pk.edu.nust.lms.models.UserPreference;
-import pk.edu.nust.lms.models.UserPreferencesResponse;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.MoodleWarning;
+import m18000.m0.m0.m127.models.UserPreference;
+import m18000.m0.m0.m127.models.UserPreferencesResponse;
 
 UserPreferencesResponse userPreferencesResponse = new UserPreferencesResponse.Builder(
     Arrays.asList(

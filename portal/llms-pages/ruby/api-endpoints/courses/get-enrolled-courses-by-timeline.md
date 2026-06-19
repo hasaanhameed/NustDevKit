@@ -12,7 +12,7 @@ def get_enrolled_courses_by_timeline(body)
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

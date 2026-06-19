@@ -5,7 +5,8 @@ Source: /#/typescript/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Building
@@ -74,6 +75,17 @@ npm install
 ![Install NustLmsApilib Dependency](https://apidocs.io/illustration/typescript?step=installDependency)
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| Production | **Default** NustDevKit Gateway (local development) |
+| Environment2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -81,24 +93,26 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/typescript/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.Production`** |
 | timeout | `number` | Timeout for API calls.<br>*Default*: `30000` |
 | httpClientOptions | [`Partial<HttpClientOptions>`](/llms-pages/typescript/sdk-infrastructure/configuration/httpclientoptions.md) | Stable configurable http client options. |
 | unstableHttpClientOptions | `any` | Unstable configurable http client options. |
 | logging | [`PartialLoggingOptions`](/llms-pages/typescript/sdk-infrastructure/configuration/partialloggingoptions.md) | Logging Configuration to enable logging |
-| customQueryAuthenticationCredentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md) | The credential object for customQueryAuthentication |
+| bearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md) | The credential object for bearerAuth |
 
 The API client can be initialized as follows:
 
 ## Code-Based Client Initialization
 
 ```ts
-import { Client, LogLevel } from 'nust-lms-apilib';
+import { Client, Environment, LogLevel } from 'nust-lms-apilib';
 
 const client = new Client({
-  customQueryAuthenticationCredentials: {
-    'sesskey': 'sesskey'
+  bearerAuthCredentials: {
+    accessToken: 'AccessToken'
   },
   timeout: 30000,
+  environment: Environment.Production,
   logging: {
     logLevel: LogLevel.Info,
     logRequest: {
@@ -157,23 +171,23 @@ See the [Environment-Based Client Initialization](/llms-pages/typescript/sdk-inf
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Setter |
 |  --- | --- | --- | --- |
-| sesskey | `string` | Session key obtained after authenticating with the LMS portal. | `sesskey` |
+| accessToken | `string` | The OAuth 2.0 Access Token to use for API requests. | `accessToken` |
 
 
 
-**Note:** Auth credentials can be set using `customQueryAuthenticationCredentials` object in the client.
+**Note:** Auth credentials can be set using `bearerAuthCredentials` object in the client.
 
 ### Usage Example
 
@@ -185,8 +199,8 @@ You must provide credentials in the client as shown in the following code snippe
 import { Client } from 'nust-lms-apilib';
 
 const client = new Client({
-  customQueryAuthenticationCredentials: {
-    'sesskey': 'sesskey'
+  bearerAuthCredentials: {
+    accessToken: 'AccessToken'
   },
 });
 ```

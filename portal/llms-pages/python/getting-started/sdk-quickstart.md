@@ -5,7 +5,8 @@ Source: /#/python/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Building
@@ -73,6 +74,17 @@ To run the file within your test project, right click on your Python file inside
 ![Run Test Project - Step 1](https://apidocs.io/illustration/python?workspaceFolder=Nustlmsapi-Python&projectName=nustlmsapi&libraryName=nustlmsapi.nustlmsapi_client&className=NustlmsapiClient&step=runProject)
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| PRODUCTION | **Default** NustDevKit Gateway (local development) |
+| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -80,6 +92,7 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/python/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | http_client_instance | `Union[Session, HttpClientProvider]` | The Http Client passed from the sdk user for making requests |
 | override_http_client_configuration | `bool` | The value which determines to override properties of the passed Http Client from the sdk user |
 | http_call_back | `HttpCallBack` | The callback value that is invoked before and after an HTTP call is made to an endpoint |
@@ -90,7 +103,7 @@ The following parameters are configurable for the API Client:
 | retry_methods | `Array of string` | The http methods on which retry is to be done. <br> **Default: ["GET", "PUT", "GET", "PUT"]** |
 | proxy_settings | [`ProxySettings`](/llms-pages/python/sdk-infrastructure/configuration/proxysettings.md) | Optional proxy configuration to route HTTP requests through a proxy server. |
 | logging_configuration | [`LoggingConfiguration`](/llms-pages/python/sdk-infrastructure/configuration/loggingconfiguration.md) | The SDK logging configuration for API calls |
-| custom_query_authentication_credentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/python/getting-started/sdk-quickstart/authorization.md) | The credential object for Custom Query Parameter |
+| bearer_auth_credentials | [`BearerAuthCredentials`](/llms-pages/python/getting-started/sdk-quickstart/authorization.md) | The credential object for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
@@ -100,15 +113,15 @@ The API client can be initialized as follows:
 import logging
 
 from nustlmsapi.configuration import Environment
-from nustlmsapi.http.auth.custom_query_authentication import CustomQueryAuthenticationCredentials
+from nustlmsapi.http.auth.oauth_2 import BearerAuthCredentials
 from nustlmsapi.logging.configuration.api_logging_configuration import LoggingConfiguration
 from nustlmsapi.logging.configuration.api_logging_configuration import RequestLoggingConfiguration
 from nustlmsapi.logging.configuration.api_logging_configuration import ResponseLoggingConfiguration
 from nustlmsapi.nustlmsapi_client import NustlmsapiClient
 
 client = NustlmsapiClient(
-    custom_query_authentication_credentials=CustomQueryAuthenticationCredentials(
-        sesskey='sesskey'
+    bearer_auth_credentials=BearerAuthCredentials(
+        access_token='AccessToken'
     ),
     environment=Environment.PRODUCTION,
     logging_configuration=LoggingConfiguration(
@@ -139,23 +152,23 @@ See the [Environment-Based Client Initialization](/llms-pages/python/sdk-infrast
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Getter |
 |  --- | --- | --- | --- |
-| sesskey | `str` | Session key obtained after authenticating with the LMS portal. | `sesskey` |
+| AccessToken | `str` | The OAuth 2.0 Access Token to use for API requests. | `access_token` |
 
 
 
-**Note:** Auth credentials can be set using `CustomQueryAuthenticationCredentials` object, passed in as named parameter `custom_query_authentication_credentials` in the client initialization.
+**Note:** Auth credentials can be set using `BearerAuthCredentials` object, passed in as named parameter `bearer_auth_credentials` in the client initialization.
 
 ### Usage Example
 
@@ -164,12 +177,12 @@ Documentation for accessing and setting credentials for SessKey.
 You must provide credentials in the client as shown in the following code snippet.
 
 ```python
-from nustlmsapi.http.auth.custom_query_authentication import CustomQueryAuthenticationCredentials
+from nustlmsapi.http.auth.oauth_2 import BearerAuthCredentials
 from nustlmsapi.nustlmsapi_client import NustlmsapiClient
 
 client = NustlmsapiClient(
-    custom_query_authentication_credentials=CustomQueryAuthenticationCredentials(
-        sesskey='sesskey'
+    bearer_auth_credentials=BearerAuthCredentials(
+        access_token='AccessToken'
     )
 )
 ```

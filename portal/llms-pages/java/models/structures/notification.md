@@ -44,8 +44,8 @@ A popup notification message delivered to a user.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.Notification;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.Notification;
 
 Notification notification = new Notification.Builder(
     4857819,

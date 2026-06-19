@@ -40,8 +40,8 @@ An enrolled course.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.Course;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.Course;
 
 Course course = new Course.Builder(
     49900,

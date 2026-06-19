@@ -26,9 +26,9 @@ Request parameters for retrieving user profiles by a profile field value.
 ```java
 import java.io.IOException;
 import java.util.Arrays;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.GetUsersByFieldRequest;
-import pk.edu.nust.lms.models.UserProfileField;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.GetUsersByFieldRequest;
+import m18000.m0.m0.m127.models.UserProfileField;
 
 GetUsersByFieldRequest getUsersByFieldRequest = new GetUsersByFieldRequest.Builder(
     UserProfileField.ID,

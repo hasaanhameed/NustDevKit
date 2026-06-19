@@ -43,8 +43,8 @@ var client = NustLmsApiClient.Builder
 {
   "NustLmsApi": {
     "Environment": "production",
-    "CustomQueryAuthenticationCredentials": {
-      "Sesskey": "sesskey",
+    "BearerAuthCredentials": {
+      "AccessToken": "accessToken",
     },
     "LoggingConfig": {
       "LogLevel": "Debug",

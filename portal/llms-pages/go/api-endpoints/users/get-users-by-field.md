@@ -16,7 +16,7 @@ GetUsersByField(
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/go/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

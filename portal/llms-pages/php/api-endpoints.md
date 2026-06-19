@@ -2,6 +2,7 @@
 
 Source: /#/php/x-redirect/JTI0aCUyRl9fbGlzdF9vZl9hcGlz
 
+* [Authentication](/llms-pages/php/api-endpoints/authentication/overview.md)
 * [Courses](/llms-pages/php/api-endpoints/courses/overview.md)
 * [Calendar](/llms-pages/php/api-endpoints/calendar/overview.md)
 * [Users](/llms-pages/php/api-endpoints/users/overview.md)

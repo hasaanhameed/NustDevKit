@@ -4,214 +4,232 @@ __export_source: apimatic.transformer
 resources:
 - name: NUST LMS API
   _type: workspace
-  _id: wrk_fa4d544837f145adac4f2374576341e4
+  _id: wrk_708e9b4034a546f38f64a0388255c068
   description: >
-    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+
+    Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
+- name: production
+  data:
+    default: http://127.0.0.1:8000
+  _type: environment
+  _id: env_be65bb404e1b4c5280ae1dd4a142b10a
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
+- name: environment2
+  data:
+    default: https://gateway.nustdevkit.example
+  _type: environment
+  _id: env_d2ee326cb94d4e09877c0fbd34bca6d7
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
+- name: Authentication
+  _type: request_group
+  _id: fld_7f604c7af6c64f73a5d4112f4828b8c1
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
+  description: Exchange NUST LMS credentials for a gateway bearer token
 - name: Courses
   _type: request_group
-  _id: fld_9ad58c9cea364b75a8d59dbeb168d9ee
-  parentId: wrk_fa4d544837f145adac4f2374576341e4
+  _id: fld_9e5cf79d326f4b70b89a7fc1035e0342
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
   description: Course listing and enrollment operations
 - name: Calendar
   _type: request_group
-  _id: fld_dfc92f958c3d491dbbee1d118f626a72
-  parentId: wrk_fa4d544837f145adac4f2374576341e4
+  _id: fld_3663d5321f9a43188a438d5cf86ebf15
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
   description: Calendar event operations
 - name: Users
   _type: request_group
-  _id: fld_c434906fc2464de2a5aa0470a0bc5cb6
-  parentId: wrk_fa4d544837f145adac4f2374576341e4
+  _id: fld_26afbc9932dc426490b2a713e898ec8e
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
   description: User profile and preferences operations
 - name: Notifications
   _type: request_group
-  _id: fld_61e799f2daad4ae0b6807e16d951ec50
-  parentId: wrk_fa4d544837f145adac4f2374576341e4
+  _id: fld_62a3a3f7b695443f8ec8d09c71bf129b
+  parentId: wrk_708e9b4034a546f38f64a0388255c068
   description: Notification retrieval operations
+- name: login
+  method: POST
+  url: '{{default}}/auth/login'
+  body:
+    mimeType: application/json
+    text: >-
+      {
+        "email": "john.doe@student.nust.edu.pk",
+        "password": "password92"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+    disabled: false
+  authentication: {}
+  _type: request
+  _id: req_59ca3963cf0c4cceaec491c93104a293
+  parentId: fld_7f604c7af6c64f73a5d4112f4828b8c1
+  description: >
+    Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
 - name: getCoreRecentCourses
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_course_get_recent_courses
+  url: '{{default}}/service/core_course_get_recent_courses'
   body:
     mimeType: application/json
     text: >-
       {
         "limit": 10
       }
-  parameters:
-  - name: sesskey
-    value: sesskey55
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_7ddb0c23d8604129b2c7dbc222ab197e
-  parentId: fld_9ad58c9cea364b75a8d59dbeb168d9ee
+  _id: req_7e77e0fdb0c44d05b92a0c05fa7e5f8c
+  parentId: fld_9e5cf79d326f4b70b89a7fc1035e0342
   description: >
     Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
     Moodle method: `core_course_get_recent_courses`
 - name: getEnrolledCoursesByTimeline
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_course_get_enrolled_courses_by_timeline_classification
+  url: '{{default}}/service/core_course_get_enrolled_courses_by_timeline_classification'
   body:
     mimeType: application/json
     text: >-
       {
         "offset": 0,
         "limit": 50,
-        "classification": "hidden",
-        "sort": "id"
+        "classification": "future",
+        "sort": "shortname"
       }
-  parameters:
-  - name: sesskey
-    value: sesskey32
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_d01499d4e3104aad9fe62ee596077cf3
-  parentId: fld_9ad58c9cea364b75a8d59dbeb168d9ee
+  _id: req_c7285f4e434f48f4a55e2148ac70cc7b
+  parentId: fld_9e5cf79d326f4b70b89a7fc1035e0342
   description: >
     Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
     Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 - name: getCalendarEventsByTimesort
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_timesort
+  url: '{{default}}/service/core_calendar_get_action_events_by_timesort'
   body:
     mimeType: application/json
     text: >-
       {
         "limitnum": 20,
         "timesortfrom": 0,
-        "timesortto": 53,
-        "aftereventid": 218
+        "timesortto": 24,
+        "aftereventid": 26
       }
-  parameters:
-  - name: sesskey
-    value: sesskey24
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_e3d52b0d0c4545abb21f4336d2a8c9a8
-  parentId: fld_dfc92f958c3d491dbbee1d118f626a72
+  _id: req_57f51c81752844a9a462bbbcf87ee8c2
+  parentId: fld_3663d5321f9a43188a438d5cf86ebf15
   description: >
     Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
 
     Moodle method: `core_calendar_get_action_events_by_timesort`
 - name: getCalendarEventsByCourse
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_calendar_get_action_events_by_course
+  url: '{{default}}/service/core_calendar_get_action_events_by_course'
   body:
     mimeType: application/json
     text: >-
       {
         "courseid": 49906,
-        "timesortfrom": 12,
-        "timesortto": 9,
-        "aftereventid": 249,
-        "limitnum": 219
+        "timesortfrom": 56,
+        "timesortto": 233,
+        "aftereventid": 244,
+        "limitnum": 202
       }
-  parameters:
-  - name: sesskey
-    value: sesskey74
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_b8620b782fb14263b57b5d3b318885a1
-  parentId: fld_dfc92f958c3d491dbbee1d118f626a72
+  _id: req_a68883432af1440f903c183c6b07225b
+  parentId: fld_3663d5321f9a43188a438d5cf86ebf15
   description: >
     Returns all action events (assignments, quizzes, etc.) for a single course.
 
     Moodle method: `core_calendar_get_action_events_by_course`
 - name: getUsersByField
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_user_get_users_by_field
+  url: '{{default}}/service/core_user_get_users_by_field'
   body:
     mimeType: application/json
     text: >-
       {
-        "field": "id",
+        "field": "username",
         "values": [
           "162154"
         ]
       }
-  parameters:
-  - name: sesskey
-    value: sesskey60
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_cce282172bc74c08bec5f49301f52d81
-  parentId: fld_c434906fc2464de2a5aa0470a0bc5cb6
+  _id: req_c856570d69f84ba59ca6344ad01f1b94
+  parentId: fld_26afbc9932dc426490b2a713e898ec8e
   description: >
     Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
     Moodle method: `core_user_get_users_by_field`
 - name: getUserPreferences
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_user_get_user_preferences
+  url: '{{default}}/service/core_user_get_user_preferences'
   body:
     mimeType: application/json
     text: >-
       {
         "userid": 162154,
-        "name": "name42"
+        "name": "name39"
       }
-  parameters:
-  - name: sesskey
-    value: sesskey56
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_3787259a17784084b2fbe803362da1cd
-  parentId: fld_c434906fc2464de2a5aa0470a0bc5cb6
+  _id: req_c8d68964c60c4d8a8f7af387ba763fde
+  parentId: fld_26afbc9932dc426490b2a713e898ec8e
   description: >
     Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
     Moodle method: `core_user_get_user_preferences`
 - name: fetchNotifications
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/core_fetch_notifications
+  url: '{{default}}/service/core_fetch_notifications'
   body:
     mimeType: application/json
     text: >-
       {
         "contextid": 1583361
       }
-  parameters:
-  - name: sesskey
-    value: sesskey95
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_30986a662a324cc297df476add833940
-  parentId: fld_61e799f2daad4ae0b6807e16d951ec50
+  _id: req_da56a408fd324420b2261f9d06ec8e7d
+  parentId: fld_62a3a3f7b695443f8ec8d09c71bf129b
   description: >
     Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
     Moodle method: `core_fetch_notifications`
 - name: getPopupNotifications
   method: POST
-  url: https://lms.nust.edu.pk/portal/service/message_popup_get_popup_notifications
+  url: '{{default}}/service/message_popup_get_popup_notifications'
   body:
     mimeType: application/json
     text: >-
@@ -220,17 +238,14 @@ resources:
         "limit": 20,
         "offset": 0
       }
-  parameters:
-  - name: sesskey
-    value: sesskey25
-    disabled: false
   headers:
   - name: Content-Type
     value: application/json
     disabled: false
+  authentication: {}
   _type: request
-  _id: req_ad02474c7c644ca89e37b70e15a1ff11
-  parentId: fld_61e799f2daad4ae0b6807e16d951ec50
+  _id: req_dc3e8afaffaf4c09ad442475916a589c
+  parentId: fld_62a3a3f7b695443f8ec8d09c71bf129b
   description: >
     Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 

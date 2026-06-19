@@ -25,8 +25,8 @@ A single user preference setting.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.UserPreference;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.UserPreference;
 
 UserPreference userPreference = new UserPreference.Builder(
     "block_myoverview_user_sort_preference",

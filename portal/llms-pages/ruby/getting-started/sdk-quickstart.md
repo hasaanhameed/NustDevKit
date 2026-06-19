@@ -5,7 +5,8 @@ Source: /#/ruby/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Building
@@ -73,6 +74,17 @@ A new controller class named `HelloController` will be created in a file named `
 ![Initialize the library](https://apidocs.io/illustration/ruby?workspaceFolder=NustLmsApi&gemName=nust_lms_api&step=addCode3)
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| PRODUCTION | **Default** NustDevKit Gateway (local development) |
+| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -80,6 +92,7 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/ruby/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | connection | `Faraday::Connection` | The Faraday connection object passed by the SDK user for making requests |
 | adapter | `Faraday::Adapter` | The Faraday adapter object passed by the SDK user for performing http requests |
 | timeout | `Float` | The value to use for connection timeout. <br> **Default: 30** |
@@ -91,7 +104,7 @@ The following parameters are configurable for the API Client:
 | http_callback | `HttpCallBack` | The Http CallBack allows defining callables for pre and post API calls. |
 | proxy_settings | [`ProxySettings`](/llms-pages/ruby/sdk-infrastructure/configuration/proxysettings.md) | Optional proxy configuration to route HTTP requests through a proxy server. |
 | logging_configuration | [`LoggingConfiguration`](/llms-pages/ruby/sdk-infrastructure/configuration/loggingconfiguration.md) | The SDK logging configuration for API calls |
-| custom_query_authentication_credentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md) | The credential object for Custom Query Parameter |
+| bearer_auth_credentials | [`BearerAuthCredentials`](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md) | The credential object for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
@@ -102,9 +115,10 @@ require 'nust_lms_api'
 include NustLmsApi
 
 client = Client.new(
-  custom_query_authentication_credentials: CustomQueryAuthenticationCredentials.new(
-    sesskey: 'sesskey'
+  bearer_auth_credentials: BearerAuthCredentials.new(
+    access_token: 'AccessToken'
   ),
+  environment: Environment::PRODUCTION,
   logging_configuration: LoggingConfiguration.new(
     log_level: Logger::INFO,
     request_logging_config: RequestLoggingConfiguration.new(
@@ -134,23 +148,23 @@ See the [`Environment-Based Client Initialization`](/llms-pages/ruby/sdk-infrast
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Getter |
 |  --- | --- | --- | --- |
-| sesskey | `String` | Session key obtained after authenticating with the LMS portal. | `sesskey` |
+| AccessToken | `String` | The OAuth 2.0 Access Token to use for API requests. | `access_token` |
 
 
 
-**Note:** Auth credentials can be set using named parameter for any of the above credentials (e.g. `sesskey`) in the client initialization.
+**Note:** Auth credentials can be set using named parameter for any of the above credentials (e.g. `access_token`) in the client initialization.
 
 ### Usage Example
 
@@ -163,8 +177,8 @@ require 'nust_lms_api'
 include NustLmsApi
 
 client = Client.new(
-  custom_query_authentication_credentials: CustomQueryAuthenticationCredentials.new(
-    sesskey: 'sesskey'
+  bearer_auth_credentials: BearerAuthCredentials.new(
+    access_token: 'AccessToken'
   )
 )
 ```

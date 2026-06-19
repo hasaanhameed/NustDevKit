@@ -33,7 +33,7 @@ Values provided through arguments take precedence over those defined in environm
 ```python
 ENVIRONMENT=production
 
-SESSKEY=ExampleSesskey
+ACCESS_TOKEN=ExampleAccessToken
 
 TIMEOUT=60
 MAX_RETRIES=3

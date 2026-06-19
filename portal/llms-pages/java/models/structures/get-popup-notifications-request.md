@@ -26,8 +26,8 @@ Request parameters for retrieving popup notifications for a user.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.GetPopupNotificationsRequest;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.GetPopupNotificationsRequest;
 
 GetPopupNotificationsRequest getPopupNotificationsRequest = new GetPopupNotificationsRequest.Builder(
     "162154",

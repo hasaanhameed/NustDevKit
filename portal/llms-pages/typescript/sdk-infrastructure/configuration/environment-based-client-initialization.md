@@ -49,7 +49,7 @@ TIMEOUT=30000
 ENVIRONMENT=production
 
 # Authentication Credentials
-SESSKEY=sesskey
+ACCESS_TOKEN=accesstoken
 
 # Retry Configuration
 MAX_NUMBER_OF_RETRIES=3

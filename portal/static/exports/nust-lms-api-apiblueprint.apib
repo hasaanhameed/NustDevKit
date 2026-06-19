@@ -1,15 +1,51 @@
 FORMAT: 1A
-HOST: https://lms.nust.edu.pk/portal
+HOST: http://127.0.0.1:8000
 
 # NUST LMS API
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 ## Authentication
-This API uses Custom Query Parameter for its authentication.
+This API uses JSON Web Tokens for its authentication.
 
 The parameters that are needed to be sent for this type of authentication are as follows:
-+ `sesskey` - Session key obtained after authenticating with the LMS portal.
++ `JWTHeaderName`
++ `JWTAcquireURL`
++ `JWTDestroyURL`
+
+# Group Authentication
+
+Exchange NUST LMS credentials for a gateway bearer token
+
+## Auth Login [/auth/login]
+
+### login [POST]
+Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
+
++ Request (<<Add Header Value>>)
+
+    + Attributes (LoginRequest)
+
+
+
++ Response 200 (application/json)
+
+        Authentication succeeded; bearer token issued.
+
+    + Attributes (TokenResponse)
+
+
+
++ Response 401 (application/json)
+
+        Invalid LMS credentials.
+
+    + Attributes (Auth Login 401 Error1)
+
+
+
+
 
 # Group Courses
 
@@ -264,6 +300,22 @@ Moodle method: `message_popup_get_popup_notifications`
 
 
 # Data Structures
+
+## LoginRequest (object)
+NUST LMS credentials used to obtain a gateway bearer token.
+
+### Properties
++ `email`: `john.doe@student.nust.edu.pk` (string, required) - NUST LMS username or email.
++ `password` (string, required) - NUST LMS password.
+
+
+## TokenResponse (object)
+Bearer token issued by the gateway after a successful login.
+
+### Properties
++ `access_token` (string, required) - JWT to send as `Authorization: Bearer <token>` on subsequent requests.
++ `token_type`: `bearer` (string, required) 
+
 
 ## MoodleWarning (object)
 A non-fatal warning returned alongside a successful response.
@@ -603,4 +655,11 @@ Request parameters for retrieving popup notifications for a user.
 + `useridto`: `162154` (string, required) - ID of the recipient user, passed as a string.
 + `limit`: `20` (number, required) - Maximum number of notifications to return.
 + `offset`: `0` (number, required) - Pagination offset.
+
+
+## Auth Login 401 Error1 (object)
+
+
+### Properties
++ `detail`: `Invalid LMS credentials.` (string, optional) 
 

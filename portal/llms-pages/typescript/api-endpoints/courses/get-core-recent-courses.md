@@ -15,7 +15,7 @@ async getCoreRecentCourses(
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

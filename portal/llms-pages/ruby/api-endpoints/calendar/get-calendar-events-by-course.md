@@ -12,7 +12,7 @@ def get_calendar_events_by_course(body)
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

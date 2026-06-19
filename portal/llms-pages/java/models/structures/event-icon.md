@@ -26,8 +26,8 @@ Icon metadata for a calendar event.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.EventIcon;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.EventIcon;
 
 EventIcon eventIcon = new EventIcon.Builder(
     "icon",

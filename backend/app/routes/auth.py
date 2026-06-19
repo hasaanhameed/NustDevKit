@@ -25,13 +25,6 @@ async def login(
     lms = LMSSession()
     try:
         ok = await lms.login(body.email.strip().lower(), body.password)
-    except NotImplementedError:
-        # LMSSession not yet ported — surface clearly during scaffolding.
-        await lms.close()
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail="LMSSession.login() is not implemented yet (port pending).",
-        )
     except Exception:
         await lms.close()
         raise HTTPException(

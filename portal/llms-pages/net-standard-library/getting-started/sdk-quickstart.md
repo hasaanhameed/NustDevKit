@@ -5,7 +5,8 @@ Source: /#/net-standard-library/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Building
@@ -58,6 +59,17 @@ Once the `TestConsoleProject` is created, a file named `Program.cs` will be visi
 ![Adding a project reference](https://apidocs.io/illustration/cs?workspaceFolder=NUST%20LMS%20API-CSharp&workspaceName=NustLmsApi&projectName=NustLmsApi.Standard&rootNamespace=NustLmsApi.Standard&step=addCode)
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| Production | **Default** NustDevKit Gateway (local development) |
+| Environment2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -65,10 +77,11 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| Environment | [`Environment`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.Production`** |
 | Timeout | `TimeSpan` | Http client timeout.<br>*Default*: `TimeSpan.FromSeconds(30)` |
 | HttpClientConfiguration | [`Action<HttpClientConfiguration.Builder>`](/llms-pages/net-standard-library/sdk-infrastructure/configuration/httpclientconfigurationbuilder.md) | Action delegate that configures the HTTP client by using the HttpClientConfiguration.Builder for customizing API call settings.<br>*Default*: `new HttpClient()` |
 | LogBuilder | [`LogBuilder`](/llms-pages/net-standard-library/sdk-infrastructure/configuration/logbuilder.md) | Represents the logging configuration builder for API calls |
-| CustomQueryAuthenticationCredentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for Custom Query Parameter |
+| BearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
@@ -82,13 +95,14 @@ using NustLmsApi.Standard.Authentication;
 namespace ConsoleApp;
 
 NustLmsApiClient client = new NustLmsApiClient.Builder()
-    .CustomQueryAuthenticationCredentials(
-        new CustomQueryAuthenticationModel.Builder(
-            "sesskey"
+    .BearerAuthCredentials(
+        new BearerAuthModel.Builder(
+            "AccessToken"
         )
         .Build())
     .HttpClientConfig(httpClientConfig =>
         httpClientConfig.Timeout(TimeSpan.FromSeconds(100)))
+    .Environment(NustLmsApi.Standard.Environment.Production)
     .LoggingConfig(config => config
         .LogLevel(LogLevel.Information)
         .RequestConfig(reqConfig => reqConfig.Body(true))
@@ -123,23 +137,23 @@ See the [Configuration-Based Initialization](/llms-pages/net-standard-library/sd
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Setter | Getter |
 |  --- | --- | --- | --- | --- |
-| Sesskey | `string` | Session key obtained after authenticating with the LMS portal. | `Sesskey` | `Sesskey` |
+| AccessToken | `string` | The OAuth 2.0 Access Token to use for API requests. | `AccessToken` | `AccessToken` |
 
 
 
-**Note:** Auth credentials can be set using `CustomQueryAuthenticationCredentials` in the client builder and accessed through `CustomQueryAuthenticationCredentials` method in the client instance.
+**Note:** Auth credentials can be set using `BearerAuthCredentials` in the client builder and accessed through `BearerAuthCredentials` method in the client instance.
 
 ### Usage Example
 
@@ -154,9 +168,9 @@ using NustLmsApi.Standard.Authentication;
 namespace ConsoleApp;
 
 NustLmsApiClient client = new NustLmsApiClient.Builder()
-    .CustomQueryAuthenticationCredentials(
-        new CustomQueryAuthenticationModel.Builder(
-            "sesskey"
+    .BearerAuthCredentials(
+        new BearerAuthModel.Builder(
+            "AccessToken"
         )
         .Build())
     .Build();

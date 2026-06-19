@@ -41,10 +41,10 @@ Complete user profile.
 ```java
 import java.io.IOException;
 import java.util.Arrays;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.CustomField;
-import pk.edu.nust.lms.models.UserPreference;
-import pk.edu.nust.lms.models.UserProfile;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.CustomField;
+import m18000.m0.m0.m127.models.UserPreference;
+import m18000.m0.m0.m127.models.UserProfile;
 
 UserProfile userProfile = new UserProfile.Builder(
     162154,

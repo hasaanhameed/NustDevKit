@@ -5,7 +5,8 @@ Source: /#/php/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Building
@@ -102,6 +103,17 @@ To run your project, right click on your PHP file inside your Test project and c
 ![Run Test Project - Step 5](https://apidocs.io/illustration/php?workspaceFolder=NustLmsApi&step=runProject)
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| PRODUCTION | **Default** NustDevKit Gateway (local development) |
+| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -109,6 +121,7 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/php/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | timeout | `int` | Timeout for API calls in seconds.<br>*Default*: `30` |
 | enableRetries | `bool` | Whether to enable retries and backoff feature.<br>*Default*: `false` |
 | numberOfRetries | `int` | The number of retries to make.<br>*Default*: `0` |
@@ -120,7 +133,7 @@ The following parameters are configurable for the API Client:
 | httpMethodsToRetry | `array` | Http methods to retry against.<br>*Default*: `'GET', 'PUT', 'GET', 'PUT'` |
 | loggingConfiguration | [`LoggingConfigurationBuilder`](/llms-pages/php/sdk-infrastructure/configuration/loggingconfigurationbuilder.md) | Represents the logging configurations for API calls |
 | proxyConfiguration | [`ProxyConfigurationBuilder`](/llms-pages/php/sdk-infrastructure/configuration/proxyconfigurationbuilder.md) | Represents the proxy configurations for API calls |
-| customQueryAuthenticationCredentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/php/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for Custom Query Parameter |
+| bearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/php/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
@@ -129,15 +142,17 @@ use NustLmsApiLib\Logging\LoggingConfigurationBuilder;
 use NustLmsApiLib\Logging\RequestLoggingConfigurationBuilder;
 use NustLmsApiLib\Logging\ResponseLoggingConfigurationBuilder;
 use Psr\Log\LogLevel;
-use NustLmsApiLib\Authentication\CustomQueryAuthenticationCredentialsBuilder;
+use NustLmsApiLib\Environment;
+use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
 use NustLmsApiLib\NustLmsApiClientBuilder;
 
 $client = NustLmsApiClientBuilder::init()
-    ->customQueryAuthenticationCredentials(
-        CustomQueryAuthenticationCredentialsBuilder::init(
-            'sesskey'
+    ->bearerAuthCredentials(
+        BearerAuthCredentialsBuilder::init(
+            'AccessToken'
         )
     )
+    ->environment(Environment::PRODUCTION)
     ->loggingConfiguration(
         LoggingConfigurationBuilder::init()
             ->level(LogLevel::INFO)
@@ -152,23 +167,23 @@ $client = NustLmsApiClientBuilder::init()
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/php/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/php/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Setter | Getter |
 |  --- | --- | --- | --- | --- |
-| sesskey | `string` | Session key obtained after authenticating with the LMS portal. | `sesskey` | `getSesskey()` |
+| AccessToken | `string` | The OAuth 2.0 Access Token to use for API requests. | `accessToken` | `getAccessToken()` |
 
 
 
-**Note:** Auth credentials can be set using `CustomQueryAuthenticationCredentialsBuilder::init()` in `customQueryAuthenticationCredentials` method in the client builder and accessed through `getCustomQueryAuthenticationCredentials` method in the client instance.
+**Note:** Auth credentials can be set using `BearerAuthCredentialsBuilder::init()` in `bearerAuthCredentials` method in the client builder and accessed through `getBearerAuthCredentials` method in the client instance.
 
 ### Usage Example
 
@@ -177,13 +192,13 @@ Documentation for accessing and setting credentials for SessKey.
 You must provide credentials in the client as shown in the following code snippet.
 
 ```php
-use NustLmsApiLib\Authentication\CustomQueryAuthenticationCredentialsBuilder;
+use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
 use NustLmsApiLib\NustLmsApiClientBuilder;
 
 $client = NustLmsApiClientBuilder::init()
-    ->customQueryAuthenticationCredentials(
-        CustomQueryAuthenticationCredentialsBuilder::init(
-            'sesskey'
+    ->bearerAuthCredentials(
+        BearerAuthCredentialsBuilder::init(
+            'AccessToken'
         )
     )
     ->build();

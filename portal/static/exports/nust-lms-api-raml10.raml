@@ -1,27 +1,55 @@
 #%RAML 1.0
 title: NUST LMS API
 version: 1.0.0
-baseUri: https://lms.nust.edu.pk/portal
+baseUri: http://127.0.0.1:8000
 baseUriParameters: {}
 protocols:
+- HTTP
 - HTTPS
 documentation:
 - title: NUST LMS API
-  content: NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
-securitySchemes:
-  SessKey:
-    type: Pass Through
-    description: Session key obtained after authenticating with the LMS portal.
-    describedBy:
-      queryParameters:
-        sesskey:
-          required: true
-          displayName: sesskey
-          description: Session key obtained after authenticating with the LMS portal.
-          type: string
+  content: |
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+
+    Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
+securitySchemes: {}
 securedBy:
-- SessKey
+- BearerAuth
 types:
+  LoginRequest:
+    displayName: LoginRequest
+    description: NUST LMS credentials used to obtain a gateway bearer token.
+    type: object
+    properties:
+      email:
+        required: true
+        example:
+          value: john.doe@student.nust.edu.pk
+        displayName: email
+        description: NUST LMS username or email.
+        type: string
+      password:
+        required: true
+        displayName: password
+        description: NUST LMS password.
+        type: string
+  TokenResponse:
+    displayName: TokenResponse
+    description: Bearer token issued by the gateway after a successful login.
+    type: object
+    properties:
+      access_token:
+        required: true
+        displayName: access_token
+        description: 'JWT to send as `Authorization: Bearer <token>` on subsequent requests.'
+        type: string
+      token_type:
+        required: true
+        default: bearer
+        example:
+          value: bearer
+        displayName: token_type
+        type: string
   MoodleWarning:
     displayName: MoodleWarning
     description: A non-fatal warning returned alongside a successful response.
@@ -1353,6 +1381,49 @@ types:
         description: Pagination offset.
         type: integer
         format: int32
+  AuthLogin401Error1:
+    displayName: AuthLogin401Error1
+    type: object
+    properties:
+      detail:
+        required: false
+        example:
+          value: Invalid LMS credentials.
+        displayName: detail
+        type: string
+/auth/login:
+  post:
+    displayName: login
+    description: >
+      Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
+    body:
+      application/json:
+        displayName: body
+        description: NUST LMS credentials.
+        type: LoginRequest
+    securedBy: []
+    headers:
+      Content-Type:
+        required: true
+        displayName: Content-Type
+        type: string
+        enum:
+        - application/json
+    responses:
+      '200':
+        description: Authentication succeeded; bearer token issued.
+        body:
+          application/json:
+            displayName: response200
+            description: Bearer token issued by the gateway after a successful login.
+            type: TokenResponse
+      '401':
+        description: Invalid LMS credentials.
+        body:
+          application/json:
+            displayName: response401
+            description: ''
+            type: AuthLogin401Error1
 /service:
   /core_course_get_recent_courses:
     post:

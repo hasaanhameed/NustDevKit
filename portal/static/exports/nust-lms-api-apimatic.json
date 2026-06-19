@@ -2,7 +2,7 @@
   "AuthenticateEndpointsWith": [
     {
       "AuthenticationToApply": {
-        "AuthenticationSchemeName": "SessKey",
+        "AuthenticationSchemeName": "BearerAuth",
         "RequiredScopes": []
       },
       "OptionType": "Single",
@@ -10,7 +10,7 @@
     }
   ],
   "Name": "NUST LMS API",
-  "BaseUri": "https://lms.nust.edu.pk/portal",
+  "BaseUri": "http://127.0.0.1:8000",
   "ServerConfiguration": {
     "UseParent": false,
     "DefaultEnvironment": "production",
@@ -18,11 +18,23 @@
     "Environments": [
       {
         "Name": "production",
-        "Description": "NUST LMS Production Portal (Production Environment)",
+        "Description": "NustDevKit Gateway (local development)",
         "Servers": [
           {
             "Name": "default",
-            "Url": "https://lms.nust.edu.pk/portal",
+            "Url": "http://127.0.0.1:8000",
+            "Parameters": []
+          }
+        ],
+        "DisableTryItOut": false
+      },
+      {
+        "Name": "environment2",
+        "Description": "NustDevKit Gateway (production — replace with your deployed gateway URL)",
+        "Servers": [
+          {
+            "Name": "default",
+            "Url": "https://gateway.nustdevkit.example",
             "Parameters": []
           }
         ],
@@ -31,7 +43,7 @@
     ],
     "Parameters": []
   },
-  "Description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.\n",
+  "Description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).\nAuthenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.\n",
   "Version": "1.0.0",
   "Contact": {
     "Name": "NustDevKit Support",
@@ -39,12 +51,19 @@
   },
   "AdditionalHeaders": [],
   "Authentication": {
-    "Type": "CustomQuery",
-    "AuthType": "CustomQuery",
+    "Type": "JWT",
+    "AuthType": "JWT",
     "Parameters": [
       {
-        "Name": "sesskey",
-        "Description": "Session key obtained after authenticating with the LMS portal.",
+        "Name": "JWTHeaderName",
+        "IsNullDefaultExplicit": false
+      },
+      {
+        "Name": "JWTAcquireURL",
+        "IsNullDefaultExplicit": false
+      },
+      {
+        "Name": "JWTDestroyURL",
         "IsNullDefaultExplicit": false
       }
     ],
@@ -54,19 +73,240 @@
     "AdditionalOAuthFields": []
   },
   "AuthenticationSchemes": {
-    "SessKey": {
-      "Description": "Session key obtained after authenticating with the LMS portal.",
-      "AuthenticationType": "CustomQuery",
+    "BearerAuth": {
+      "Description": "Gateway-issued JWT. Obtain it from `POST /auth/login` using your NUST LMS credentials, then send it as `Authorization: Bearer <token>`. The gateway manages the underlying LMS session (cookie + sesskey) server-side, so the ephemeral sesskey never leaves the gateway.\n",
+      "AuthenticationType": "JWT",
       "Parameters": [
         {
-          "Name": "sesskey",
-          "Description": "Session key obtained after authenticating with the LMS portal.",
+          "Name": "JWTHeaderName",
+          "IsNullDefaultExplicit": false
+        },
+        {
+          "Name": "JWTAcquireURL",
+          "IsNullDefaultExplicit": false
+        },
+        {
+          "Name": "JWTDestroyURL",
           "IsNullDefaultExplicit": false
         }
       ]
     }
   },
   "Endpoints": [
+    {
+      "AuthenticateEndpointWith": [],
+      "Name": "login",
+      "Description": "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.\n",
+      "Summary": "Log in with NUST LMS credentials",
+      "HTTPMethod": "POST",
+      "Group": "Authentication",
+      "RequestContentType": "application/json",
+      "RequiresAuthentication": false,
+      "Route": "/auth/login",
+      "Responses": {
+        "200": {
+          "Name": "response200",
+          "Description": "Authentication succeeded; bearer token issued.",
+          "Headers": [],
+          "BodyContent": {
+            "application/json": {
+              "AnyOfTypes": [],
+              "AnyOfCasesMeta": [],
+              "OneOfTypes": [],
+              "OneOfCasesMeta": [],
+              "NotTypes": [],
+              "NotCasesMeta": [],
+              "Type": "TokenResponse",
+              "IsSdlNativeType": false,
+              "Constant": false,
+              "Description": "Bearer token issued by the gateway after a successful login.",
+              "IsNullDefaultExplicit": false,
+              "IsNullExampleExplicit": false,
+              "Examples": [],
+              "Nullable": false,
+              "NullableArrayItems": false,
+              "NullableMapValues": false,
+              "IsArray": false,
+              "IsMap": false,
+              "IsArrayOfMap": false
+            }
+          }
+        },
+        "401": {
+          "Name": "response401",
+          "Description": "Invalid LMS credentials.",
+          "Headers": [],
+          "BodyContent": {
+            "application/json": {
+              "AnyOfTypes": [],
+              "AnyOfCasesMeta": [],
+              "OneOfTypes": [],
+              "OneOfCasesMeta": [],
+              "NotTypes": [],
+              "NotCasesMeta": [],
+              "Type": "Auth Login 401 Error1",
+              "IsSdlNativeType": false,
+              "Constant": false,
+              "IsNullDefaultExplicit": false,
+              "IsNullExampleExplicit": false,
+              "Examples": [],
+              "Nullable": false,
+              "NullableArrayItems": false,
+              "NullableMapValues": false,
+              "IsArray": false,
+              "IsMap": false,
+              "IsArrayOfMap": false
+            }
+          }
+        }
+      },
+      "Response": {
+        "Optional": false,
+        "AnyOfTypes": [],
+        "AnyOfCasesMeta": [],
+        "OneOfTypes": [],
+        "OneOfCasesMeta": [],
+        "NotTypes": [],
+        "NotCasesMeta": [],
+        "Type": "TokenResponse",
+        "IsSdlNativeType": false,
+        "Constant": false,
+        "IsStream": false,
+        "IsAttribute": false,
+        "IsNullExampleExplicit": false,
+        "Examples": [],
+        "Nullable": false,
+        "NullableArrayItems": false,
+        "NullableMapValues": false,
+        "ReadOnly": false,
+        "WriteOnly": false,
+        "IsArray": false,
+        "IsMap": false,
+        "IsArrayOfMap": false,
+        "Deprecated": false,
+        "Name": "response",
+        "Description": "Authentication succeeded; bearer token issued.",
+        "IsNullDefaultExplicit": false
+      },
+      "ResponseCode": 200,
+      "ResponseHeaders": [
+        {
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "Content-Type",
+          "DefaultValue": "application/json",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "ResponseContentType": "application/json",
+      "HasOptionalQueryParams": false,
+      "HasOptionalFieldParams": false,
+      "CollectParameters": false,
+      "Parameters": [
+        {
+          "ParamFormat": "Header",
+          "AutoGeneratedOrModified": true,
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "Constant": true,
+          "IsStream": false,
+          "IsAttribute": false,
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "Content-Type",
+          "Description": "",
+          "DefaultValue": "application/json",
+          "IsNullDefaultExplicit": false
+        },
+        {
+          "ParamFormat": "Body",
+          "AutoGeneratedOrModified": true,
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "LoginRequest",
+          "IsSdlNativeType": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "body",
+          "Description": "NUST LMS credentials.",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "Errors": [
+        {
+          "ErrorCode": 401,
+          "ErrorMessage": "Invalid LMS credentials.",
+          "ErrorTypeName": "Auth Login 401 Error",
+          "IsSdlNativeType": false
+        }
+      ],
+      "TestCases": [],
+      "WrapBodyInObject": false,
+      "Deprecated": false,
+      "XmlRequest": false,
+      "XmlResponse": false,
+      "Tags": [
+        "Authentication"
+      ],
+      "ErrorTemplates": {},
+      "SkipAdditionalHeaders": false,
+      "Callbacks": []
+    },
     {
       "AuthenticateEndpointWith": [],
       "Name": "getCoreRecentCourses",
@@ -1794,6 +2034,10 @@
   "CallbackGroups": {},
   "EndpointGroups": [
     {
+      "Name": "Authentication",
+      "Description": "Exchange NUST LMS credentials for a gateway bearer token"
+    },
+    {
       "Name": "Courses",
       "Description": "Course listing and enrollment operations"
     },
@@ -1811,6 +2055,155 @@
     }
   ],
   "CustomTypes": [
+    {
+      "Name": "LoginRequest",
+      "ImplementationType": "Structure",
+      "Description": "NUST LMS credentials used to obtain a gateway bearer token.",
+      "Fields": [
+        {
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "Example": "john.doe@student.nust.edu.pk",
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "email",
+          "Description": "NUST LMS username or email.",
+          "IsNullDefaultExplicit": false
+        },
+        {
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {
+            "IsPassword": true
+          },
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "password",
+          "Description": "NUST LMS password.",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "IsNullExampleExplicit": false,
+      "ExampleValues": [],
+      "Deprecated": false,
+      "IsXmlType": false,
+      "AllowAdditionalFields": true
+    },
+    {
+      "Name": "TokenResponse",
+      "ImplementationType": "Structure",
+      "Description": "Bearer token issued by the gateway after a successful login.",
+      "Fields": [
+        {
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "access_token",
+          "Description": "JWT to send as `Authorization: Bearer <token>` on subsequent requests.",
+          "IsNullDefaultExplicit": false
+        },
+        {
+          "Optional": false,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "Example": "bearer",
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "token_type",
+          "Description": "",
+          "DefaultValue": "bearer",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "IsNullExampleExplicit": false,
+      "ExampleValues": [],
+      "Deprecated": false,
+      "IsXmlType": false,
+      "AllowAdditionalFields": true
+    },
     {
       "Name": "CourseTimelineClassification",
       "ImplementationType": "Enumeration",
@@ -2460,6 +2853,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -2729,6 +3125,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7049,6 +7448,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7181,6 +7583,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7224,6 +7629,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7358,6 +7766,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7521,6 +7932,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7592,6 +8006,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7665,6 +8082,9 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     },
@@ -7765,6 +8185,93 @@
           "Name": "offset",
           "Description": "Pagination offset.",
           "DefaultValue": "0",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "IsNullExampleExplicit": false,
+      "ExampleValues": [],
+      "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
+      "IsXmlType": false,
+      "AllowAdditionalFields": true
+    },
+    {
+      "Name": "Auth Login 401 Error",
+      "ImplementationType": "Exception",
+      "Fields": [
+        {
+          "Optional": true,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "Example": "Invalid LMS credentials.",
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "detail",
+          "Description": "",
+          "IsNullDefaultExplicit": false
+        }
+      ],
+      "IsNullExampleExplicit": false,
+      "ExampleValues": [],
+      "Deprecated": false,
+      "IsXmlType": false,
+      "AllowAdditionalFields": true
+    },
+    {
+      "Name": "Auth Login 401 Error1",
+      "ImplementationType": "Structure",
+      "Fields": [
+        {
+          "Optional": true,
+          "AnyOfTypes": [],
+          "AnyOfCasesMeta": [],
+          "OneOfTypes": [],
+          "OneOfCasesMeta": [],
+          "NotTypes": [],
+          "NotCasesMeta": [],
+          "Type": "String",
+          "IsSdlNativeType": true,
+          "IsTypeJsonObject": false,
+          "Constant": false,
+          "IsStream": false,
+          "IsAttribute": false,
+          "Example": "Invalid LMS credentials.",
+          "IsNullExampleExplicit": false,
+          "Examples": [],
+          "Attributes": {},
+          "Nullable": false,
+          "NullableArrayItems": false,
+          "NullableMapValues": false,
+          "ReadOnly": false,
+          "WriteOnly": false,
+          "IsArray": false,
+          "IsMap": false,
+          "IsArrayOfMap": false,
+          "Deprecated": false,
+          "Name": "detail",
+          "Description": "",
           "IsNullDefaultExplicit": false
         }
       ],
@@ -7938,11 +8445,16 @@
       "IsNullExampleExplicit": false,
       "ExampleValues": [],
       "Deprecated": false,
+      "Extensions": {
+        "x-scalar-ignore": true
+      },
       "IsXmlType": false,
       "AllowAdditionalFields": true
     }
   ],
   "UserDefinedImportedTypes": [
+    "LoginRequest",
+    "TokenResponse",
     "CourseTimelineClassification",
     "CourseTimelineSortField",
     "UserProfileField",
@@ -8146,5 +8658,29 @@
     "GenerateSampleValueFromRegexPattern": false,
     "UseHttpMethodPrefixForAutoGeneratedWsdlNames": true,
     "ForceAllowModelExampleExportForSampleGeneration": false
+  },
+  "RootExtensions": {
+    "x-tagGroups": [
+      {
+        "name": "Getting Started",
+        "tags": [
+          "Authentication"
+        ]
+      },
+      {
+        "name": "Academics",
+        "tags": [
+          "Courses",
+          "Calendar"
+        ]
+      },
+      {
+        "name": "Profile & Messaging",
+        "tags": [
+          "Users",
+          "Notifications"
+        ]
+      }
+    ]
   }
 }

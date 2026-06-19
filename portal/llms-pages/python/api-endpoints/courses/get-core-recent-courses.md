@@ -13,7 +13,7 @@ def get_core_recent_courses(self,
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

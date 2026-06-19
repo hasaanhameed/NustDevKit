@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="https://lms.nust.edu.pk/portal/schemas" xmlns="http://wadl.dev.java.net/2009/02">
-  <doc title="NUST LMS API" xml:lang="en">NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="http://127.0.0.1:8000/schemas" xmlns="http://wadl.dev.java.net/2009/02">
+  <doc title="NUST LMS API" xml:lang="en">NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer &lt;token&gt;`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 </doc>
   <grammars>
-    <xs:schema xmlns:tns="https://lms.nust.edu.pk/portal/schemas" targetNamespace="https://lms.nust.edu.pk/portal/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema xmlns:tns="http://127.0.0.1:8000/schemas" targetNamespace="http://127.0.0.1:8000/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="LoginRequest" type="schemas:LoginRequest" />
+      <xs:element name="TokenResponse" type="schemas:TokenResponse" />
       <xs:element name="CourseTimelineClassification" type="schemas:CourseTimelineClassification" />
       <xs:element name="CourseTimelineSortField" type="schemas:CourseTimelineSortField" />
       <xs:element name="UserProfileField" type="schemas:UserProfileField" />
@@ -33,6 +36,10 @@
       <xs:element name="GetUsersByFieldRequest" type="schemas:GetUsersByFieldRequest" />
       <xs:element name="GetUserPreferencesRequest" type="schemas:GetUserPreferencesRequest" />
       <xs:element name="GetPopupNotificationsRequest" type="schemas:GetPopupNotificationsRequest" />
+      <xs:element name="AuthLogin401Error1" type="schemas:AuthLogin401Error1" />
+      <xs:element name="login_Request" type="schemas:login_Request" />
+      <xs:element name="login200_Response0" type="schemas:login200_Response0" />
+      <xs:element name="login401_Response0" type="schemas:login401_Response0" />
       <xs:element name="getCoreRecentCourses_Request" type="schemas:getCoreRecentCourses_Request" />
       <xs:element name="getCoreRecentCourses200_Response0" type="schemas:getCoreRecentCourses200_Response0" />
       <xs:element name="getCoreRecentCourses400_Response0" type="schemas:getCoreRecentCourses400_Response0" />
@@ -57,6 +64,36 @@
       <xs:element name="getPopupNotifications_Request" type="schemas:getPopupNotifications_Request" />
       <xs:element name="getPopupNotifications200_Response0" type="schemas:getPopupNotifications200_Response0" />
       <xs:element name="getPopupNotifications400_Response0" type="schemas:getPopupNotifications400_Response0" />
+      <xs:complexType name="LoginRequest">
+        <xs:annotation>
+          <xs:documentation>NUST LMS credentials used to obtain a gateway bearer token.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="email" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>NUST LMS username or email.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="password" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>NUST LMS password.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="TokenResponse">
+        <xs:annotation>
+          <xs:documentation>Bearer token issued by the gateway after a successful login.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="access_token" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>JWT to send as `Authorization: Bearer &lt;token&gt;` on subsequent requests.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" default="bearer" name="token_type" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
       <xs:simpleType name="CourseTimelineClassification">
         <xs:annotation>
           <xs:documentation>Timeline classification filter for enrolled courses.</xs:documentation>
@@ -1128,6 +1165,38 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="AuthLogin401Error1">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="detail" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="login_Request">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="body" type="schemas:LoginRequest">
+            <xs:annotation>
+              <xs:documentation>NUST LMS credentials.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="login200_Response0">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:TokenResponse">
+            <xs:annotation>
+              <xs:documentation>Bearer token issued by the gateway after a successful login.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="login401_Response0">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response401" type="schemas:AuthLogin401Error1">
+            <xs:annotation>
+              <xs:documentation>Invalid LMS credentials.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="getCoreRecentCourses_Request">
         <xs:sequence>
           <xs:element minOccurs="1" name="body" type="schemas:GetRecentCoursesRequest">
@@ -1346,7 +1415,27 @@
       </xs:complexType>
     </xs:schema>
   </grammars>
-  <resources base="https://lms.nust.edu.pk/portal">
+  <resources base="http://127.0.0.1:8000">
+    <resource id="_authlogin" path="/auth/login">
+      <method id="login" name="POST">
+        <doc title="login" xml:lang="en">Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer &lt;token&gt;` for every other operation.
+</doc>
+        <request>
+          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
+            <doc title="Content-Type" xml:lang="en" />
+          </param>
+          <representation element="schemas:login_Request" mediaType="application/json" />
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">Authentication succeeded; bearer token issued.</doc>
+          <representation element="schemas:login200_Response0" mediaType="application/json" />
+        </response>
+        <response status="401">
+          <doc title="401" xml:lang="en">Invalid LMS credentials.</doc>
+          <representation element="schemas:login401_Response0" mediaType="application/json" />
+        </response>
+      </method>
+    </resource>
     <resource id="_servicecore_course_get_recent_courses" path="/service/core_course_get_recent_courses">
       <method id="getCoreRecentCourses" name="POST">
         <doc title="getCoreRecentCourses" xml:lang="en">Returns the courses the authenticated user has accessed most recently, ordered by last access time.

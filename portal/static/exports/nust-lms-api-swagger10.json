@@ -1,8 +1,55 @@
 {
   "swaggerVersion": "1.2",
-  "basePath": "https://lms.nust.edu.pk/portal",
+  "basePath": "http://127.0.0.1:8000",
   "resourcePath": "/",
   "apis": [
+    {
+      "path": "/auth/login",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.\n",
+          "nickname": "login",
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "description": "",
+              "paramType": "header",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "application/json",
+              "uniqueItems": false,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "NUST LMS credentials.",
+              "paramType": "body",
+              "required": true,
+              "allowMultiple": false,
+              "uniqueItems": false,
+              "type": "LoginRequest"
+            }
+          ],
+          "authorizations": {},
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": "AuthLogin401Error1",
+              "message": "Invalid LMS credentials."
+            }
+          ],
+          "uniqueItems": false,
+          "$ref": "TokenResponse"
+        }
+      ]
+    },
     {
       "path": "/service/core_course_get_recent_courses",
       "operations": [
@@ -32,7 +79,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -84,7 +131,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -133,7 +180,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -182,7 +229,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -231,7 +278,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -283,7 +330,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -332,7 +379,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -384,7 +431,7 @@
             }
           ],
           "authorizations": {
-            "SessKey": []
+            "BearerAuth": []
           },
           "produces": [
             "application/json"
@@ -406,6 +453,47 @@
     }
   ],
   "models": {
+    "LoginRequest": {
+      "id": "LoginRequest",
+      "description": "NUST LMS credentials used to obtain a gateway bearer token.",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "description": "NUST LMS username or email.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "password": {
+          "description": "NUST LMS password.",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
+    "TokenResponse": {
+      "id": "TokenResponse",
+      "description": "Bearer token issued by the gateway after a successful login.",
+      "required": [
+        "access_token",
+        "token_type"
+      ],
+      "properties": {
+        "access_token": {
+          "description": "JWT to send as `Authorization: Bearer <token>` on subsequent requests.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "token_type": {
+          "description": "",
+          "defaultValue": "bearer",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
+    },
     "MoodleWarning": {
       "id": "MoodleWarning",
       "description": "A non-fatal warning returned alongside a successful response.",
@@ -1807,15 +1895,20 @@
           "format": "int32"
         }
       }
+    },
+    "AuthLogin401Error1": {
+      "id": "AuthLogin401Error1",
+      "required": [],
+      "properties": {
+        "detail": {
+          "description": "",
+          "uniqueItems": false,
+          "type": "string"
+        }
+      }
     }
   },
-  "authorizations": {
-    "SessKey": {
-      "passAs": "query",
-      "keyname": "sesskey",
-      "type": "apiKey"
-    }
-  },
+  "authorizations": {},
   "consumes": [
     "application/json"
   ],

@@ -13,7 +13,7 @@ GetEnrolledCoursesByTimelineAsync(
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

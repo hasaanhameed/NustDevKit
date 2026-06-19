@@ -5,7 +5,8 @@ Source: /#/java/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 
 # Install the Package
@@ -24,6 +25,17 @@ You can also view the package at:
 https://central.sonatype.com/artifact/com.apimatic/sample-sdk-artifact-id/1.0.0
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| PRODUCTION | **Default** NustDevKit Gateway (local development) |
+| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -31,18 +43,20 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/java/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | httpClientConfig | [`Consumer<HttpClientConfiguration.Builder>`](/llms-pages/java/sdk-infrastructure/configuration/httpclientconfiguration-builder.md) | Set up Http Client Configuration instance. |
 | loggingConfig | [`Consumer<ApiLoggingConfiguration.Builder>`](/llms-pages/java/sdk-infrastructure/configuration/apiloggingconfiguration-builder.md) | Set up Logging Configuration instance. |
-| customQueryAuthenticationCredentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/java/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for Custom Query Parameter |
+| bearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/java/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
 ```java
+import m18000.m0.m0.m127.Environment;
+import m18000.m0.m0.m127.NustLmsApiClient;
+import m18000.m0.m0.m127.authentication.BearerAuthModel;
+import m18000.m0.m0.m127.exceptions.ApiException;
+import m18000.m0.m0.m127.http.response.ApiResponse;
 import org.slf4j.event.Level;
-import pk.edu.nust.lms.NustLmsApiClient;
-import pk.edu.nust.lms.authentication.CustomQueryAuthenticationModel;
-import pk.edu.nust.lms.exceptions.ApiException;
-import pk.edu.nust.lms.http.response.ApiResponse;
 
 public class Program {
     public static void main(String[] args) {
@@ -53,10 +67,11 @@ public class Program {
                     .responseConfig(logConfigBuilder -> logConfigBuilder.headers(true)))
             .httpClientConfig(configBuilder -> configBuilder
                     .timeout(0))
-            .customQueryAuthenticationCredentials(new CustomQueryAuthenticationModel.Builder(
-                    "sesskey"
+            .bearerAuthCredentials(new BearerAuthModel.Builder(
+                    "AccessToken"
                 )
                 .build())
+            .environment(Environment.PRODUCTION)
             .build();
 
     }
@@ -68,23 +83,23 @@ public class Program {
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/java/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/java/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Setter | Getter |
 |  --- | --- | --- | --- | --- |
-| sesskey | `String` | Session key obtained after authenticating with the LMS portal. | `sesskey` | `getSesskey()` |
+| AccessToken | `String` | The OAuth 2.0 Access Token to use for API requests. | `accessToken` | `getAccessToken()` |
 
 
 
-**Note:** Auth credentials can be set using `customQueryAuthenticationCredentials` in the client builder and accessed through `getCustomQueryAuthenticationCredentials` method in the client instance.
+**Note:** Auth credentials can be set using `bearerAuthCredentials` in the client builder and accessed through `getBearerAuthCredentials` method in the client instance.
 
 ### Usage Example
 
@@ -93,14 +108,14 @@ Documentation for accessing and setting credentials for SessKey.
 You must provide credentials in the client as shown in the following code snippet.
 
 ```java
-import pk.edu.nust.lms.NustLmsApiClient;
-import pk.edu.nust.lms.authentication.CustomQueryAuthenticationModel;
+import m18000.m0.m0.m127.NustLmsApiClient;
+import m18000.m0.m0.m127.authentication.BearerAuthModel;
 
 public class Program {
     public static void main(String[] args) {
         NustLmsApiClient client = new NustLmsApiClient.Builder()
-            .customQueryAuthenticationCredentials(new CustomQueryAuthenticationModel.Builder(
-                    "sesskey"
+            .bearerAuthCredentials(new BearerAuthModel.Builder(
+                    "AccessToken"
                 )
                 .build())
             .build();

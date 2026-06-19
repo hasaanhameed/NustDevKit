@@ -26,9 +26,9 @@ Response envelope for the popup-notifications endpoint.
 ```java
 import java.io.IOException;
 import java.util.Arrays;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.Notification;
-import pk.edu.nust.lms.models.PopupNotificationsResponse;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.Notification;
+import m18000.m0.m0.m127.models.PopupNotificationsResponse;
 
 PopupNotificationsResponse popupNotificationsResponse = new PopupNotificationsResponse.Builder(
     Arrays.asList(

@@ -13,7 +13,7 @@ CompletableFuture<ApiResponse<UserPreferencesResponse>> getUserPreferencesAsync(
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/java/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

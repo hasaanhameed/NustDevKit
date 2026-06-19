@@ -13,7 +13,7 @@ def get_calendar_events_by_timesort(self,
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

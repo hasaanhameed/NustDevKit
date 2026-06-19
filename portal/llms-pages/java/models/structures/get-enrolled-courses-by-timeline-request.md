@@ -27,10 +27,10 @@ Request parameters for retrieving enrolled courses filtered by timeline classifi
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.CourseTimelineClassification;
-import pk.edu.nust.lms.models.CourseTimelineSortField;
-import pk.edu.nust.lms.models.GetEnrolledCoursesByTimelineRequest;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.CourseTimelineClassification;
+import m18000.m0.m0.m127.models.CourseTimelineSortField;
+import m18000.m0.m0.m127.models.GetEnrolledCoursesByTimelineRequest;
 
 GetEnrolledCoursesByTimelineRequest getEnrolledCoursesByTimelineRequest = new GetEnrolledCoursesByTimelineRequest.Builder(
     0,

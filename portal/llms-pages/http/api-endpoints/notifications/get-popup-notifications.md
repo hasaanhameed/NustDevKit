@@ -12,7 +12,7 @@ POST /service/message_popup_get_popup_notifications
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/http/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters
@@ -33,9 +33,10 @@ This endpoint requires [SessKey](/llms-pages/http/getting-started/sdk-quickstart
 
 ```bash
 curl -X POST \
-  --url 'https://lms.nust.edu.pk/portal/service/message_popup_get_popup_notifications?sesskey=sesskey'  \
+  --url 'http://127.0.0.1:8000/service/message_popup_get_popup_notifications'  \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer AccessToken' \
   --data-raw '{
   "useridto": "162154",
   "limit": 20,

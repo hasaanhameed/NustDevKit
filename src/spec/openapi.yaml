@@ -5,20 +5,29 @@ info:
   version: 1.0.0
   description: >
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
-    Each path is virtual for clean SDK generation; NustDevKit resolves them to the
-    underlying Moodle AJAX service endpoint transparently.
+
+    Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a
+    bearer token, then call any operation with `Authorization: Bearer <token>`. The
+    NustDevKit gateway logs into the LMS on your behalf and manages the underlying
+    session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
   contact:
     name: NustDevKit Support
     url: https://github.com/hasaanhameed52/NustDevKit
 
 servers:
-  - url: https://lms.nust.edu.pk/portal
-    description: NUST LMS Production Portal (Production Environment)
+  - url: http://127.0.0.1:8000
+    description: NustDevKit Gateway (local development)
+  - url: https://gateway.nustdevkit.example
+    description: NustDevKit Gateway (production — replace with your deployed gateway URL)
 
+# All operations require a gateway-issued bearer token, except POST /auth/login
+# (which overrides this with `security: []`).
 security:
-  - SessKey: []
+  - BearerAuth: []
 
 tags:
+  - name: Authentication
+    description: Exchange NUST LMS credentials for a gateway bearer token
   - name: Courses
     description: Course listing and enrollment operations
   - name: Calendar
@@ -31,6 +40,9 @@ tags:
 # Nested sidebar sections (honored by Scalar). Groups the operation tags into
 # domain areas so the reference reads as a structured hub rather than a flat list.
 x-tagGroups:
+  - name: Getting Started
+    tags:
+      - Authentication
   - name: Academics
     tags:
       - Courses
@@ -42,13 +54,48 @@ x-tagGroups:
 
 components:
   securitySchemes:
-    SessKey:
-      type: apiKey
-      in: query
-      name: sesskey
-      description: Session key obtained after authenticating with the LMS portal.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Gateway-issued JWT. Obtain it from `POST /auth/login` using your NUST LMS
+        credentials, then send it as `Authorization: Bearer <token>`. The gateway
+        manages the underlying LMS session (cookie + sesskey) server-side, so the
+        ephemeral sesskey never leaves the gateway.
 
   schemas:
+    LoginRequest:
+      type: object
+      description: NUST LMS credentials used to obtain a gateway bearer token.
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: NUST LMS username or email.
+          example: "john.doe@student.nust.edu.pk"
+        password:
+          type: string
+          format: password
+          description: NUST LMS password.
+
+    TokenResponse:
+      type: object
+      description: Bearer token issued by the gateway after a successful login.
+      required:
+        - access_token
+        - token_type
+      properties:
+        access_token:
+          type: string
+          description: "JWT to send as `Authorization: Bearer <token>` on subsequent requests."
+        token_type:
+          type: string
+          default: bearer
+          example: bearer
+
     CalendarEventVisibility:
       type: integer
       description: Visibility flag for a calendar event. 1 means the event is visible; 0 means it is hidden.
@@ -986,6 +1033,42 @@ components:
           example: 0
 
 paths:
+  /auth/login:
+    post:
+      operationId: login
+      summary: Log in with NUST LMS credentials
+      description: >
+        Authenticates against NUST LMS on your behalf and returns a gateway JWT.
+        The LMS session (cookie + sesskey) is created and held server-side; use the
+        returned token as `Authorization: Bearer <token>` for every other operation.
+      tags:
+        - Authentication
+      security: [] # public endpoint — no token required to log in
+      requestBody:
+        required: true
+        description: NUST LMS credentials.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Authentication succeeded; bearer token issued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "401":
+          description: Invalid LMS credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Invalid LMS credentials.
+
   /service/core_course_get_recent_courses:
     post:
       operationId: getCoreRecentCourses

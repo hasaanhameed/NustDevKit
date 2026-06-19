@@ -13,7 +13,7 @@ def get_user_preferences(self,
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters

@@ -3,14 +3,64 @@ title: NUST LMS API
 version: 1.0.0
 documentation:
 - title: NUST LMS API
-  content: NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
-baseUri: https://lms.nust.edu.pk/portal
+  content: |
+    NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+
+    Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
+baseUri: http://127.0.0.1:8000
 securedBy:
-- SessKey
+- BearerAuth
 protocols:
+- HTTP
 - HTTPS
 baseUriParameters: {}
 schemas:
+- LoginRequest: |
+    {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "id": "LoginRequest",
+      "title": "LoginRequest",
+      "description": "NUST LMS credentials used to obtain a gateway bearer token.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "description": "NUST LMS username or email.",
+          "example": "john.doe@student.nust.edu.pk",
+          "type": "string"
+        },
+        "password": {
+          "description": "NUST LMS password.",
+          "type": "string",
+          "format": "password"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    }
+- TokenResponse: |
+    {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "id": "TokenResponse",
+      "title": "TokenResponse",
+      "description": "Bearer token issued by the gateway after a successful login.",
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "description": "JWT to send as `Authorization: Bearer <token>` on subsequent requests.",
+          "type": "string"
+        },
+        "token_type": {
+          "example": "bearer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "access_token",
+        "token_type"
+      ]
+    }
 - CourseTimelineClassification: |
     {
       "$schema": "http://json-schema.org/draft-04/schema#",
@@ -2390,17 +2440,98 @@ schemas:
         "offset"
       ]
     }
-securitySchemes:
-- SessKey:
-    description: Session key obtained after authenticating with the LMS portal.
-    type: x-custom
-    describedBy:
-      queryParameters:
-        sesskey:
-          description: Session key obtained after authenticating with the LMS portal.
-          type: string
-          required: true
-          displayName: sesskey
+- AuthLogin401Error1: |
+    {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "id": "AuthLogin401Error1",
+      "title": "AuthLogin401Error1",
+      "type": "object",
+      "properties": {
+        "detail": {
+          "example": "Invalid LMS credentials.",
+          "type": "string"
+        }
+      }
+    }
+/auth/login:
+  post:
+    securedBy: []
+    description: >
+      Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
+    headers:
+      Content-Type:
+        required: true
+        displayName: Content-Type
+        enum:
+        - application/json
+    body:
+      application/json:
+        schema: |
+          {
+            "id": "LoginRequest",
+            "title": "LoginRequest",
+            "description": "NUST LMS credentials.",
+            "type": "object",
+            "properties": {
+              "email": {
+                "description": "NUST LMS username or email.",
+                "example": "john.doe@student.nust.edu.pk",
+                "type": "string"
+              },
+              "password": {
+                "description": "NUST LMS password.",
+                "type": "string",
+                "format": "password"
+              }
+            },
+            "required": [
+              "email",
+              "password"
+            ]
+          }
+        example: ''
+    responses:
+      '200':
+        description: Authentication succeeded; bearer token issued.
+        body:
+          application/json:
+            schema: |
+              {
+                "id": "TokenResponse",
+                "title": "TokenResponse",
+                "description": "Bearer token issued by the gateway after a successful login.",
+                "type": "object",
+                "properties": {
+                  "access_token": {
+                    "description": "JWT to send as `Authorization: Bearer <token>` on subsequent requests.",
+                    "type": "string"
+                  },
+                  "token_type": {
+                    "example": "bearer",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "access_token",
+                  "token_type"
+                ]
+              }
+      '401':
+        description: Invalid LMS credentials.
+        body:
+          application/json:
+            schema: |
+              {
+                "id": "AuthLogin401Error1",
+                "title": "AuthLogin401Error1",
+                "type": "object",
+                "properties": {
+                  "detail": {
+                    "example": "Invalid LMS credentials.",
+                    "type": "string"
+                  }
+                }
+              }
 /service:
   /core_course_get_recent_courses:
     post:

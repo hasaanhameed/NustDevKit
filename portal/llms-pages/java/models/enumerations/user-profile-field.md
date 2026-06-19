@@ -23,7 +23,7 @@ User profile field to match against when searching for users.
 # Example
 
 ```java
-import pk.edu.nust.lms.models.UserProfileField;
+import m18000.m0.m0.m127.models.UserProfileField;
 
 UserProfileField userProfileField = UserProfileField.ID;
 ```

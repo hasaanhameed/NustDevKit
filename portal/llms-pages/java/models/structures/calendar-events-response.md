@@ -27,12 +27,12 @@ A list of calendar events with pagination boundary IDs.
 ```java
 import java.io.IOException;
 import java.util.Arrays;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.CalendarEvent;
-import pk.edu.nust.lms.models.CalendarEventsResponse;
-import pk.edu.nust.lms.models.Course;
-import pk.edu.nust.lms.models.EventIcon;
-import pk.edu.nust.lms.models.EventSubscription;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.CalendarEvent;
+import m18000.m0.m0.m127.models.CalendarEventsResponse;
+import m18000.m0.m0.m127.models.Course;
+import m18000.m0.m0.m127.models.EventIcon;
+import m18000.m0.m0.m127.models.EventSubscription;
 
 CalendarEventsResponse calendarEventsResponse = new CalendarEventsResponse.Builder(
     Arrays.asList(

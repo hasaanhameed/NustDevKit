@@ -28,8 +28,8 @@ Primary action button metadata for a calendar event.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.EventAction;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.EventAction;
 
 EventAction eventAction = new EventAction.Builder(
     "Add submission",

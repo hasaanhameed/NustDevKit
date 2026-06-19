@@ -5,7 +5,8 @@ Source: /#/go/x-redirect/JTI0aCUyRl9fZ2V0dGluZ19zdGFydGVk
 
 # Introduction
 
-NUST Learning Management System API for developer integrations (Moodle AJAX wrapper). Each path is virtual for clean SDK generation; NustDevKit resolves them to the underlying Moodle AJAX service endpoint transparently.
+NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
+Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 ## Requirements
 
@@ -36,6 +37,17 @@ require nustLmsApi v0.0.0
 - Resolve the dependencies in the updated `go.mod` file, using the `go get` command.
 
 
+# Environments
+
+The SDK can be configured to use a different environment for making API calls. Available environments are:
+
+## Fields
+
+| Name | Description |
+|  --- | --- |
+| Production | **Default** NustDevKit Gateway (local development) |
+| Environment2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
+
 
 # Initialize the API Client
 
@@ -43,9 +55,10 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
+| environment | [`Environment`](/llms-pages/go/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | httpConfiguration | [`HttpConfiguration`](/llms-pages/go/sdk-infrastructure/configuration/httpconfiguration.md) | Configurable http client options like timeout and retries. |
 | loggerConfiguration | [`LoggerConfiguration`](/llms-pages/go/sdk-infrastructure/configuration/loggerconfiguration.md) | Represents the logger configurations for API calls |
-| customQueryAuthenticationCredentials | [`CustomQueryAuthenticationCredentials`](/llms-pages/go/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for Custom Query Parameter |
+| bearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/go/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for OAuth 2 Bearer token |
 
 The API client can be initialized as follows:
 
@@ -64,8 +77,9 @@ func main() {
                     nustLmsApi.WithTimeout(30),
                 ),
             ),
-            nustLmsApi.WithCustomQueryAuthenticationCredentials(
-                nustLmsApi.NewCustomQueryAuthenticationCredentials("sesskey"),
+            nustLmsApi.WithEnvironment(nustLmsApi.PRODUCTION),
+            nustLmsApi.WithBearerAuthCredentials(
+                nustLmsApi.NewBearerAuthCredentials("AccessToken"),
             ),
             nustLmsApi.WithLoggerConfiguration(
                 nustLmsApi.WithLevel("info"),
@@ -86,23 +100,23 @@ func main() {
 
 This API uses the following authentication schemes.
 
-* [`SessKey (Custom Query Parameter)`](/llms-pages/go/getting-started/sdk-quickstart/authorization.md)
+* [`BearerAuth (OAuth 2 Bearer token)`](/llms-pages/go/getting-started/sdk-quickstart/authorization.md)
 
-## SessKey (Custom Query Parameter)
+## BearerAuth (OAuth 2 Bearer token)
 
 
 
-Documentation for accessing and setting credentials for SessKey.
+Documentation for accessing and setting credentials for BearerAuth.
 
 ### Auth Credentials
 
 | Name | Type | Description | Setter | Getter |
 |  --- | --- | --- | --- | --- |
-| sesskey | `string` | Session key obtained after authenticating with the LMS portal. | `WithSesskey` | `Sesskey()` |
+| accessToken | `string` | The OAuth 2.0 Access Token to use for API requests. | `WithAccessToken` | `AccessToken()` |
 
 
 
-**Note:** Required auth credentials can be set using `WithCustomQueryAuthenticationCredentials()` by providing a credentials instance with `NewCustomQueryAuthenticationCredentials()` in the configuration initialization and accessed using the `CustomQueryAuthenticationCredentials()` method in the configuration instance.
+**Note:** Required auth credentials can be set using `WithBearerAuthCredentials()` by providing a credentials instance with `NewBearerAuthCredentials()` in the configuration initialization and accessed using the `BearerAuthCredentials()` method in the configuration instance.
 
 ### Usage Example
 
@@ -120,8 +134,8 @@ import (
 func main() {
     client := nustLmsApi.NewClient(
     nustLmsApi.CreateConfiguration(
-            nustLmsApi.WithCustomQueryAuthenticationCredentials(
-                nustLmsApi.NewCustomQueryAuthenticationCredentials("sesskey"),
+            nustLmsApi.WithBearerAuthCredentials(
+                nustLmsApi.NewBearerAuthCredentials("AccessToken"),
             ),
         ),
     )

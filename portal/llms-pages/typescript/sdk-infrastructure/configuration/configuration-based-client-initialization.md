@@ -43,8 +43,8 @@ const client = Client.fromJsonConfig(JSON.stringify(configModule.default));
 {
   "timeout": 30000,
   "environment": "production",
-  "customQueryAuthenticationCredentials": {
-    "sesskey": "sesskey"
+  "bearerAuthCredentials": {
+    "accessToken": "accesstoken"
   },
   "httpClientOptions": {
     "timeout": 30000,

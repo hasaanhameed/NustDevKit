@@ -24,7 +24,7 @@ Field used to sort enrolled course results.
 # Example
 
 ```java
-import pk.edu.nust.lms.models.CourseTimelineSortField;
+import m18000.m0.m0.m127.models.CourseTimelineSortField;
 
 CourseTimelineSortField courseTimelineSortField = CourseTimelineSortField.FULLNAME;
 ```

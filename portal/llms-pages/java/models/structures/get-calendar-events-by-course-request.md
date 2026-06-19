@@ -28,8 +28,8 @@ Request parameters for retrieving calendar action events for a specific course.
 
 ```java
 import java.io.IOException;
-import pk.edu.nust.lms.ApiHelper;
-import pk.edu.nust.lms.models.GetCalendarEventsByCourseRequest;
+import m18000.m0.m0.m127.ApiHelper;
+import m18000.m0.m0.m127.models.GetCalendarEventsByCourseRequest;
 
 GetCalendarEventsByCourseRequest getCalendarEventsByCourseRequest = new GetCalendarEventsByCourseRequest.Builder(
     49906

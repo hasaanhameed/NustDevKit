@@ -86,6 +86,9 @@ const spec = parse(readFileSync(specPath, "utf8"));
 const errors = [];
 
 for (const [path, ops] of Object.entries(spec.paths ?? {})) {
+  // Only the proxied LMS endpoints map to an APIMatic SDK method. Skip gateway
+  // operations like /auth/login, which have no generated SDK code sample.
+  if (!path.startsWith("/service/")) continue;
   // Spec paths are /service/<moodle_method>.
   const moodleMethod = path.replace(/^\/service\//, "");
   const op = ops.post;

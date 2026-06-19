@@ -47,7 +47,7 @@ Values provided through arguments take precedence over those defined in environm
 ```ruby
 ENVIRONMENT='production'
 
-SESSKEY='sesskey'
+ACCESS_TOKEN='accessToken'
 
 LOG_LEVEL=Debug
 MASK_SENSITIVE_HEADERS=true

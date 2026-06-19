@@ -12,7 +12,7 @@ POST /service/core_course_get_enrolled_courses_by_timeline_classification
 
 # Authentication
 
-This endpoint requires [SessKey](/llms-pages/http/getting-started/sdk-quickstart/authorization.md)
+This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickstart/authorization.md)
 
 
 # Parameters
@@ -33,9 +33,10 @@ This endpoint requires [SessKey](/llms-pages/http/getting-started/sdk-quickstart
 
 ```bash
 curl -X POST \
-  --url 'https://lms.nust.edu.pk/portal/service/core_course_get_enrolled_courses_by_timeline_classification?sesskey=sesskey'  \
+  --url 'http://127.0.0.1:8000/service/core_course_get_enrolled_courses_by_timeline_classification'  \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer AccessToken' \
   --data-raw '{
   "offset": 0,
   "limit": 50,
