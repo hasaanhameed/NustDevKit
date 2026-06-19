@@ -94,10 +94,14 @@
         display: block;
       }
 
-      /* ---- Scalar fills the rest of the viewport below our fixed header ---- */
+      /* ---- Scalar fills the full viewport; it reserves space for our fixed
+         header itself via --scalar-custom-header-height (set below), which also
+         makes its sidebar stick correctly below the header. ---- */
       #app {
-        margin-top: var(--nust-header-h);
-        height: calc(100vh - var(--nust-header-h));
+        height: 100vh;
+        /* Tell Scalar's layout how tall our fixed header is so it offsets content
+           and pins the sidebar at top: var(--scalar-custom-header-height). */
+        --scalar-custom-header-height: var(--nust-header-h);
       }
     </style>
   </head>
@@ -175,15 +179,6 @@
             --scalar-sidebar-color-active: #378add;
             --scalar-sidebar-search-background: #f5f9fd;
             --scalar-sidebar-search-border-color: #d6e4f3;
-          }
-
-          /* Pin the sidebar so it stays put while the main content scrolls.
-             It gets its own independent scroll for long navigation lists. */
-          .t-doc__sidebar {
-            position: sticky;
-            top: 0;
-            height: calc(100vh - var(--nust-header-h, 72px));
-            overflow-y: auto;
           }
         `,
       });
