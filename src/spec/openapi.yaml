@@ -17,8 +17,6 @@ info:
 servers:
   - url: http://127.0.0.1:8000
     description: NustDevKit Gateway (local development)
-  - url: https://gateway.nustdevkit.example
-    description: NustDevKit Gateway (production — replace with your deployed gateway URL)
 
 # All operations require a gateway-issued bearer token, except POST /auth/login
 # (which overrides this with `security: []`).
@@ -58,24 +56,20 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: >
-        Gateway-issued JWT. Obtain it from `POST /auth/login` using your NUST LMS
-        credentials, then send it as `Authorization: Bearer <token>`. The gateway
-        manages the underlying LMS session (cookie + sesskey) server-side, so the
-        ephemeral sesskey never leaves the gateway.
+      description: "Gateway-issued JWT from `POST /auth/login`. Send as `Authorization: Bearer <token>`."
 
   schemas:
     LoginRequest:
       type: object
       description: NUST LMS credentials used to obtain a gateway bearer token.
       required:
-        - email
+        - username
         - password
       properties:
-        email:
+        username:
           type: string
-          description: NUST LMS username or email.
-          example: "john.doe@student.nust.edu.pk"
+          description: NUST LMS username.
+          example: "johndoe.bscs23seecs"
         password:
           type: string
           format: password

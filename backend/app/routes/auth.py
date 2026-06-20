@@ -24,7 +24,7 @@ async def login(
     """
     lms = LMSSession()
     try:
-        ok = await lms.login(body.email.strip().lower(), body.password)
+        ok = await lms.login(body.username.strip(), body.password)
     except Exception:
         await lms.close()
         raise HTTPException(

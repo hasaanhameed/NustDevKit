@@ -1,6 +1,5 @@
 # Python
 venv/
-.venv/
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,22 +8,9 @@ __pycache__/
 dist/
 .pytest_cache/
 
-# Backend (NustDevKit gateway) local state
-backend/.env
-*.db
-*.sqlite3
-
 # Node
 node_modules/
 apimatic-validator-mcp/build/
-
-# Scalar docs build artifacts (synced from canonical sources by scripts/sync-spec.mjs)
-docs/openapi.yaml
-docs/nust-logo.png
-docs/favicon.ico
-
-# Claude Code
-.claude/
 
 # OS
 .DS_Store

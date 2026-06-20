@@ -94,6 +94,32 @@
         display: block;
       }
 
+      /* Labelled button (Download OpenAPI) */
+      .ndk-header a.ndk-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--nust-navy);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 6px;
+        border: 1px solid #d6e4f3;
+        transition: background 0.15s ease;
+      }
+
+      .ndk-header a.ndk-btn:hover {
+        background: var(--nust-sky);
+      }
+
+      .ndk-header a.ndk-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        display: block;
+      }
+
       /* ---- Scalar fills the full viewport; it reserves space for our fixed
          header itself via --scalar-custom-header-height (set below), which also
          makes its sidebar stick correctly below the header. ---- */
@@ -114,6 +140,17 @@
         <span class="title">NUST LMS Developer Hub</span>
       </div>
       <div class="ndk-spacer"></div>
+      <a
+        class="ndk-btn"
+        href="./openapi.yaml"
+        download="nust-lms-openapi.yaml"
+        aria-label="Download the OpenAPI document"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5z" />
+        </svg>
+        Download OpenAPI
+      </a>
       <a
         class="ndk-link"
         href="https://github.com/hasaanhameed52/NustDevKit"
@@ -142,6 +179,10 @@
         darkMode: false,
         forceDarkModeState: "light",
         hideDarkModeToggle: true,
+        // We expose our own "Download OpenAPI" button in the header instead.
+        hideDownloadButton: true,
+        // Remove the "Open API Client" button (keep the inline Test Request).
+        hideClientButton: true,
         // The real SDK examples come from x-codeSamples (injected from APIMatic's
         // generated SDKs) and render in their own "Code Examples" panel. Hide ALL of
         // Scalar's auto-generated snippet clients so the noisy invented languages
@@ -160,10 +201,13 @@
             --scalar-color-2: #2a4a6b;
             --scalar-color-3: #5a7798;
             --scalar-background-1: #ffffff;
-            --scalar-background-2: #e6f1fb;
-            --scalar-background-3: #e6f1fb;
-            --scalar-background-accent: #e6f1fb;
-            --scalar-border-color: #d6e4f3;
+            /* Section panels (Server, Authentication, Operations, schema accordions)
+               read from background-2/3 — a clearer light blue gives the app the blue
+               presence it was missing. */
+            --scalar-background-2: #dbeafe;
+            --scalar-background-3: #cfe3fb;
+            --scalar-background-accent: #dbeafe;
+            --scalar-border-color: #c4dcf3;
 
             --scalar-button-1: #042c53;
             --scalar-link-color: #378add;
@@ -179,6 +223,36 @@
             --scalar-sidebar-color-active: #378add;
             --scalar-sidebar-search-background: #f5f9fd;
             --scalar-sidebar-search-border-color: #d6e4f3;
+          }
+
+          /* Make section header bars read as distinctly blue (a touch stronger
+             than the panel body) — Server / Authentication / Operations etc. */
+          .section-accordion-button,
+          .endpoints {
+            background: #cfe3fb;
+          }
+
+          /* The auth credential field (Bearer Token) is easy to miss as editable.
+             Give it a clear input affordance: white field, blue border, padding. */
+          [class*="security-scheme"] input,
+          [class*="scheme-card"] input,
+          .scalar-card-form input {
+            border: 1px solid #378add !important;
+            background: #ffffff !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            min-width: 240px;
+          }
+          [class*="security-scheme"] input::placeholder {
+            color: #7aa0c4;
+          }
+
+          /* Remove Scalar branding and the document version / OpenAPI-version pills. */
+          a[href="https://www.scalar.com"] {
+            display: none !important;
+          }
+          .badges {
+            display: none !important;
           }
         `,
       });

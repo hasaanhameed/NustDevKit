@@ -110,6 +110,25 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
   op["x-codeSamples"] = codeSamples;
 }
 
+// Login isn't a Moodle method (no /service/ path), so inject its sample
+// separately from the SDK's Authentication controller doc. Best-effort: if the
+// SDKs don't ship that controller yet (e.g. before a regeneration), login simply
+// renders without code samples rather than failing the build.
+const loginOp = spec.paths?.["/auth/login"]?.post;
+if (loginOp) {
+  const loginSamples = [];
+  for (const [zipName, meta] of LANGS) {
+    const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
+    const entry = zip.getEntry("doc/controllers/authentication.md");
+    if (!entry) continue;
+    const code = extractExample(entry.getData().toString("utf8"));
+    if (code && !code.includes("{%")) {
+      loginSamples.push({ lang: meta.lang, label: meta.label, source: code });
+    }
+  }
+  if (loginSamples.length) loginOp["x-codeSamples"] = loginSamples;
+}
+
 if (errors.length) {
   console.error("✗ Code-sample injection failed:");
   for (const e of errors) console.error(`  - ${e}`);

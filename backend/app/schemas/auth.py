@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 
 class LoginRequest(BaseModel):
-    email: str = Field(..., description="NUST LMS username / email")
+    username: str = Field(..., description="NUST LMS username", examples=["johndoe.bscs23seecs"])
     password: str = Field(..., description="NUST LMS password")
 
 
