@@ -89,9 +89,9 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
   // Only the proxied LMS endpoints map to an APIMatic SDK method. Skip gateway
   // operations like /auth/login, which have no generated SDK code sample.
   if (!path.startsWith("/service/")) continue;
-  // Spec paths are /service/<moodle_method>.
+  // Spec paths are /service/<moodle_method>. Reads are GET; fall back to POST.
   const moodleMethod = path.replace(/^\/service\//, "");
-  const op = ops.post;
+  const op = ops.get ?? ops.post;
   if (!op) continue;
 
   const codeSamples = [];
@@ -135,7 +135,9 @@ if (errors.length) {
   process.exit(1);
 }
 
-const total = Object.values(spec.paths).filter((o) => o.post?.["x-codeSamples"]).length;
+const total = Object.values(spec.paths).filter(
+  (o) => (o.get ?? o.post)?.["x-codeSamples"]
+).length;
 writeFileSync(specPath, stringify(spec, { lineWidth: 0 }), "utf8");
 console.log(
   `✓ Injected x-codeSamples (${byLang.length} langs) into ${total} operation(s) → docs/openapi.yaml`
