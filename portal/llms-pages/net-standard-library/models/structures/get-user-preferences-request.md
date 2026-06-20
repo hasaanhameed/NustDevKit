@@ -29,7 +29,7 @@ using NustLmsApi.Standard.Utilities;
 
 GetUserPreferencesRequest getUserPreferencesRequest = new GetUserPreferencesRequest
 {
-    Userid = 162154,
+    Userid = 123456,
     Name = "name6",
     ["exampleAdditionalProperty"] = ApiHelper.JsonDeserialize<object>("{\"key1\":\"val1\",\"key2\":\"val2\"}"),
 };

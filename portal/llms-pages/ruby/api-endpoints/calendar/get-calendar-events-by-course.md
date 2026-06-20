@@ -2,7 +2,7 @@
 
 Source: /#/ruby/x-redirect/JTI0ZSUyRkNhbGVuZGFyJTJGZ2V0Q2FsZW5kYXJFdmVudHNCeUNvdXJzZQ
 
-Returns all action events (assignments, quizzes, etc.) for a single course.
+Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 Moodle method: `core_calendar_get_action_events_by_course`
 
 ```ruby

@@ -37,7 +37,7 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 
 ```ts
 const body: GetPopupNotificationsRequest = {
-  useridto: '162154',
+  useridto: '123456',
   limit: 20,
   offset: 0,
 };

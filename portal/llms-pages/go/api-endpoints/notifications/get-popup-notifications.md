@@ -39,7 +39,7 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ctx := context.Background()
 
 body := models.GetPopupNotificationsRequest{
-    Useridto:              "162154",
+    Useridto:              "123456",
     Limit:                 20,
     Offset:                0,
 }

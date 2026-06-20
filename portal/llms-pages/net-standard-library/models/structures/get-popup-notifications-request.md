@@ -30,7 +30,7 @@ using NustLmsApi.Standard.Utilities;
 
 GetPopupNotificationsRequest getPopupNotificationsRequest = new GetPopupNotificationsRequest
 {
-    Useridto = "162154",
+    Useridto = "123456",
     Limit = 20,
     Offset = 0,
     ["exampleAdditionalProperty"] = ApiHelper.JsonDeserialize<object>("{\"key1\":\"val1\",\"key2\":\"val2\"}"),

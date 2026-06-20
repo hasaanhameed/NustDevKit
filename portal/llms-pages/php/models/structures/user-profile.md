@@ -45,10 +45,10 @@ use NustLmsApiLib\ApiHelper;
 use NustLmsApiLib\Models\Builders\UserPreferenceBuilder;
 
 $userProfile = UserProfileBuilder::init(
-    162154,
-    'hhameed.bscs23seecs',
-    'Hasaan Hameed',
-    'hhameed.bscs23seecs@seecs.edu.pk',
+    123456,
+    'johndoe.bscs23seecs',
+    'John Doe',
+    'johndoe.bscs23seecs@seecs.edu.pk',
     'FoC',
     'SEECS',
     '00000454987',

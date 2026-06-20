@@ -203,7 +203,7 @@ type EventAction {
     showitemcount: Boolean!
 }
 
-"A calendar action event tied to a course activity (e.g., an assignment deadline)."
+"A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity."
 type CalendarEvent {
     "Unique calendar event identifier."
     id: Int!
@@ -463,7 +463,7 @@ type GetCalendarEventsByCourseRequest {
 type GetUsersByFieldRequest {
     "User profile field to match against when searching for users."
     field: UserProfileField!
-    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID)."
+    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID)."
     values: [String!]
 }
 
@@ -575,7 +575,7 @@ input CreateGetcalendareventsbycourseInput {
 input GetUsersByFieldRequestInput {
     "User profile field to match against when searching for users."
     field: UserProfileField!
-    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID)."
+    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID)."
     values: [String!]
 }
 
@@ -638,9 +638,9 @@ type Mutation {
     createGetcorerecentcourses(input: CreateGetcorerecentcoursesInput!): [RecentCourse!]
     "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"
     createGetenrolledcoursesbytimeline(input: CreateGetenrolledcoursesbytimelineInput!): EnrolledCoursesResponse!
-    "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
+    "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
     createGetcalendareventsbytimesort(input: CreateGetcalendareventsbytimesortInput!): CalendarEventsResponse!
-    "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`"
+    "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`"
     createGetcalendareventsbycourse(input: CreateGetcalendareventsbycourseInput!): CalendarEventsResponse!
     "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`"
     createGetusersbyfield(input: CreateGetusersbyfieldInput!): [UserProfile!]

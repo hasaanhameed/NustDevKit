@@ -17,7 +17,7 @@ Request parameters for retrieving user profiles by a profile field value.
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `field` | [`UserProfileField`](/llms-pages/typescript/models/enumerations/user-profile-field.md) | Required | User profile field to match against when searching for users. |
-| `values` | `string[]` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID). |
+| `values` | `string[]` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 | `additionalProperties` | `Record<string, unknown>` | Optional | - |
 
 
@@ -29,7 +29,7 @@ import { GetUsersByFieldRequest, UserProfileField } from 'nust-lms-apilib';
 const getUsersByFieldRequest: GetUsersByFieldRequest = {
   field: UserProfileField.Id,
   values: [
-    '162154'
+    '123456'
   ],
   additionalProperties: {
     'exampleAdditionalProperty': { 'key1': 'val1', 'key2': 'val2' }

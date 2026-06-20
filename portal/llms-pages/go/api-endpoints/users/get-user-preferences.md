@@ -39,7 +39,7 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ctx := context.Background()
 
 body := models.GetUserPreferencesRequest{
-    Userid:                162154,
+    Userid:                123456,
 }
 
 apiResponse, err := usersApi.GetUserPreferences(ctx, body)

@@ -41,7 +41,7 @@ ctx := context.Background()
 body := models.GetUsersByFieldRequest{
     Field:                 models.UserProfileField_Id,
     Values:                []string{
-        "162154",
+        "123456",
     },
 }
 

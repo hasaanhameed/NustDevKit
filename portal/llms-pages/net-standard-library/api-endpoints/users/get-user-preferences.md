@@ -35,7 +35,7 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 ```csharp
 GetUserPreferencesRequest body = new GetUserPreferencesRequest
 {
-    Userid = 162154,
+    Userid = 123456,
 };
 
 try

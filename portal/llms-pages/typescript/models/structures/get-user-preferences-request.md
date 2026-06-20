@@ -27,7 +27,7 @@ Request parameters for retrieving user preferences.
 import { GetUserPreferencesRequest } from 'nust-lms-apilib';
 
 const getUserPreferencesRequest: GetUserPreferencesRequest = {
-  userid: 162154,
+  userid: 123456,
   name: 'name6',
   additionalProperties: {
     'exampleAdditionalProperty': { 'key1': 'val1', 'key2': 'val2' }

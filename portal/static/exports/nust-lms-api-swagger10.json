@@ -156,7 +156,7 @@
       "operations": [
         {
           "method": "POST",
-          "summary": "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
+          "summary": "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
           "nickname": "getCalendarEventsByTimesort",
           "parameters": [
             {
@@ -205,7 +205,7 @@
       "operations": [
         {
           "method": "POST",
-          "summary": "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
+          "summary": "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
           "nickname": "getCalendarEventsByCourse",
           "parameters": [
             {
@@ -966,7 +966,7 @@
     },
     "CalendarEvent": {
       "id": "CalendarEvent",
-      "description": "A calendar action event tied to a course activity (e.g., an assignment deadline).",
+      "description": "A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity.",
       "required": [
         "id",
         "name",
@@ -1832,7 +1832,7 @@
           "type": "string"
         },
         "values": {
-          "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID).",
+          "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
           "items": {
             "type": "string"
           },

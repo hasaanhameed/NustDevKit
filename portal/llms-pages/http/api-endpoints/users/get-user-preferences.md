@@ -38,7 +38,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   --data-raw '{
-  "userid": 162154
+  "userid": 123456
 }'
 ```
 

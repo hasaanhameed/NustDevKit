@@ -30,7 +30,7 @@ import jsonpickle
 from nustlmsapi.models.get_popup_notifications_request import GetPopupNotificationsRequest
 
 get_popup_notifications_request = GetPopupNotificationsRequest(
-    useridto='162154',
+    useridto='123456',
     limit=20,
     offset=0,
     additional_properties={

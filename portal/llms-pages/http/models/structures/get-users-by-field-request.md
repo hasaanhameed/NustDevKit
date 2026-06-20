@@ -12,7 +12,7 @@ Request parameters for retrieving user profiles by a profile field value.
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
 | `field` | [`User Profile Field`](/llms-pages/http/models/enumerations/user-profile-field.md) | Required | User profile field to match against when searching for users. |
-| `values` | `array<String>` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID). |
+| `values` | `array<String>` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 | `additionalProperties` | `Object` | Optional | - |
 
 
@@ -22,7 +22,7 @@ Request parameters for retrieving user profiles by a profile field value.
 {
   "field": "id",
   "values": [
-    "162154"
+    "123456"
   ],
   "exampleAdditionalProperty": {
     "key1": "val1",

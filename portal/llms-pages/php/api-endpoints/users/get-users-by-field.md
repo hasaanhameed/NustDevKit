@@ -35,7 +35,7 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 $body = GetUsersByFieldRequestBuilder::init(
     UserProfileField::ID,
     [
-        '162154'
+        '123456'
     ]
 )->build();
 

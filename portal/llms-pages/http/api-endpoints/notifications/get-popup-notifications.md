@@ -38,7 +38,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   --data-raw '{
-  "useridto": "162154",
+  "useridto": "123456",
   "limit": 20,
   "offset": 0
 }'

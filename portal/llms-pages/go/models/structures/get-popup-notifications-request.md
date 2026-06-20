@@ -33,7 +33,7 @@ import (
 
 func main() {
     getPopupNotificationsRequest := models.GetPopupNotificationsRequest{
-        Useridto:              "162154",
+        Useridto:              "123456",
         Limit:                 20,
         Offset:                0,
         AdditionalProperties:  map[string]interface{}{

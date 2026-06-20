@@ -153,7 +153,7 @@ paths:
   /service/core_calendar_get_action_events_by_timesort:
     post:
       description: >
-        Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+        Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
         Moodle method: `core_calendar_get_action_events_by_timesort`
       summary: getCalendarEventsByTimesort
@@ -198,7 +198,7 @@ paths:
   /service/core_calendar_get_action_events_by_course:
     post:
       description: >
-        Returns all action events (assignments, quizzes, etc.) for a single course.
+        Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
         Moodle method: `core_calendar_get_action_events_by_course`
       summary: getCalendarEventsByCourse
@@ -837,7 +837,7 @@ definitions:
     - showitemcount
   CalendarEvent:
     title: CalendarEvent
-    description: A calendar action event tied to a course activity (e.g., an assignment deadline).
+    description: A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity.
     type: object
     properties:
       id:
@@ -1096,20 +1096,20 @@ definitions:
     properties:
       id:
         description: Unique numeric user identifier.
-        example: 162154
+        example: 123456
         type: integer
         format: int32
       username:
         description: Login username for the user.
-        example: hhameed.bscs23seecs
+        example: johndoe.bscs23seecs
         type: string
       fullname:
         description: Full display name of the user.
-        example: Hasaan Hameed
+        example: John Doe
         type: string
       email:
         description: Email address of the user.
-        example: hhameed.bscs23seecs@seecs.edu.pk
+        example: johndoe.bscs23seecs@seecs.edu.pk
         type: string
       department:
         description: Department the user belongs to within the institution.
@@ -1211,25 +1211,25 @@ definitions:
         format: int32
       useridfrom:
         description: User ID of the sender.
-        example: 198956
+        example: 234567
         type: integer
         format: int32
       useridto:
         description: User ID of the recipient.
-        example: 162154
+        example: 123456
         type: integer
         format: int32
       subject:
         description: Subject line of the notification.
-        example: 'CS-419-Deep Learning: Lab Sessional Finalization'
+        example: 'CS-101 Introduction to Computing: Lab 3 Submission Deadline'
         type: string
       shortenedsubject:
         description: Shortened version of the notification subject for compact display.
-        example: 'CS-419-Deep Learning: Lab Sessional Finalization'
+        example: 'CS-101 Introduction to Computing: Lab 3 Submission Deadline'
         type: string
       text:
         description: Short HTML excerpt of the notification.
-        example: <p>Areeba Rameen posted in CS-419-Deep Learning...</p>
+        example: <p>John Doe posted in CS-101 Introduction to Computing...</p>
         type: string
       fullmessage:
         description: Full plain-text body of the notification.
@@ -1244,7 +1244,7 @@ definitions:
         type: string
       smallmessage:
         description: Short plain-text preview of the notification.
-        example: Areeba Rameen posted in CS-419-Deep Learning...
+        example: John Doe posted in CS-101 Introduction to Computing...
         type: string
       contexturl:
         description: URL to the relevant context for this notification (e.g., a forum post).
@@ -1455,9 +1455,9 @@ definitions:
         - $ref: '#/definitions/UserProfileField'
         - description: User profile field to match against when searching for users.
       values:
-        description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID).
+        description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
         example:
-        - '162154'
+        - '123456'
         type: array
         items:
           type: string
@@ -1471,7 +1471,7 @@ definitions:
     properties:
       userid:
         description: ID of the user whose preferences to retrieve.
-        example: 162154
+        example: 123456
         type: integer
         format: int32
       name:
@@ -1486,7 +1486,7 @@ definitions:
     properties:
       useridto:
         description: ID of the recipient user, passed as a string.
-        example: '162154'
+        example: '123456'
         type: string
       limit:
         description: Maximum number of notifications to return.
@@ -1517,7 +1517,8 @@ tags:
 - name: Courses
   description: Course listing and enrollment operations
 - name: Calendar
-  description: Calendar event operations
+  description: >
+    Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
 - name: Users
   description: User profile and preferences operations
 - name: Notifications

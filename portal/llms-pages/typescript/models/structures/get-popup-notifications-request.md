@@ -28,7 +28,7 @@ Request parameters for retrieving popup notifications for a user.
 import { GetPopupNotificationsRequest } from 'nust-lms-apilib';
 
 const getPopupNotificationsRequest: GetPopupNotificationsRequest = {
-  useridto: '162154',
+  useridto: '123456',
   limit: 20,
   offset: 0,
   additionalProperties: {

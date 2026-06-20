@@ -26,7 +26,7 @@ Request parameters for retrieving popup notifications for a user.
 
 ```ruby
 get_popup_notifications_request = GetPopupNotificationsRequest.new(
-  useridto: '162154',
+  useridto: '123456',
   limit: 20,
   offset: 0,
   additional_properties: {

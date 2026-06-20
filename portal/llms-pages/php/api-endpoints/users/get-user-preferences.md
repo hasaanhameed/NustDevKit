@@ -33,7 +33,7 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 
 ```php
 $body = GetUserPreferencesRequestBuilder::init(
-    162154
+    123456
 )->build();
 
 $usersApi = $client->getUsersApi();

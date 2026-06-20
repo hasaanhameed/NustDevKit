@@ -230,7 +230,7 @@
           "Calendar"
         ],
         "summary": "getCalendarEventsByTimesort",
-        "description": "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
+        "description": "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
         "operationId": "getCalendarEventsByTimesort",
         "parameters": [],
         "requestBody": {
@@ -302,7 +302,7 @@
           "Calendar"
         ],
         "summary": "getCalendarEventsByCourse",
-        "description": "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
+        "description": "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
         "operationId": "getCalendarEventsByCourse",
         "parameters": [],
         "requestBody": {
@@ -1566,7 +1566,7 @@
             ]
           }
         },
-        "description": "A calendar action event tied to a course activity (e.g., an assignment deadline)."
+        "description": "A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity."
       },
       "CalendarEventsResponse": {
         "title": "CalendarEventsResponse",
@@ -1695,28 +1695,28 @@
             "description": "Unique numeric user identifier.",
             "contentEncoding": "int32",
             "examples": [
-              162154
+              123456
             ]
           },
           "username": {
             "type": "string",
             "description": "Login username for the user.",
             "examples": [
-              "hhameed.bscs23seecs"
+              "johndoe.bscs23seecs"
             ]
           },
           "fullname": {
             "type": "string",
             "description": "Full display name of the user.",
             "examples": [
-              "Hasaan Hameed"
+              "John Doe"
             ]
           },
           "email": {
             "type": "string",
             "description": "Email address of the user.",
             "examples": [
-              "hhameed.bscs23seecs@seecs.edu.pk"
+              "johndoe.bscs23seecs@seecs.edu.pk"
             ]
           },
           "department": {
@@ -1875,7 +1875,7 @@
             "description": "User ID of the sender.",
             "contentEncoding": "int32",
             "examples": [
-              198956
+              234567
             ]
           },
           "useridto": {
@@ -1883,28 +1883,28 @@
             "description": "User ID of the recipient.",
             "contentEncoding": "int32",
             "examples": [
-              162154
+              123456
             ]
           },
           "subject": {
             "type": "string",
             "description": "Subject line of the notification.",
             "examples": [
-              "CS-419-Deep Learning: Lab Sessional Finalization"
+              "CS-101 Introduction to Computing: Lab 3 Submission Deadline"
             ]
           },
           "shortenedsubject": {
             "type": "string",
             "description": "Shortened version of the notification subject for compact display.",
             "examples": [
-              "CS-419-Deep Learning: Lab Sessional Finalization"
+              "CS-101 Introduction to Computing: Lab 3 Submission Deadline"
             ]
           },
           "text": {
             "type": "string",
             "description": "Short HTML excerpt of the notification.",
             "examples": [
-              "<p>Areeba Rameen posted in CS-419-Deep Learning...</p>"
+              "<p>John Doe posted in CS-101 Introduction to Computing...</p>"
             ]
           },
           "fullmessage": {
@@ -1927,7 +1927,7 @@
             "type": "string",
             "description": "Short plain-text preview of the notification.",
             "examples": [
-              "Areeba Rameen posted in CS-419-Deep Learning..."
+              "John Doe posted in CS-101 Introduction to Computing..."
             ]
           },
           "contexturl": {
@@ -2225,10 +2225,10 @@
             "items": {
               "type": "string"
             },
-            "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"162154\" for an integer ID).",
+            "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
             "examples": [
               [
-                "162154"
+                "123456"
               ]
             ]
           }
@@ -2247,7 +2247,7 @@
             "description": "ID of the user whose preferences to retrieve.",
             "contentEncoding": "int32",
             "examples": [
-              162154
+              123456
             ]
           },
           "name": {
@@ -2270,7 +2270,7 @@
             "type": "string",
             "description": "ID of the recipient user, passed as a string.",
             "examples": [
-              "162154"
+              "123456"
             ]
           },
           "limit": {
@@ -2330,7 +2330,7 @@
     },
     {
       "name": "Calendar",
-      "description": "Calendar event operations"
+      "description": "Calendar operations. On NUST LMS, these \"action events\" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.\n"
     },
     {
       "name": "Users",

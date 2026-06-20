@@ -35,7 +35,7 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 body = GetUsersByFieldRequest.new(
   field: UserProfileField::ID,
   values: [
-    '162154'
+    '123456'
   ]
 )
 

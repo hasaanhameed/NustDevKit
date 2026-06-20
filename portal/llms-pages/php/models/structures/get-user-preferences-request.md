@@ -28,7 +28,7 @@ use NustLmsApiLib\Models\Builders\GetUserPreferencesRequestBuilder;
 use NustLmsApiLib\ApiHelper;
 
 $getUserPreferencesRequest = GetUserPreferencesRequestBuilder::init(
-    162154
+    123456
 )
     ->name('name6')
     ->additionalProperty('exampleAdditionalProperty', ApiHelper::deserialize('{"key1":"val1","key2":"val2"}'))

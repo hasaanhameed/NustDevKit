@@ -37,7 +37,7 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 
 ```ts
 const body: GetUserPreferencesRequest = {
-  userid: 162154,
+  userid: 123456,
 };
 
 try {

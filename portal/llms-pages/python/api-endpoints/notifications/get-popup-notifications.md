@@ -34,7 +34,7 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 
 ```python
 body = GetPopupNotificationsRequest(
-    useridto='162154',
+    useridto='123456',
     limit=20,
     offset=0
 )

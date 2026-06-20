@@ -112,12 +112,13 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 # Group Calendar
 
-Calendar event operations
+Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
+
 
 ## Service Core Calendar Get Action Events By Timesort [/service/core_calendar_get_action_events_by_timesort]
 
 ### getCalendarEventsByTimesort [POST]
-Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.
+Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 Moodle method: `core_calendar_get_action_events_by_timesort`
 
 + Request (<<Add Header Value>>)
@@ -146,7 +147,7 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 ## Service Core Calendar Get Action Events By Course [/service/core_calendar_get_action_events_by_course]
 
 ### getCalendarEventsByCourse [POST]
-Returns all action events (assignments, quizzes, etc.) for a single course.
+Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 Moodle method: `core_calendar_get_action_events_by_course`
 
 + Request (<<Add Header Value>>)
@@ -437,7 +438,7 @@ Primary action button metadata for a calendar event.
 
 
 ## CalendarEvent (object)
-A calendar action event tied to a course activity (e.g., an assignment deadline).
+A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity.
 
 ### Properties
 + `id`: `149885` (number, required) - Unique calendar event identifier.
@@ -509,10 +510,10 @@ A single user preference setting.
 Complete user profile.
 
 ### Properties
-+ `id`: `162154` (number, required) - Unique numeric user identifier.
-+ `username`: `hhameed.bscs23seecs` (string, required) - Login username for the user.
-+ `fullname`: `Hasaan Hameed` (string, required) - Full display name of the user.
-+ `email`: `hhameed.bscs23seecs@seecs.edu.pk` (string, required) - Email address of the user.
++ `id`: `123456` (number, required) - Unique numeric user identifier.
++ `username`: `johndoe.bscs23seecs` (string, required) - Login username for the user.
++ `fullname`: `John Doe` (string, required) - Full display name of the user.
++ `email`: `johndoe.bscs23seecs@seecs.edu.pk` (string, required) - Email address of the user.
 + `department`: `FoC` (string, required) - Department the user belongs to within the institution.
 + `institution`: `SEECS` (string, required) - Name of the institution the user is affiliated with.
 + `idnumber`: `00000454987` (string, required) - Institution-assigned student or staff ID number.
@@ -541,15 +542,15 @@ A popup notification message delivered to a user.
 
 ### Properties
 + `id`: `4857819` (number, required) - Unique notification identifier.
-+ `useridfrom`: `198956` (number, required) - User ID of the sender.
-+ `useridto`: `162154` (number, required) - User ID of the recipient.
-+ `subject`: `CS-419-Deep Learning: Lab Sessional Finalization` (string, required) - Subject line of the notification.
-+ `shortenedsubject`: `CS-419-Deep Learning: Lab Sessional Finalization` (string, required) - Shortened version of the notification subject for compact display.
-+ `text`: `<p>Areeba Rameen posted in CS-419-Deep Learning...</p>` (string, required) - Short HTML excerpt of the notification.
++ `useridfrom`: `234567` (number, required) - User ID of the sender.
++ `useridto`: `123456` (number, required) - User ID of the recipient.
++ `subject`: `CS-101 Introduction to Computing: Lab 3 Submission Deadline` (string, required) - Subject line of the notification.
++ `shortenedsubject`: `CS-101 Introduction to Computing: Lab 3 Submission Deadline` (string, required) - Shortened version of the notification subject for compact display.
++ `text`: `<p>John Doe posted in CS-101 Introduction to Computing...</p>` (string, required) - Short HTML excerpt of the notification.
 + `fullmessage` (string, required) - Full plain-text body of the notification.
 + `fullmessageformat`: `2` (number, required) - Format identifier for fullmessagehtml (2 = Markdown source).
 + `fullmessagehtml` (string, required) - Full HTML body of the notification email.
-+ `smallmessage`: `Areeba Rameen posted in CS-419-Deep Learning...` (string, required) - Short plain-text preview of the notification.
++ `smallmessage`: `John Doe posted in CS-101 Introduction to Computing...` (string, required) - Short plain-text preview of the notification.
 + `contexturl`: `https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342` (string, required) - URL to the relevant context for this notification (e.g., a forum post).
 + `contexturlname`: `Lab Sessional Finalization - (DL - Section D & E)` (string, required) - Human-readable label for the context URL link.
 + `timecreated`: `1780045085` (number, required) - Unix timestamp when the notification was created.
@@ -637,14 +638,14 @@ Request parameters for retrieving user profiles by a profile field value.
     + `idnumber`
     + `username`
     + `email`
-+ `values`: `["162154"]` (array[string], required) - List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID).
++ `values`: `["123456"]` (array[string], required) - List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
 
 
 ## GetUserPreferencesRequest (object)
 Request parameters for retrieving user preferences.
 
 ### Properties
-+ `userid`: `162154` (number, required) - ID of the user whose preferences to retrieve.
++ `userid`: `123456` (number, required) - ID of the user whose preferences to retrieve.
 + `name` (string, optional) - Specific preference name to retrieve. Omit to retrieve all preferences.
 
 
@@ -652,7 +653,7 @@ Request parameters for retrieving user preferences.
 Request parameters for retrieving popup notifications for a user.
 
 ### Properties
-+ `useridto`: `162154` (string, required) - ID of the recipient user, passed as a string.
++ `useridto`: `123456` (string, required) - ID of the recipient user, passed as a string.
 + `limit`: `20` (number, required) - Maximum number of notifications to return.
 + `offset`: `0` (number, required) - Pagination offset.
 

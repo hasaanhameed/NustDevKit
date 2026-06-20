@@ -17,7 +17,7 @@ Request parameters for retrieving user profiles by a profile field value.
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
 | `field` | [`string(UserProfileField)`](/llms-pages/php/models/enumerations/user-profile-field.md) | Required | User profile field to match against when searching for users. | getField(): string | setField(string field): void |
-| `values` | `string[]` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID). | getValues(): array | setValues(array values): void |
+| `values` | `string[]` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). | getValues(): array | setValues(array values): void |
 | `additionalProperties` | `array<string, array>` | Optional | - | findAdditionalProperty(string key): array | additionalProperty(string key, array value): void |
 
 
@@ -31,7 +31,7 @@ use NustLmsApiLib\ApiHelper;
 $getUsersByFieldRequest = GetUsersByFieldRequestBuilder::init(
     UserProfileField::ID,
     [
-        '162154'
+        '123456'
     ]
 )
     ->additionalProperty('exampleAdditionalProperty', ApiHelper::deserialize('{"key1":"val1","key2":"val2"}'))

@@ -34,7 +34,7 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 
 ```java
 GetUserPreferencesRequest body = new GetUserPreferencesRequest.Builder(
-    162154
+    123456
 )
 .build();
 

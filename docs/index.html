@@ -228,13 +228,6 @@
             --scalar-sidebar-search-border-color: #d6e4f3;
           }
 
-          /* Make section header bars read as distinctly blue (a touch stronger
-             than the panel body) — Server / Authentication / Operations etc. */
-          .section-accordion-button,
-          .endpoints {
-            background: #cfe3fb;
-          }
-
           /* The auth credential field (Bearer Token) is easy to miss as editable.
              Give it a clear input affordance: white field, blue border, padding. */
           [class*="security-scheme"] input,
@@ -250,11 +243,19 @@
             color: #7aa0c4;
           }
 
-          /* Remove Scalar branding and the document version / OpenAPI-version pills. */
+          /* Remove the Scalar branding link. */
           a[href="https://www.scalar.com"] {
             display: none !important;
           }
-          .badges {
+
+          /* Document version / OpenAPI-version pills (class "badge", in the intro
+             header). Scoped to the intro so operation/required badges are untouched. */
+          .introduction-section .badge {
+            display: none !important;
+          }
+
+          /* The "^ K" keyboard-shortcut hint: the last span inside the search button. */
+          button[role="search"] > span:last-child {
             display: none !important;
           }
         `,

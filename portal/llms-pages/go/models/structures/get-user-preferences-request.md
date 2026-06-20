@@ -32,7 +32,7 @@ import (
 
 func main() {
     getUserPreferencesRequest := models.GetUserPreferencesRequest{
-        Userid:                162154,
+        Userid:                123456,
         Name:                  models.ToPointer("name6"),
         AdditionalProperties:  map[string]interface{}{
             "exampleAdditionalProperty": interface{}("[key1, val1][key2, val2]"),

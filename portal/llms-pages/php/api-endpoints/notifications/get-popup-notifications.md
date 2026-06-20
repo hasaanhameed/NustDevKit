@@ -33,7 +33,7 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 
 ```php
 $body = GetPopupNotificationsRequestBuilder::init(
-    '162154',
+    '123456',
     20,
     0
 )->build();

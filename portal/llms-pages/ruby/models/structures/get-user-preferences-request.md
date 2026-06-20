@@ -25,7 +25,7 @@ Request parameters for retrieving user preferences.
 
 ```ruby
 get_user_preferences_request = GetUserPreferencesRequest.new(
-  userid: 162154,
+  userid: 123456,
   name: 'name2',
   additional_properties: {
     'exampleAdditionalProperty' => JSON.parse('{"key1":"val1","key2":"val2"}')

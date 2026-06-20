@@ -20,7 +20,7 @@ Request parameters for retrieving user preferences.
 
 ```json
 {
-  "userid": 162154,
+  "userid": 123456,
   "name": "name4",
   "exampleAdditionalProperty": {
     "key1": "val1",

@@ -33,7 +33,7 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 
 ```ruby
 body = GetPopupNotificationsRequest.new(
-  useridto: '162154',
+  useridto: '123456',
   limit: 20,
   offset: 0
 )

@@ -21,7 +21,7 @@ Request parameters for retrieving popup notifications for a user.
 
 ```json
 {
-  "useridto": "162154",
+  "useridto": "123456",
   "limit": 20,
   "offset": 0,
   "exampleAdditionalProperty": {

@@ -39,7 +39,7 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 const body: GetUsersByFieldRequest = {
   field: UserProfileField.Id,
   values: [
-    '162154'
+    '123456'
   ],
 };
 

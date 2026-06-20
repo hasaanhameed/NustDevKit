@@ -46,10 +46,10 @@ from nustlmsapi.models.user_preference import UserPreference
 from nustlmsapi.models.user_profile import UserProfile
 
 user_profile = UserProfile(
-    id=162154,
-    username='hhameed.bscs23seecs',
-    fullname='Hasaan Hameed',
-    email='hhameed.bscs23seecs@seecs.edu.pk',
+    id=123456,
+    username='johndoe.bscs23seecs',
+    fullname='John Doe',
+    email='johndoe.bscs23seecs@seecs.edu.pk',
     department='FoC',
     institution='SEECS',
     idnumber='00000454987',

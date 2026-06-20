@@ -29,7 +29,7 @@ use NustLmsApiLib\Models\Builders\GetPopupNotificationsRequestBuilder;
 use NustLmsApiLib\ApiHelper;
 
 $getPopupNotificationsRequest = GetPopupNotificationsRequestBuilder::init(
-    '162154',
+    '123456',
     20,
     0
 )

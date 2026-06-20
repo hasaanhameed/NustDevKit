@@ -2,7 +2,7 @@
 
 Source: /#/java/x-redirect/JTI0bSUyRkNhbGVuZGFyRXZlbnQ
 
-A calendar action event tied to a course activity (e.g., an assignment deadline).
+A calendar action event. On NUST LMS these represent deadlines — the due date for an assignment, lab, quiz, or other submission tied to a course activity.
 
 *This model accepts additional fields of type Object.*
 

@@ -36,7 +36,7 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 GetUsersByFieldRequest body = new GetUsersByFieldRequest.Builder(
     UserProfileField.ID,
     Arrays.asList(
-        "162154"
+        "123456"
     )
 )
 .build();

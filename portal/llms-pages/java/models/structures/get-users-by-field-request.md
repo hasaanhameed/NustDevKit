@@ -17,7 +17,7 @@ Request parameters for retrieving user profiles by a profile field value.
 | Name | Type | Tags | Description | Getter | Setter |
 |  --- | --- | --- | --- | --- | --- |
 | `Field` | [`UserProfileField`](/llms-pages/java/models/enumerations/user-profile-field.md) | Required | User profile field to match against when searching for users. | UserProfileField getField() | setField(UserProfileField field) |
-| `Values` | `List<String>` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "162154" for an integer ID). | List<String> getValues() | setValues(List<String> values) |
+| `Values` | `List<String>` | Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). | List<String> getValues() | setValues(List<String> values) |
 | `AdditionalProperties` | `Map<String, Object>` | Optional | - | Object getAdditionalProperty(String key) | additionalProperty(String key, Object value) |
 
 
@@ -33,7 +33,7 @@ import m18000.m0.m0.m127.models.UserProfileField;
 GetUsersByFieldRequest getUsersByFieldRequest = new GetUsersByFieldRequest.Builder(
     UserProfileField.ID,
     Arrays.asList(
-        "162154"
+        "123456"
     )
 )
 .additionalProperty("exampleAdditionalProperty", ApiHelper.deserialize("{\"key1\":\"val1\",\"key2\":\"val2\"}"))

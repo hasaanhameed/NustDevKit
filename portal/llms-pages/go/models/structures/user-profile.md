@@ -47,10 +47,10 @@ import (
 
 func main() {
     userProfile := models.UserProfile{
-        Id:                    162154,
-        Username:              "hhameed.bscs23seecs",
-        Fullname:              "Hasaan Hameed",
-        Email:                 "hhameed.bscs23seecs@seecs.edu.pk",
+        Id:                    123456,
+        Username:              "johndoe.bscs23seecs",
+        Fullname:              "John Doe",
+        Email:                 "johndoe.bscs23seecs@seecs.edu.pk",
         Department:            "FoC",
         Institution:           "SEECS",
         Idnumber:              "00000454987",

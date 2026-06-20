@@ -29,7 +29,7 @@ import jsonpickle
 from nustlmsapi.models.get_user_preferences_request import GetUserPreferencesRequest
 
 get_user_preferences_request = GetUserPreferencesRequest(
-    userid=162154,
+    userid=123456,
     name='name2',
     additional_properties={
         'exampleAdditionalProperty': jsonpickle.decode('{"key1":"val1","key2":"val2"}')

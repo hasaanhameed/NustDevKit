@@ -34,7 +34,7 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 
 ```python
 body = GetUserPreferencesRequest(
-    userid=162154
+    userid=123456
 )
 
 result = users_api.get_user_preferences(body)

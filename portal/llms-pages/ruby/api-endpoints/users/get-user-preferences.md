@@ -33,7 +33,7 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 
 ```ruby
 body = GetUserPreferencesRequest.new(
-  userid: 162154
+  userid: 123456
 )
 
 result = users_api.get_user_preferences(body)
