@@ -56,7 +56,11 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: "Gateway-issued JWT from `POST /auth/login`. Send as `Authorization: Bearer <token>`."
+      description: >
+        Gateway-issued JWT. Obtain it from `POST /auth/login` using your NUST LMS
+        credentials, then send it as `Authorization: Bearer <token>`. The gateway
+        manages the underlying LMS session (cookie + sesskey) server-side, so the
+        ephemeral sesskey never leaves the gateway.
 
   schemas:
     LoginRequest:
