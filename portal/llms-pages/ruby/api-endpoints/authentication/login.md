@@ -29,7 +29,7 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 
 ```ruby
 body = LoginRequest.new(
-  email: 'john.doe@student.nust.edu.pk',
+  username: 'johndoe.bscs23seecs',
   password: 'password0'
 )
 

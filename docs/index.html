@@ -8,7 +8,7 @@
       name="description"
       content="NUST LMS Developer Hub: a developer-friendly REST API and SDKs for the NUST Learning Management System."
     />
-    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
     <style>
       :root {
         /* NUST brand palette — owned by us, not the docs engine */
@@ -174,7 +174,7 @@
         url: "./openapi.yaml",
         theme: "none", // disable Scalar's built-in theme so our NUST CSS wins
         layout: "modern",
-        favicon: "./favicon.ico",
+        favicon: "./favicon.png",
         // Single blue/white theme — no dark mode.
         darkMode: false,
         forceDarkModeState: "light",
@@ -183,6 +183,9 @@
         hideDownloadButton: true,
         // Remove the "Open API Client" button (keep the inline Test Request).
         hideClientButton: true,
+        // Don't auto-expand the first tag (Authentication); let it collapse behind
+        // "Show More" like every other section, for consistency.
+        defaultOpenFirstTag: false,
         // The real SDK examples come from x-codeSamples (injected from APIMatic's
         // generated SDKs) and render in their own "Code Examples" panel. Hide ALL of
         // Scalar's auto-generated snippet clients so the noisy invented languages

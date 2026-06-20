@@ -16,7 +16,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `email` | `String` | Required | NUST LMS username or email. |
+| `username` | `String` | Required | NUST LMS username. |
 | `password` | `String` | Required | NUST LMS password. |
 | `additional_properties` | `Hash[String, Object]` | Optional | - |
 
@@ -25,7 +25,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 ```ruby
 login_request = LoginRequest.new(
-  email: 'john.doe@student.nust.edu.pk',
+  username: 'johndoe.bscs23seecs',
   password: 'password6',
   additional_properties: {
     'exampleAdditionalProperty' => JSON.parse('{"key1":"val1","key2":"val2"}')

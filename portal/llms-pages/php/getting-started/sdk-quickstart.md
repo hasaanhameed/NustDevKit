@@ -103,17 +103,6 @@ To run your project, right click on your PHP file inside your Test project and c
 ![Run Test Project - Step 5](https://apidocs.io/illustration/php?workspaceFolder=NustLmsApi&step=runProject)
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| PRODUCTION | **Default** NustDevKit Gateway (local development) |
-| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -121,7 +110,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| environment | [`Environment`](/llms-pages/php/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | timeout | `int` | Timeout for API calls in seconds.<br>*Default*: `30` |
 | enableRetries | `bool` | Whether to enable retries and backoff feature.<br>*Default*: `false` |
 | numberOfRetries | `int` | The number of retries to make.<br>*Default*: `0` |
@@ -142,7 +130,6 @@ use NustLmsApiLib\Logging\LoggingConfigurationBuilder;
 use NustLmsApiLib\Logging\RequestLoggingConfigurationBuilder;
 use NustLmsApiLib\Logging\ResponseLoggingConfigurationBuilder;
 use Psr\Log\LogLevel;
-use NustLmsApiLib\Environment;
 use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
 use NustLmsApiLib\NustLmsApiClientBuilder;
 
@@ -152,7 +139,6 @@ $client = NustLmsApiClientBuilder::init()
             'AccessToken'
         )
     )
-    ->environment(Environment::PRODUCTION)
     ->loggingConfiguration(
         LoggingConfigurationBuilder::init()
             ->level(LogLevel::INFO)

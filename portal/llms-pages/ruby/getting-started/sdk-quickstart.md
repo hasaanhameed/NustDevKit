@@ -74,17 +74,6 @@ A new controller class named `HelloController` will be created in a file named `
 ![Initialize the library](https://apidocs.io/illustration/ruby?workspaceFolder=NustLmsApi&gemName=nust_lms_api&step=addCode3)
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| PRODUCTION | **Default** NustDevKit Gateway (local development) |
-| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -92,7 +81,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| environment | [`Environment`](/llms-pages/ruby/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | connection | `Faraday::Connection` | The Faraday connection object passed by the SDK user for making requests |
 | adapter | `Faraday::Adapter` | The Faraday adapter object passed by the SDK user for performing http requests |
 | timeout | `Float` | The value to use for connection timeout. <br> **Default: 30** |
@@ -118,7 +106,6 @@ client = Client.new(
   bearer_auth_credentials: BearerAuthCredentials.new(
     access_token: 'AccessToken'
   ),
-  environment: Environment::PRODUCTION,
   logging_configuration: LoggingConfiguration.new(
     log_level: Logger::INFO,
     request_logging_config: RequestLoggingConfiguration.new(

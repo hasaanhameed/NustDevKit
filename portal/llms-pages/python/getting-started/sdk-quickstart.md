@@ -74,17 +74,6 @@ To run the file within your test project, right click on your Python file inside
 ![Run Test Project - Step 1](https://apidocs.io/illustration/python?workspaceFolder=Nustlmsapi-Python&projectName=nustlmsapi&libraryName=nustlmsapi.nustlmsapi_client&className=NustlmsapiClient&step=runProject)
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| PRODUCTION | **Default** NustDevKit Gateway (local development) |
-| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -92,7 +81,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| environment | [`Environment`](/llms-pages/python/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | http_client_instance | `Union[Session, HttpClientProvider]` | The Http Client passed from the sdk user for making requests |
 | override_http_client_configuration | `bool` | The value which determines to override properties of the passed Http Client from the sdk user |
 | http_call_back | `HttpCallBack` | The callback value that is invoked before and after an HTTP call is made to an endpoint |

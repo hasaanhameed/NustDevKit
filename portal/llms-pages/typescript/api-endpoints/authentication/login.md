@@ -33,7 +33,7 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 
 ```ts
 const body: LoginRequest = {
-  email: 'john.doe@student.nust.edu.pk',
+  username: 'johndoe.bscs23seecs',
   password: 'password0',
 };
 

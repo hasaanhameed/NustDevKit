@@ -42,7 +42,8 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: "Gateway-issued JWT from `POST /auth/login`. Send as `Authorization: Bearer <token>`."
+      description: |
+        Gateway-issued JWT. Obtain it from `POST /auth/login` using your NUST LMS credentials, then send it as `Authorization: Bearer <token>`. The gateway manages the underlying LMS session (cookie + sesskey) server-side, so the ephemeral sesskey never leaves the gateway.
   schemas:
     LoginRequest:
       type: object
@@ -1013,7 +1014,7 @@ paths:
           label: TypeScript
           source: |-
             const body: LoginRequest = {
-              email: 'john.doe@student.nust.edu.pk',
+              username: 'johndoe.bscs23seecs',
               password: 'password0',
             };
 
@@ -1046,7 +1047,7 @@ paths:
           label: Python
           source: |-
             body = LoginRequest(
-                email='john.doe@student.nust.edu.pk',
+                username='johndoe.bscs23seecs',
                 password='password0'
             )
 
@@ -1060,7 +1061,7 @@ paths:
           label: Java
           source: |-
             LoginRequest body = new LoginRequest.Builder(
-                "john.doe@student.nust.edu.pk",
+                "johndoe.bscs23seecs",
                 "password0"
             )
             .build();
@@ -1086,7 +1087,7 @@ paths:
           source: |-
             LoginRequest body = new LoginRequest
             {
-                Email = "john.doe@student.nust.edu.pk",
+                Username = "johndoe.bscs23seecs",
                 Password = "password0",
             };
 
@@ -1108,7 +1109,7 @@ paths:
             ctx := context.Background()
 
             body := models.LoginRequest{
-                Email:                 "john.doe@student.nust.edu.pk",
+                Username:              "johndoe.bscs23seecs",
                 Password:              "password0",
             }
 
@@ -1129,7 +1130,7 @@ paths:
           label: PHP
           source: |-
             $body = LoginRequestBuilder::init(
-                'john.doe@student.nust.edu.pk',
+                'johndoe.bscs23seecs',
                 'password0'
             )->build();
 
@@ -1152,7 +1153,7 @@ paths:
           label: Ruby
           source: |-
             body = LoginRequest.new(
-              email: 'john.doe@student.nust.edu.pk',
+              username: 'johndoe.bscs23seecs',
               password: 'password0'
             )
 

@@ -14,9 +14,6 @@ servers:
 - url: http://127.0.0.1:8000
   description: NustDevKit Gateway (local development)
   variables: {}
-- url: https://gateway.nustdevkit.example
-  description: NustDevKit Gateway (production — replace with your deployed gateway URL)
-  variables: {}
 paths:
   /auth/login:
     post:
@@ -418,15 +415,15 @@ components:
     LoginRequest:
       title: LoginRequest
       required:
-      - email
+      - username
       - password
       type: object
       properties:
-        email:
+        username:
           type: string
-          description: NUST LMS username or email.
+          description: NUST LMS username.
           examples:
-          - john.doe@student.nust.edu.pk
+          - johndoe.bscs23seecs
         password:
           type: string
           description: NUST LMS password.

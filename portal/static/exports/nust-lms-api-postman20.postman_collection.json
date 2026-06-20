@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "NUST LMS API",
-    "_postman_id": "fea12dd3-e7d5-445e-beae-d0853b7efb3f",
+    "_postman_id": "094ff47e-c517-4a24-859a-d309681d6b85",
     "description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).\nAuthenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.\n",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
@@ -11,14 +11,16 @@
       "description": "Exchange NUST LMS credentials for a gateway bearer token",
       "item": [
         {
-          "id": "ca66dc03-8f95-4791-8632-6ef617307d54",
+          "id": "afd15397-c9c7-4a92-bee7-62a1646ba38f",
           "name": "login",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "auth/login"
-              ]
+              ],
+              "port": "8000"
             },
             "auth": {
               "type": "noauth"
@@ -39,7 +41,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"john.doe@student.nust.edu.pk\",\n  \"password\": \"password73\"\n}",
+              "raw": "{\n  \"username\": \"johndoe.bscs23seecs\",\n  \"password\": \"password54\"\n}",
               "disabled": false
             },
             "description": "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.\n"
@@ -53,11 +55,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"access_token\": \"access_token77\",\n  \"token_type\": \"bearer\"\n}",
+              "body": "{\n  \"access_token\": \"access_token51\",\n  \"token_type\": \"bearer\"\n}",
               "status": "Authentication succeeded; bearer token issued.",
               "code": 200,
               "name": "Response_200",
-              "id": "6cb88f95-c538-40c4-baff-f0419dd163cf"
+              "id": "1676ee29-d446-4e3d-aecd-0c0ac700eb5f"
             },
             {
               "header": [
@@ -71,7 +73,7 @@
               "status": "Invalid LMS credentials.",
               "code": 401,
               "name": "Response_401",
-              "id": "92a52fcf-c4d0-4fee-902a-ced41b397a78"
+              "id": "01c02aef-f39e-48bb-a6c1-eee6ef358d35"
             }
           ]
         }
@@ -82,14 +84,16 @@
       "description": "Course listing and enrollment operations",
       "item": [
         {
-          "id": "7bed6eaa-065b-4ebc-a481-2147200e2818",
+          "id": "fbc1aaa7-7814-4d06-99f1-8d1a9ac72aab",
           "name": "getCoreRecentCourses",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_course_get_recent_courses"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -121,11 +125,11 @@
                   "disabled": false
                 }
               ],
-              "body": "[\n  {\n    \"id\": 49900,\n    \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n    \"idnumber\": \"idnumber58\",\n    \"summary\": \"summary30\",\n    \"summaryformat\": 1,\n    \"startdate\": 1706468400,\n    \"enddate\": 1717362000,\n    \"visible\": true,\n    \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n    \"progress\": 21,\n    \"hasprogress\": true,\n    \"isfavourite\": false,\n    \"hidden\": false,\n    \"showshortname\": false,\n    \"coursecategory\": \"2nd Semester (SP-2024)\",\n    \"timeaccess\": 1781632422\n  }\n]",
+              "body": "[\n  {\n    \"id\": 49900,\n    \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n    \"idnumber\": \"idnumber4\",\n    \"summary\": \"summary81\",\n    \"summaryformat\": 1,\n    \"startdate\": 1706468400,\n    \"enddate\": 1717362000,\n    \"visible\": true,\n    \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n    \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n    \"progress\": 21,\n    \"hasprogress\": true,\n    \"isfavourite\": false,\n    \"hidden\": false,\n    \"showshortname\": false,\n    \"coursecategory\": \"2nd Semester (SP-2024)\",\n    \"timeaccess\": 1781632422\n  }\n]",
               "status": "List of recently accessed courses ordered by last access.",
               "code": 200,
               "name": "Response_200",
-              "id": "58d5820d-575a-4f08-a1b8-833779091d01"
+              "id": "268657c6-4dcb-4470-bde0-fdf33335998d"
             },
             {
               "header": [
@@ -135,23 +139,25 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "434e937e-8170-4dfc-89f6-38bc0b3fd6eb"
+              "id": "193571d7-5b10-4ad1-9530-ca25961dbfc7"
             }
           ]
         },
         {
-          "id": "492bd8bd-f88c-4e15-bb5b-8dd0c3e37a8a",
+          "id": "33a5cb46-24af-4aab-8da1-7249fed282c1",
           "name": "getEnrolledCoursesByTimeline",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_course_get_enrolled_courses_by_timeline_classification"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -169,7 +175,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50,\n  \"classification\": \"all\",\n  \"sort\": \"shortname\"\n}",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50,\n  \"classification\": \"past\",\n  \"sort\": \"shortname\"\n}",
               "disabled": false
             },
             "description": "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`\n"
@@ -183,11 +189,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"courses\": [\n    {\n      \"id\": 49900,\n      \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n      \"idnumber\": \"idnumber1\",\n      \"summary\": \"summary25\",\n      \"summaryformat\": 1,\n      \"startdate\": 1706468400,\n      \"enddate\": 1717362000,\n      \"visible\": true,\n      \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n      \"progress\": 21,\n      \"hasprogress\": true,\n      \"isfavourite\": false,\n      \"hidden\": false,\n      \"showshortname\": false,\n      \"coursecategory\": \"2nd Semester (SP-2024)\"\n    }\n  ],\n  \"nextoffset\": 29\n}",
+              "body": "{\n  \"courses\": [\n    {\n      \"id\": 49900,\n      \"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\n      \"idnumber\": \"idnumber19\",\n      \"summary\": \"summary66\",\n      \"summaryformat\": 1,\n      \"startdate\": 1706468400,\n      \"enddate\": 1717362000,\n      \"visible\": true,\n      \"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\n      \"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\n      \"progress\": 21,\n      \"hasprogress\": true,\n      \"isfavourite\": false,\n      \"hidden\": false,\n      \"showshortname\": false,\n      \"coursecategory\": \"2nd Semester (SP-2024)\"\n    }\n  ],\n  \"nextoffset\": 29\n}",
               "status": "Paginated list of enrolled courses.",
               "code": 200,
               "name": "Response_200",
-              "id": "90782bc1-e01f-4be1-8aaa-8189146713ca"
+              "id": "bbd86634-98fc-4979-b278-7b1e57c442d4"
             },
             {
               "header": [
@@ -197,11 +203,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "a07133c4-db86-4d22-b6cd-655763c05374"
+              "id": "fda7bfa3-f450-4d26-84ac-f888048bae2a"
             }
           ]
         }
@@ -212,14 +218,16 @@
       "description": "Calendar event operations",
       "item": [
         {
-          "id": "8ef51c81-99f8-4e97-aaa5-8cdbcaeb2b8b",
+          "id": "619c9c16-0e48-4aba-bb50-5722d88bdd52",
           "name": "getCalendarEventsByTimesort",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_calendar_get_action_events_by_timesort"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -237,7 +245,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"limitnum\": 20,\n  \"timesortfrom\": 0,\n  \"timesortto\": 89,\n  \"aftereventid\": 65\n}",
+              "raw": "{\n  \"limitnum\": 20,\n  \"timesortfrom\": 0,\n  \"timesortto\": 118,\n  \"aftereventid\": 144\n}",
               "disabled": false
             },
             "description": "Returns action events across all enrolled courses, ordered by their sort timestamp. Use `timesortfrom` to filter to upcoming events only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n"
@@ -251,11 +259,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location58\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 252,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber1\",\"summary\": \"summary25\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 226,\"groupid\": 177,\"userid\": 170,\"repeatid\": 92,\"eventcount\": 102,\"groupname\": \"groupname78\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
+              "body": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location72\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 43,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber19\",\"summary\": \"summary66\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 64,\"groupid\": 84,\"userid\": 159,\"repeatid\": 76,\"eventcount\": 1,\"groupname\": \"groupname15\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
               "status": "Calendar events sorted by timesort.",
               "code": 200,
               "name": "Response_200",
-              "id": "2febf815-7c91-46de-93b6-906e8f43b970"
+              "id": "b10f4489-8e93-40a1-9535-b444ce72bc9b"
             },
             {
               "header": [
@@ -265,23 +273,25 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "3cf5d3d6-0ca3-4c5f-8da3-c34371ee2cdb"
+              "id": "9ecc55ea-6633-4cc2-aa4a-4fa42a3b6800"
             }
           ]
         },
         {
-          "id": "b0ecb0e2-1a09-4292-80df-09ed0fd1f9a7",
+          "id": "da0817ed-67f2-46dc-b560-3810ba71ad54",
           "name": "getCalendarEventsByCourse",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_calendar_get_action_events_by_course"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -299,7 +309,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"courseid\": 49906,\n  \"timesortfrom\": 10,\n  \"timesortto\": 175,\n  \"aftereventid\": 234,\n  \"limitnum\": 112\n}",
+              "raw": "{\n  \"courseid\": 49906,\n  \"timesortfrom\": 181,\n  \"timesortto\": 82,\n  \"aftereventid\": 155,\n  \"limitnum\": 203\n}",
               "disabled": false
             },
             "description": "Returns all action events (assignments, quizzes, etc.) for a single course.\nMoodle method: `core_calendar_get_action_events_by_course`\n"
@@ -313,11 +323,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location58\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 252,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber1\",\"summary\": \"summary25\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 226,\"groupid\": 177,\"userid\": 170,\"repeatid\": 92,\"eventcount\": 102,\"groupname\": \"groupname78\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
+              "body": "{\"events\": [{\"id\": 149885,\"name\": \"Lab 1 BSCS 13C is due\",\"description\": \"<p dir=\"ltr\">Lab 1 BSCS 13C<br /></p>\",\"descriptionformat\": 1,\"location\": \"location72\",\"component\": \"mod_assign\",\"modulename\": \"assign\",\"instance\": 999404,\"eventtype\": \"due\",\"timestart\": 1706900340,\"timeduration\": 0,\"timesort\": 1706900340,\"visible\": 43,\"timemodified\": 1779088440,\"icon\": {\"key\": \"icon\",\"component\": \"assign\",\"alttext\": \"Activity event\"},\"course\": {\"id\": 49900,\"fullname\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"shortname\": \"CS-212-Sp'24 BSCS-13 2K23 ABC\",\"idnumber\": \"idnumber19\",\"summary\": \"summary66\",\"summaryformat\": 1,\"startdate\": 1706468400,\"enddate\": 1717362000,\"visible\": true,\"fullnamedisplay\": \"CS-212 Object Oriented Programming BSCS-13 2K23 ABC\",\"viewurl\": \"https://lms.nust.edu.pk/portal/course/view.php?id=49900\",\"progress\": 21,\"hasprogress\": true,\"isfavourite\": false,\"hidden\": false,\"showshortname\": false,\"coursecategory\": \"2nd Semester (SP-2024)\"},\"subscription\": {\"displayeventsource\": false},\"canedit\": false,\"candelete\": false,\"deleteurl\": \"https://lms.nust.edu.pk/portal/calendar/delete.php?id=149885&course=49900\",\"editurl\": \"https://lms.nust.edu.pk/portal/course/mod.php?update=999404&return=1&sesskey=XXXX\",\"viewurl\": \"https://lms.nust.edu.pk/portal/calendar/view.php?view=day&course=49900&time=1706900340\",\"formattedtime\": \"<span class=\"dimmed_text\">Friday, 2 February, 11:59 PM</span>\",\"isactionevent\": true,\"iscourseevent\": false,\"iscategoryevent\": false,\"normalisedeventtype\": \"course\",\"normalisedeventtypetext\": \"Course event\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404\",\"categoryid\": 64,\"groupid\": 84,\"userid\": 159,\"repeatid\": 76,\"eventcount\": 1,\"groupname\": \"groupname15\",\"action\": {\"name\": \"Add submission\",\"url\": \"https://lms.nust.edu.pk/portal/mod/assign/view.php?id=999404&action=editsubmission\",\"itemcount\": 1,\"actionable\": true,\"showitemcount\": false}}],\"firstid\": 149885,\"lastid\": 151886}",
               "status": "Calendar events for the specified course.",
               "code": 200,
               "name": "Response_200",
-              "id": "08e752aa-e8b2-4aec-a60a-2f40def35c37"
+              "id": "2bdc41b4-6142-45f8-a74d-03e14c750c39"
             },
             {
               "header": [
@@ -327,11 +337,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "52d65532-a059-460d-bb99-20879b1db8bd"
+              "id": "17c1489b-81bf-4970-a103-c8fe9a7d04a9"
             }
           ]
         }
@@ -342,14 +352,16 @@
       "description": "User profile and preferences operations",
       "item": [
         {
-          "id": "27387cee-9253-4d3a-a478-699bb622d450",
+          "id": "928bdfe7-1054-4ead-a9a3-91a01897caa6",
           "name": "getUsersByField",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_user_get_users_by_field"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -367,7 +379,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"field\": \"username\",\n  \"values\": [\n    \"162154\"\n  ]\n}",
+              "raw": "{\n  \"field\": \"id\",\n  \"values\": [\n    \"162154\"\n  ]\n}",
               "disabled": false
             },
             "description": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n"
@@ -381,11 +393,11 @@
                   "disabled": false
                 }
               ],
-              "body": "[\n  {\n    \"id\": 162154,\n    \"username\": \"hhameed.bscs23seecs\",\n    \"fullname\": \"Hasaan Hameed\",\n    \"email\": \"hhameed.bscs23seecs@seecs.edu.pk\",\n    \"department\": \"FoC\",\n    \"institution\": \"SEECS\",\n    \"idnumber\": \"00000454987\",\n    \"auth\": \"ldap\",\n    \"confirmed\": true,\n    \"lang\": \"en\",\n    \"theme\": \"theme77\",\n    \"timezone\": \"99\",\n    \"mailformat\": 1,\n    \"profileimageurlsmall\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894\",\n    \"profileimageurl\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894\",\n    \"customfields\": [\n      {\n        \"type\": \"text\",\n        \"value\": \"SEECS\",\n        \"name\": \"Institute\",\n        \"shortname\": \"institution\"\n      }\n    ],\n    \"preferences\": [\n      {\n        \"name\": \"block_myoverview_user_sort_preference\",\n        \"value\": \"title\"\n      }\n    ]\n  }\n]",
+              "body": "[\n  {\n    \"id\": 162154,\n    \"username\": \"hhameed.bscs23seecs\",\n    \"fullname\": \"Hasaan Hameed\",\n    \"email\": \"hhameed.bscs23seecs@seecs.edu.pk\",\n    \"department\": \"FoC\",\n    \"institution\": \"SEECS\",\n    \"idnumber\": \"00000454987\",\n    \"auth\": \"ldap\",\n    \"confirmed\": true,\n    \"lang\": \"en\",\n    \"theme\": \"theme49\",\n    \"timezone\": \"99\",\n    \"mailformat\": 1,\n    \"profileimageurlsmall\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894\",\n    \"profileimageurl\": \"https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894\",\n    \"customfields\": [\n      {\n        \"type\": \"text\",\n        \"value\": \"SEECS\",\n        \"name\": \"Institute\",\n        \"shortname\": \"institution\"\n      }\n    ],\n    \"preferences\": [\n      {\n        \"name\": \"block_myoverview_user_sort_preference\",\n        \"value\": \"title\"\n      }\n    ]\n  }\n]",
               "status": "List of matching user profiles.",
               "code": 200,
               "name": "Response_200",
-              "id": "9f1ce09b-00d4-4fff-b3b7-ef8ec243da26"
+              "id": "be9df706-3897-4b47-80b4-be00f45905cb"
             },
             {
               "header": [
@@ -395,23 +407,25 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "bb48a20c-9f0f-456d-ac14-2c577b3b3c59"
+              "id": "9d80fd93-6af2-483c-bed5-77bb93f8224d"
             }
           ]
         },
         {
-          "id": "9e091078-1203-434f-8b66-aa4926024c1f",
+          "id": "f4046254-824d-42de-b076-85b828af0479",
           "name": "getUserPreferences",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_user_get_user_preferences"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -429,7 +443,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userid\": 162154,\n  \"name\": \"name4\"\n}",
+              "raw": "{\n  \"userid\": 162154,\n  \"name\": \"name53\"\n}",
               "disabled": false
             },
             "description": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n"
@@ -443,11 +457,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"preferences\": [\n    {\n      \"name\": \"block_myoverview_user_sort_preference\",\n      \"value\": \"title\"\n    }\n  ],\n  \"warnings\": [\n    {\n      \"item\": \"item41\",\n      \"itemid\": 0,\n      \"warningcode\": \"warningcode41\",\n      \"message\": \"message4\"\n    }\n  ]\n}",
+              "body": "{\n  \"preferences\": [\n    {\n      \"name\": \"block_myoverview_user_sort_preference\",\n      \"value\": \"title\"\n    }\n  ],\n  \"warnings\": [\n    {\n      \"item\": \"item15\",\n      \"itemid\": 0,\n      \"warningcode\": \"warningcode80\",\n      \"message\": \"message69\"\n    }\n  ]\n}",
               "status": "User preferences list and optional warnings.",
               "code": 200,
               "name": "Response_200",
-              "id": "88bb2bd7-8e85-4bae-8b8d-4b97f68a8918"
+              "id": "74d96eda-54a9-401c-a684-1d80f0ad8a00"
             },
             {
               "header": [
@@ -457,11 +471,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "b8da04c5-df4c-4ff3-b19b-18ebaa89a181"
+              "id": "22648521-1d38-4ed2-a2ae-df2b3135a6c4"
             }
           ]
         }
@@ -472,14 +486,16 @@
       "description": "Notification retrieval operations",
       "item": [
         {
-          "id": "31d592e5-e10a-40eb-b438-e76fd43954ac",
+          "id": "c921a324-9810-4036-835a-c032e5e74c06",
           "name": "fetchNotifications",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/core_fetch_notifications"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -511,11 +527,11 @@
                   "disabled": false
                 }
               ],
-              "body": "[\n  {\n    \"id\": 108,\n    \"message\": \"message13\",\n    \"type\": \"type2\"\n  }\n]",
+              "body": "[\n  {\n    \"id\": 151,\n    \"message\": \"message48\",\n    \"type\": \"type61\"\n  }\n]",
               "status": "Array of site notifications (empty array when none are pending).",
               "code": 200,
               "name": "Response_200",
-              "id": "b4179690-02ff-4181-9a3b-cd9ff3d1b19a"
+              "id": "48fed452-78f5-433b-9a00-82ddfab52f7a"
             },
             {
               "header": [
@@ -525,23 +541,25 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "effa5af7-0f18-4c48-ab1b-c1cdf816db05"
+              "id": "67357195-30fa-4f4b-9321-3cdb94a7cb0a"
             }
           ]
         },
         {
-          "id": "f150c888-7882-4529-b68f-d5f654b97453",
+          "id": "61318dc3-d48b-4703-8e57-6f765cb6d003",
           "name": "getPopupNotifications",
           "request": {
             "url": {
-              "host": "{{default}}",
+              "protocol": "http",
+              "host": "127.0.0.1",
               "path": [
                 "service/message_popup_get_popup_notifications"
-              ]
+              ],
+              "port": "8000"
             },
             "method": "POST",
             "header": [
@@ -573,11 +591,11 @@
                   "disabled": false
                 }
               ],
-              "body": "{\"notifications\": [{\"id\": 4857819,\"useridfrom\": 198956,\"useridto\": 162154,\"subject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"shortenedsubject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"text\": \"<p>Areeba Rameen posted in CS-419-Deep Learning...</p>\",\"fullmessage\": \"fullmessage39\",\"fullmessageformat\": 2,\"fullmessagehtml\": \"fullmessagehtml28\",\"smallmessage\": \"Areeba Rameen posted in CS-419-Deep Learning...\",\"contexturl\": \"https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342\",\"contexturlname\": \"Lab Sessional Finalization - (DL - Section D & E)\",\"timecreated\": 1780045085,\"timecreatedpretty\": \"19 days ago\",\"read\": false,\"deleted\": false,\"iconurl\": \"https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon\",\"component\": \"mod_forum\",\"eventtype\": \"posts\",\"customdata\": \"{\"cmid\":\"1272420\",\"instance\":\"62569\",\"discussionid\":\"41767\"}\",\"timeread\": 6}],\"unreadcount\": 1}",
+              "body": "{\"notifications\": [{\"id\": 4857819,\"useridfrom\": 198956,\"useridto\": 162154,\"subject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"shortenedsubject\": \"CS-419-Deep Learning: Lab Sessional Finalization\",\"text\": \"<p>Areeba Rameen posted in CS-419-Deep Learning...</p>\",\"fullmessage\": \"fullmessage37\",\"fullmessageformat\": 2,\"fullmessagehtml\": \"fullmessagehtml80\",\"smallmessage\": \"Areeba Rameen posted in CS-419-Deep Learning...\",\"contexturl\": \"https://lms.nust.edu.pk/portal/mod/forum/discuss.php?d=41767#p52342\",\"contexturlname\": \"Lab Sessional Finalization - (DL - Section D & E)\",\"timecreated\": 1780045085,\"timecreatedpretty\": \"19 days ago\",\"read\": false,\"deleted\": false,\"iconurl\": \"https://lms.nust.edu.pk/portal/theme/image.php/moove/mod_forum/1778048051/icon\",\"component\": \"mod_forum\",\"eventtype\": \"posts\",\"customdata\": \"{\"cmid\":\"1272420\",\"instance\":\"62569\",\"discussionid\":\"41767\"}\",\"timeread\": 204}],\"unreadcount\": 1}",
               "status": "Popup notifications and total unread count.",
               "code": 200,
               "name": "Response_200",
-              "id": "b15c84f7-434c-4315-9b3d-d20d6344c938"
+              "id": "c6153313-b98c-4eb0-92c9-c0d43fe832d8"
             },
             {
               "header": [
@@ -587,25 +605,16 @@
                   "disabled": false
                 }
               ],
-              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link38\",\n  \"moreinfourl\": \"moreinfourl48\",\n  \"debuginfo\": \"debuginfo25\"\n}",
+              "body": "{\n  \"errorcode\": \"invalidrecord\",\n  \"message\": \"Can't find data record in database table.\",\n  \"link\": \"link36\",\n  \"moreinfourl\": \"moreinfourl28\",\n  \"debuginfo\": \"debuginfo47\"\n}",
               "status": "Bad request or Moodle exception.",
               "code": 400,
               "name": "Response_400",
-              "id": "d4e87585-7e5c-4c41-990e-a01e320930b1"
+              "id": "341b8321-0978-41ab-acfd-670d6f388099"
             }
           ]
         }
       ]
     }
   ],
-  "variable": [
-    {
-      "key": "default",
-      "value": "http://127.0.0.1:8000"
-    },
-    {
-      "key": "default1",
-      "value": "https://gateway.nustdevkit.example"
-    }
-  ]
+  "variable": []
 }

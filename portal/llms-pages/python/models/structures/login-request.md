@@ -16,7 +16,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `email` | `str` | Required | NUST LMS username or email. |
+| `username` | `str` | Required | NUST LMS username. |
 | `password` | `str` | Required | NUST LMS password. |
 | `additional_properties` | `Dict[str, Any]` | Optional | - |
 
@@ -29,7 +29,7 @@ import jsonpickle
 from nustlmsapi.models.login_request import LoginRequest
 
 login_request = LoginRequest(
-    email='john.doe@student.nust.edu.pk',
+    username='johndoe.bscs23seecs',
     password='password6',
     additional_properties={
         'exampleAdditionalProperty': jsonpickle.decode('{"key1":"val1","key2":"val2"}')

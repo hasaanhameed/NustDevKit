@@ -14,7 +14,6 @@ basePath: /
 securityDefinitions: {}
 schemes:
 - http
-- https
 consumes:
 - application/json
 produces:
@@ -431,16 +430,16 @@ definitions:
     description: NUST LMS credentials used to obtain a gateway bearer token.
     type: object
     properties:
-      email:
-        description: NUST LMS username or email.
-        example: john.doe@student.nust.edu.pk
+      username:
+        description: NUST LMS username.
+        example: johndoe.bscs23seecs
         type: string
       password:
         description: NUST LMS password.
         type: string
         format: password
     required:
-    - email
+    - username
     - password
   TokenResponse:
     title: TokenResponse

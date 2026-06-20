@@ -16,7 +16,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `email` | `string` | Required | NUST LMS username or email. |
+| `username` | `string` | Required | NUST LMS username. |
 | `password` | `string` | Required | NUST LMS password. |
 | `additionalProperties` | `Record<string, unknown>` | Optional | - |
 
@@ -27,7 +27,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 import { LoginRequest } from 'nust-lms-apilib';
 
 const loginRequest: LoginRequest = {
-  email: 'john.doe@student.nust.edu.pk',
+  username: 'johndoe.bscs23seecs',
   password: 'password2',
   additionalProperties: {
     'exampleAdditionalProperty': { 'key1': 'val1', 'key2': 'val2' }

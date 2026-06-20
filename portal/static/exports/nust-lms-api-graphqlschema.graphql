@@ -32,8 +32,8 @@ enum UserProfileField {
 
 "NUST LMS credentials used to obtain a gateway bearer token."
 type LoginRequest {
-    "NUST LMS username or email."
-    email: String!
+    "NUST LMS username."
+    username: String!
     "NUST LMS password."
     password: String!
 }
@@ -491,8 +491,8 @@ type AuthLogin401Error1 {
 
 "NUST LMS credentials used to obtain a gateway bearer token."
 input LoginRequestInput {
-    "NUST LMS username or email."
-    email: String!
+    "NUST LMS username."
+    username: String!
     "NUST LMS password."
     password: String!
 }

@@ -457,12 +457,12 @@
       "id": "LoginRequest",
       "description": "NUST LMS credentials used to obtain a gateway bearer token.",
       "required": [
-        "email",
+        "username",
         "password"
       ],
       "properties": {
-        "email": {
-          "description": "NUST LMS username or email.",
+        "username": {
+          "description": "NUST LMS username.",
           "uniqueItems": false,
           "type": "string"
         },

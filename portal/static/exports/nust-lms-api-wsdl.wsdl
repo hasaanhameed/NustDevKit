@@ -34,9 +34,9 @@
           <xs:documentation>NUST LMS credentials used to obtain a gateway bearer token.</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="1" name="email" type="xs:string">
+          <xs:element minOccurs="1" name="username" type="xs:string">
             <xs:annotation>
-              <xs:documentation>NUST LMS username or email.</xs:documentation>
+              <xs:documentation>NUST LMS username.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element minOccurs="1" name="password" type="xs:string">

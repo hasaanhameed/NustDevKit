@@ -31,7 +31,7 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 ```csharp
 LoginRequest body = new LoginRequest
 {
-    Email = "john.doe@student.nust.edu.pk",
+    Username = "johndoe.bscs23seecs",
     Password = "password0",
 };
 

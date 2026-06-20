@@ -25,17 +25,6 @@ You can also view the package at:
 https://central.sonatype.com/artifact/com.apimatic/sample-sdk-artifact-id/1.0.0
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| PRODUCTION | **Default** NustDevKit Gateway (local development) |
-| ENVIRONMENT2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -43,7 +32,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| environment | [`Environment`](/llms-pages/java/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.PRODUCTION`** |
 | httpClientConfig | [`Consumer<HttpClientConfiguration.Builder>`](/llms-pages/java/sdk-infrastructure/configuration/httpclientconfiguration-builder.md) | Set up Http Client Configuration instance. |
 | loggingConfig | [`Consumer<ApiLoggingConfiguration.Builder>`](/llms-pages/java/sdk-infrastructure/configuration/apiloggingconfiguration-builder.md) | Set up Logging Configuration instance. |
 | bearerAuthCredentials | [`BearerAuthCredentials`](/llms-pages/java/getting-started/sdk-quickstart/authorization.md) | The Credentials Setter for OAuth 2 Bearer token |
@@ -51,7 +39,6 @@ The following parameters are configurable for the API Client:
 The API client can be initialized as follows:
 
 ```java
-import m18000.m0.m0.m127.Environment;
 import m18000.m0.m0.m127.NustLmsApiClient;
 import m18000.m0.m0.m127.authentication.BearerAuthModel;
 import m18000.m0.m0.m127.exceptions.ApiException;
@@ -71,7 +58,6 @@ public class Program {
                     "AccessToken"
                 )
                 .build())
-            .environment(Environment.PRODUCTION)
             .build();
 
     }

@@ -16,7 +16,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `Email` | `string` | Required | NUST LMS username or email. |
+| `Username` | `string` | Required | NUST LMS username. |
 | `Password` | `string` | Required | NUST LMS password. |
 | `AdditionalProperties` | `object this[string key]` | Optional | - |
 
@@ -29,7 +29,7 @@ using NustLmsApi.Standard.Utilities;
 
 LoginRequest loginRequest = new LoginRequest
 {
-    Email = "john.doe@student.nust.edu.pk",
+    Username = "johndoe.bscs23seecs",
     Password = "password2",
     ["exampleAdditionalProperty"] = ApiHelper.JsonDeserialize<object>("{\"key1\":\"val1\",\"key2\":\"val2\"}"),
 };

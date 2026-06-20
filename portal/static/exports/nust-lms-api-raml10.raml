@@ -5,7 +5,6 @@ baseUri: http://127.0.0.1:8000
 baseUriParameters: {}
 protocols:
 - HTTP
-- HTTPS
 documentation:
 - title: NUST LMS API
   content: |
@@ -21,12 +20,12 @@ types:
     description: NUST LMS credentials used to obtain a gateway bearer token.
     type: object
     properties:
-      email:
+      username:
         required: true
         example:
-          value: john.doe@student.nust.edu.pk
-        displayName: email
-        description: NUST LMS username or email.
+          value: johndoe.bscs23seecs
+        displayName: username
+        description: NUST LMS username.
         type: string
       password:
         required: true

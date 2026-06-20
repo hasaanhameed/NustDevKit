@@ -35,7 +35,7 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ctx := context.Background()
 
 body := models.LoginRequest{
-    Email:                 "john.doe@student.nust.edu.pk",
+    Username:              "johndoe.bscs23seecs",
     Password:              "password0",
 }
 

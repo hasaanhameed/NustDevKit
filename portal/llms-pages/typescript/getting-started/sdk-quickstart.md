@@ -75,17 +75,6 @@ npm install
 ![Install NustLmsApilib Dependency](https://apidocs.io/illustration/typescript?step=installDependency)
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| Production | **Default** NustDevKit Gateway (local development) |
-| Environment2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -93,7 +82,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| environment | [`Environment`](/llms-pages/typescript/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.Production`** |
 | timeout | `number` | Timeout for API calls.<br>*Default*: `30000` |
 | httpClientOptions | [`Partial<HttpClientOptions>`](/llms-pages/typescript/sdk-infrastructure/configuration/httpclientoptions.md) | Stable configurable http client options. |
 | unstableHttpClientOptions | `any` | Unstable configurable http client options. |
@@ -105,14 +93,13 @@ The API client can be initialized as follows:
 ## Code-Based Client Initialization
 
 ```ts
-import { Client, Environment, LogLevel } from 'nust-lms-apilib';
+import { Client, LogLevel } from 'nust-lms-apilib';
 
 const client = new Client({
   bearerAuthCredentials: {
     accessToken: 'AccessToken'
   },
   timeout: 30000,
-  environment: Environment.Production,
   logging: {
     logLevel: LogLevel.Info,
     logRequest: {

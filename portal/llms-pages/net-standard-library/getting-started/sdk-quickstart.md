@@ -59,17 +59,6 @@ Once the `TestConsoleProject` is created, a file named `Program.cs` will be visi
 ![Adding a project reference](https://apidocs.io/illustration/cs?workspaceFolder=NUST%20LMS%20API-CSharp&workspaceName=NustLmsApi&projectName=NustLmsApi.Standard&rootNamespace=NustLmsApi.Standard&step=addCode)
 
 
-# Environments
-
-The SDK can be configured to use a different environment for making API calls. Available environments are:
-
-## Fields
-
-| Name | Description |
-|  --- | --- |
-| Production | **Default** NustDevKit Gateway (local development) |
-| Environment2 | NustDevKit Gateway (production — replace with your deployed gateway URL) |
-
 
 # Initialize the API Client
 
@@ -77,7 +66,6 @@ The following parameters are configurable for the API Client:
 
 | Parameter | Type | Description |
 |  --- | --- | --- |
-| Environment | [`Environment`](/llms-pages/net-standard-library/getting-started/sdk-quickstart/environments.md) | The API environment. <br> **Default: `Environment.Production`** |
 | Timeout | `TimeSpan` | Http client timeout.<br>*Default*: `TimeSpan.FromSeconds(30)` |
 | HttpClientConfiguration | [`Action<HttpClientConfiguration.Builder>`](/llms-pages/net-standard-library/sdk-infrastructure/configuration/httpclientconfigurationbuilder.md) | Action delegate that configures the HTTP client by using the HttpClientConfiguration.Builder for customizing API call settings.<br>*Default*: `new HttpClient()` |
 | LogBuilder | [`LogBuilder`](/llms-pages/net-standard-library/sdk-infrastructure/configuration/logbuilder.md) | Represents the logging configuration builder for API calls |
@@ -102,7 +90,6 @@ NustLmsApiClient client = new NustLmsApiClient.Builder()
         .Build())
     .HttpClientConfig(httpClientConfig =>
         httpClientConfig.Timeout(TimeSpan.FromSeconds(100)))
-    .Environment(NustLmsApi.Standard.Environment.Production)
     .LoggingConfig(config => config
         .LogLevel(LogLevel.Information)
         .RequestConfig(reqConfig => reqConfig.Body(true))

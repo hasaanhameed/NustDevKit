@@ -12,7 +12,6 @@ securedBy:
 - BearerAuth
 protocols:
 - HTTP
-- HTTPS
 baseUriParameters: {}
 schemas:
 - LoginRequest: |
@@ -23,9 +22,9 @@ schemas:
       "description": "NUST LMS credentials used to obtain a gateway bearer token.",
       "type": "object",
       "properties": {
-        "email": {
-          "description": "NUST LMS username or email.",
-          "example": "john.doe@student.nust.edu.pk",
+        "username": {
+          "description": "NUST LMS username.",
+          "example": "johndoe.bscs23seecs",
           "type": "string"
         },
         "password": {
@@ -35,7 +34,7 @@ schemas:
         }
       },
       "required": [
-        "email",
+        "username",
         "password"
       ]
     }
@@ -2473,9 +2472,9 @@ schemas:
             "description": "NUST LMS credentials.",
             "type": "object",
             "properties": {
-              "email": {
-                "description": "NUST LMS username or email.",
-                "example": "john.doe@student.nust.edu.pk",
+              "username": {
+                "description": "NUST LMS username.",
+                "example": "johndoe.bscs23seecs",
                 "type": "string"
               },
               "password": {
@@ -2485,7 +2484,7 @@ schemas:
               }
             },
             "required": [
-              "email",
+              "username",
               "password"
             ]
           }

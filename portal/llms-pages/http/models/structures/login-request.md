@@ -11,7 +11,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 | Name | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `email` | `String` | Required | NUST LMS username or email. |
+| `username` | `String` | Required | NUST LMS username. |
 | `password` | `String` | Required | NUST LMS password. |
 | `additionalProperties` | `Object` | Optional | - |
 
@@ -20,7 +20,7 @@ NUST LMS credentials used to obtain a gateway bearer token.
 
 ```json
 {
-  "email": "john.doe@student.nust.edu.pk",
+  "username": "johndoe.bscs23seecs",
   "password": "password8",
   "exampleAdditionalProperty": {
     "key1": "val1",

@@ -33,7 +33,7 @@ curl -X POST \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
   --data-raw '{
-  "email": "john.doe@student.nust.edu.pk",
+  "username": "johndoe.bscs23seecs",
   "password": "password0"
 }'
 ```

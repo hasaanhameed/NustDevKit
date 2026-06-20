@@ -13,8 +13,7 @@
   "basePath": "/",
   "securityDefinitions": {},
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "consumes": [
     "application/json"
@@ -582,9 +581,9 @@
       "description": "NUST LMS credentials used to obtain a gateway bearer token.",
       "type": "object",
       "properties": {
-        "email": {
-          "description": "NUST LMS username or email.",
-          "example": "john.doe@student.nust.edu.pk",
+        "username": {
+          "description": "NUST LMS username.",
+          "example": "johndoe.bscs23seecs",
           "type": "string"
         },
         "password": {
@@ -594,7 +593,7 @@
         }
       },
       "required": [
-        "email",
+        "username",
         "password"
       ]
     },

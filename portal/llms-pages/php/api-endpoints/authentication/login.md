@@ -29,7 +29,7 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 
 ```php
 $body = LoginRequestBuilder::init(
-    'john.doe@student.nust.edu.pk',
+    'johndoe.bscs23seecs',
     'password0'
 )->build();
 

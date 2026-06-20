@@ -30,7 +30,7 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 
 ```python
 body = LoginRequest(
-    email='john.doe@student.nust.edu.pk',
+    username='johndoe.bscs23seecs',
     password='password0'
 )
 

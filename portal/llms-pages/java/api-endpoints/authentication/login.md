@@ -30,7 +30,7 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 
 ```java
 LoginRequest body = new LoginRequest.Builder(
-    "john.doe@student.nust.edu.pk",
+    "johndoe.bscs23seecs",
     "password0"
 )
 .build();
