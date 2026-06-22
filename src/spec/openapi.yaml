@@ -1092,7 +1092,6 @@ paths:
           schema:
             type: integer
             default: 10
-            example: 10
       responses:
         "200":
           description: List of recently accessed courses ordered by last access.
@@ -1129,7 +1128,6 @@ paths:
           schema:
             type: integer
             default: 0
-            example: 0
         - name: limit
           in: query
           required: true
@@ -1137,7 +1135,6 @@ paths:
           schema:
             type: integer
             default: 50
-            example: 50
         - name: classification
           in: query
           required: true
@@ -1184,7 +1181,6 @@ paths:
             can be found in the user profile image URL path segment.
           schema:
             type: integer
-            example: 1583361
       responses:
         "200":
           description: Array of site notifications (empty array when none are pending).
@@ -1222,14 +1218,12 @@ paths:
           description: Maximum number of events to return.
           schema:
             type: integer
-            example: 20
         - name: timesortfrom
           in: query
           required: true
           description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
           schema:
             type: integer
-            example: 0
         - name: timesortto
           in: query
           required: false
@@ -1274,7 +1268,6 @@ paths:
           description: ID of the course to fetch events for.
           schema:
             type: integer
-            example: 49906
         - name: timesortfrom
           in: query
           required: false
@@ -1343,8 +1336,6 @@ paths:
             type: array
             items:
               type: string
-          example:
-            - "123456"
       responses:
         "200":
           description: List of matching user profiles.
@@ -1380,7 +1371,6 @@ paths:
           description: ID of the user whose preferences to retrieve.
           schema:
             type: integer
-            example: 123456
         - name: name
           in: query
           required: false
@@ -1419,14 +1409,12 @@ paths:
           description: ID of the recipient user, passed as a string.
           schema:
             type: string
-            example: "123456"
         - name: limit
           in: query
           required: true
           description: Maximum number of notifications to return.
           schema:
             type: integer
-            example: 20
         - name: offset
           in: query
           required: true
@@ -1434,7 +1422,6 @@ paths:
           schema:
             type: integer
             default: 0
-            example: 0
       responses:
         "200":
           description: Popup notifications and total unread count.
