@@ -1,7 +1,7 @@
 // Copies the canonical OpenAPI spec and branding assets into docs/ so the
 // Scalar frontend has everything it needs as a self-contained static bundle.
 // Single source of truth: src/spec/openapi.yaml — docs/openapi.yaml is a build artifact.
-import { copyFileSync, mkdirSync, existsSync } from "node:fs";
+import { copyFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,3 +29,20 @@ for (const [from, to] of assets) {
   copied++;
 }
 console.log(`\nSynced ${copied}/${assets.length} asset(s) into docs/.`);
+
+// Copy the generated SDK zips so the docs can offer per-language downloads.
+const sdkSrc = resolve(root, "portal/static/sdks");
+if (existsSync(sdkSrc)) {
+  const sdkDest = resolve(docs, "sdks");
+  mkdirSync(sdkDest, { recursive: true });
+  let zips = 0;
+  for (const file of readdirSync(sdkSrc)) {
+    if (file.endsWith(".zip")) {
+      copyFileSync(resolve(sdkSrc, file), resolve(sdkDest, file));
+      zips++;
+    }
+  }
+  console.log(`Copied ${zips} SDK zip(s) into docs/sdks/.`);
+} else {
+  console.warn("! SDK zips not found (portal/static/sdks) — downloads will be missing.");
+}

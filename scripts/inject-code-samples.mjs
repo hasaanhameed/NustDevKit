@@ -17,7 +17,7 @@
 // We extract the Example Usage block per endpoint per language and attach it as
 // x-codeSamples on the matching operation in docs/openapi.yaml. The canonical
 // src/spec/openapi.yaml stays clean; only the build artifact is enriched.
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import AdmZip from "adm-zip";
@@ -58,6 +58,9 @@ function extractClientInit(md) {
   if (!fence) return null;
   return fence[1].replace(/\s+$/, "").split("AccessToken").join("YOUR_BEARER_TOKEN");
 }
+
+// Single-line comment marker for a language (used when stitching snippets).
+const lineComment = (lang) => (lang === "python" || lang === "ruby" ? "#" : "//");
 
 // Parse one controller markdown into { moodleMethod -> exampleCode }.
 function parseController(md) {
@@ -129,41 +132,43 @@ if (loginOp) {
   const loginSamples = [];
   for (const [zipName, meta] of LANGS) {
     const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
-    const entry = zip.getEntry("doc/controllers/authentication.md");
-    if (!entry) continue;
-    const code = extractExample(entry.getData().toString("utf8"));
-    if (code && !code.includes("{%")) {
-      loginSamples.push({ lang: meta.lang, label: meta.label, source: code });
+    const callEntry = zip.getEntry("doc/controllers/authentication.md");
+    const authEntry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
+    const call = callEntry ? extractExample(callEntry.getData().toString("utf8")) : null;
+    const init = authEntry ? extractClientInit(authEntry.getData().toString("utf8")) : null;
+    if (!call) continue;
+    // Combine the login call with the client-init so the (tabbed) login sample shows
+    // the full "authenticate, then build a client with the token" flow per language.
+    let source = call;
+    if (init) {
+      const c = lineComment(meta.lang);
+      source = `${call}\n\n${c} Reuse the returned bearer token to build an authenticated\n${c} client for every other endpoint:\n${init}`;
+    }
+    if (!source.includes("{%")) {
+      loginSamples.push({ lang: meta.lang, label: meta.label, source });
     }
   }
   if (loginSamples.length) loginOp["x-codeSamples"] = loginSamples;
 }
 
-// The per-endpoint samples show only the call. Build a one-time "Getting Started"
-// section (client setup per language, extracted from each SDK's bearer-auth doc)
-// and append it to info.description so the snippets have documented setup.
-const initBlocks = [];
-for (const [zipName, meta] of LANGS) {
-  const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
-  const entry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
-  if (!entry) continue;
-  const code = extractClientInit(entry.getData().toString("utf8"));
-  if (code) initBlocks.push(`### ${meta.label}\n\n\`\`\`${meta.lang}\n${code}\n\`\`\``);
-}
+// Append a "Getting Started" section to info.description: per-language SDK download
+// links + setup steps. The per-language setup CODE lives (tabbed) on /auth/login.
+const downloadLinks = LANGS.filter(([zipName]) =>
+  existsSync(resolve(sdksDir, `nust-lms-api-${zipName}.zip`))
+).map(([zipName, meta]) => `   - [${meta.label}](./sdks/nust-lms-api-${zipName}.zip)`);
 
-if (initBlocks.length && spec.info) {
+if (downloadLinks.length && spec.info) {
   const gettingStarted = [
     "",
     "## Getting Started with the SDKs",
     "",
-    "The code sample on each endpoint shows only the call. To run it, set up the",
-    "client once:",
-    "",
-    "1. **Install the SDK** for your language (download it and follow its README).",
+    "1. **Download the SDK** for your language and install it (follow the SDK's README):",
+    ...downloadLinks,
     "2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.",
-    "3. **Initialize a client** with that token — the per-endpoint samples assume this `client`:",
+    "3. **Initialize a client** with that token — see the per-language code on the",
+    "   **Log in with NUST LMS credentials** endpoint below. Every other sample assumes",
+    "   that `client`.",
     "",
-    ...initBlocks,
   ].join("\n");
   spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${gettingStarted}\n`;
 }
