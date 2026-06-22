@@ -14,7 +14,7 @@ class CourseTimelineClassification(str, Enum):
     inprogress = "inprogress"
     past = "past"
     future = "future"
-    favourite = "favourite"
+    favourites = "favourites"
     hidden = "hidden"
     allincludinghidden = "allincludinghidden"
 

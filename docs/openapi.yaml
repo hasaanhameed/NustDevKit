@@ -86,7 +86,7 @@ components:
         - inprogress
         - past
         - future
-        - favourite
+        - favourites
         - hidden
         - allincludinghidden
     CourseTimelineSortField:
