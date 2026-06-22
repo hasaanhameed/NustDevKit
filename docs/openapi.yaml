@@ -5,6 +5,117 @@ info:
   description: |
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
+
+    ## Getting Started with the SDKs
+
+    The code sample on each endpoint shows only the call. To run it, set up the
+    client once:
+
+    1. **Install the SDK** for your language (download it and follow its README).
+    2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.
+    3. **Initialize a client** with that token — the per-endpoint samples assume this `client`:
+
+    ### TypeScript
+
+    ```typescript
+    import { Client } from 'nust-lms-apilib';
+
+    const client = new Client({
+      bearerAuthCredentials: {
+        accessToken: 'YOUR_BEARER_TOKEN'
+      },
+    });
+    ```
+    ### Python
+
+    ```python
+    from nustlmsapi.http.auth.oauth_2 import BearerAuthCredentials
+    from nustlmsapi.nustlmsapi_client import NustlmsapiClient
+
+    client = NustlmsapiClient(
+        bearer_auth_credentials=BearerAuthCredentials(
+            access_token='YOUR_BEARER_TOKEN'
+        )
+    )
+    ```
+    ### Java
+
+    ```java
+    import m18000.m0.m0.m127.NustLmsApiClient;
+    import m18000.m0.m0.m127.authentication.BearerAuthModel;
+
+    public class Program {
+        public static void main(String[] args) {
+            NustLmsApiClient client = new NustLmsApiClient.Builder()
+                .bearerAuthCredentials(new BearerAuthModel.Builder(
+                        "YOUR_BEARER_TOKEN"
+                    )
+                    .build())
+                .build();
+        }
+    }
+    ```
+    ### .NET (C#)
+
+    ```csharp
+    using NustLmsApi.Standard;
+    using NustLmsApi.Standard.Authentication;
+
+    namespace ConsoleApp;
+
+    NustLmsApiClient client = new NustLmsApiClient.Builder()
+        .BearerAuthCredentials(
+            new BearerAuthModel.Builder(
+                "YOUR_BEARER_TOKEN"
+            )
+            .Build())
+        .Build();
+    ```
+    ### Go
+
+    ```go
+    package main
+
+    import (
+        "nustLmsApi"
+    )
+
+    func main() {
+        client := nustLmsApi.NewClient(
+        nustLmsApi.CreateConfiguration(
+                nustLmsApi.WithBearerAuthCredentials(
+                    nustLmsApi.NewBearerAuthCredentials("YOUR_BEARER_TOKEN"),
+                ),
+            ),
+        )
+    }
+    ```
+    ### PHP
+
+    ```php
+    use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
+    use NustLmsApiLib\NustLmsApiClientBuilder;
+
+    $client = NustLmsApiClientBuilder::init()
+        ->bearerAuthCredentials(
+            BearerAuthCredentialsBuilder::init(
+                'YOUR_BEARER_TOKEN'
+            )
+        )
+        ->build();
+    ```
+    ### Ruby
+
+    ```ruby
+    require 'nust_lms_api'
+    include NustLmsApi
+
+    client = Client.new(
+      bearer_auth_credentials: BearerAuthCredentials.new(
+        access_token: 'YOUR_BEARER_TOKEN'
+      )
+    )
+    ```
   contact:
     name: NustDevKit Support
     url: https://github.com/hasaanhameed52/NustDevKit

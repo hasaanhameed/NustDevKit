@@ -49,6 +49,16 @@ function extractExample(section) {
   return fence ? fence[1].replace(/\s+$/, "") : null;
 }
 
+// Pull the per-language "Client Initialization" snippet from an SDK's bearer-auth
+// doc, swapping the placeholder token for a clearer name.
+function extractClientInit(md) {
+  const idx = md.indexOf("### Client Initialization");
+  if (idx === -1) return null;
+  const fence = md.slice(idx).match(/```[^\n]*\n([\s\S]*?)```/);
+  if (!fence) return null;
+  return fence[1].replace(/\s+$/, "").split("AccessToken").join("YOUR_BEARER_TOKEN");
+}
+
 // Parse one controller markdown into { moodleMethod -> exampleCode }.
 function parseController(md) {
   const out = {};
@@ -127,6 +137,35 @@ if (loginOp) {
     }
   }
   if (loginSamples.length) loginOp["x-codeSamples"] = loginSamples;
+}
+
+// The per-endpoint samples show only the call. Build a one-time "Getting Started"
+// section (client setup per language, extracted from each SDK's bearer-auth doc)
+// and append it to info.description so the snippets have documented setup.
+const initBlocks = [];
+for (const [zipName, meta] of LANGS) {
+  const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
+  const entry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
+  if (!entry) continue;
+  const code = extractClientInit(entry.getData().toString("utf8"));
+  if (code) initBlocks.push(`### ${meta.label}\n\n\`\`\`${meta.lang}\n${code}\n\`\`\``);
+}
+
+if (initBlocks.length && spec.info) {
+  const gettingStarted = [
+    "",
+    "## Getting Started with the SDKs",
+    "",
+    "The code sample on each endpoint shows only the call. To run it, set up the",
+    "client once:",
+    "",
+    "1. **Install the SDK** for your language (download it and follow its README).",
+    "2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.",
+    "3. **Initialize a client** with that token — the per-endpoint samples assume this `client`:",
+    "",
+    ...initBlocks,
+  ].join("\n");
+  spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${gettingStarted}\n`;
 }
 
 if (errors.length) {
