@@ -128,6 +128,7 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
 // SDKs don't ship that controller yet (e.g. before a regeneration), login simply
 // renders without code samples rather than failing the build.
 const loginOp = spec.paths?.["/auth/login"]?.post;
+const initSamples = [];
 if (loginOp) {
   const loginSamples = [];
   for (const [zipName, meta] of LANGS) {
@@ -136,23 +137,53 @@ if (loginOp) {
     const authEntry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
     const call = callEntry ? extractExample(callEntry.getData().toString("utf8")) : null;
     const init = authEntry ? extractClientInit(authEntry.getData().toString("utf8")) : null;
-    if (!call) continue;
-    // Combine the login call with the client-init so the (tabbed) login sample shows
-    // the full "authenticate, then build a client with the token" flow per language.
-    let source = call;
-    if (init) {
-      const c = lineComment(meta.lang);
-      source = `${call}\n\n${c} Reuse the returned bearer token to build an authenticated\n${c} client for every other endpoint:\n${init}`;
+    if (call && !call.includes("{%")) {
+      loginSamples.push({ lang: meta.lang, label: meta.label, source: call });
     }
-    if (!source.includes("{%")) {
-      loginSamples.push({ lang: meta.lang, label: meta.label, source });
+    if (init && !init.includes("{%")) {
+      initSamples.push({ lang: meta.lang, label: meta.label, source: init });
     }
   }
   if (loginSamples.length) loginOp["x-codeSamples"] = loginSamples;
 }
 
+// Docs-only "SDK Setup" section: a sidebar entry in the Getting Started group whose
+// code panel is the tabbed per-language client-init. Injected into the docs artifact
+// only (never src), so APIMatic never generates a method for it.
+if (initSamples.length) {
+  spec.paths["/sdk/initialize-client"] = {
+    get: {
+      operationId: "initializeSdkClient",
+      summary: "Initialize the SDK client",
+      tags: ["SDK Setup"],
+      security: [],
+      description:
+        "Setup reference (not a live endpoint). After installing an SDK and getting a " +
+        "token from `POST /auth/login`, initialize a client with that token — every " +
+        "other code sample assumes this `client`.",
+      "x-codeSamples": initSamples,
+      responses: {
+        "200": {
+          description:
+            "This section documents client initialization; it is not a callable endpoint.",
+        },
+      },
+    },
+  };
+
+  spec.tags = spec.tags ?? [];
+  if (!spec.tags.some((t) => t.name === "SDK Setup")) {
+    spec.tags.push({
+      name: "SDK Setup",
+      description: "Install an SDK and initialize a client with your bearer token.",
+    });
+  }
+  const gs = (spec["x-tagGroups"] ?? []).find((g) => g.name === "Getting Started");
+  if (gs && !gs.tags.includes("SDK Setup")) gs.tags.push("SDK Setup");
+}
+
 // Append a "Getting Started" section to info.description: per-language SDK download
-// links + setup steps. The per-language setup CODE lives (tabbed) on /auth/login.
+// links + setup steps. The per-language init CODE lives (tabbed) in the SDK Setup section.
 const downloadLinks = LANGS.filter(([zipName]) =>
   existsSync(resolve(sdksDir, `nust-lms-api-${zipName}.zip`))
 ).map(([zipName, meta]) => `   - [${meta.label}](./sdks/nust-lms-api-${zipName}.zip)`);
@@ -165,9 +196,8 @@ if (downloadLinks.length && spec.info) {
     "1. **Download the SDK** for your language and install it (follow the SDK's README):",
     ...downloadLinks,
     "2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.",
-    "3. **Initialize a client** with that token — see the per-language code on the",
-    "   **Log in with NUST LMS credentials** endpoint below. Every other sample assumes",
-    "   that `client`.",
+    "3. **Initialize a client** with that token — see the **SDK Setup** section for the",
+    "   per-language code. Every other sample assumes that `client`.",
     "",
   ].join("\n");
   spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${gettingStarted}\n`;

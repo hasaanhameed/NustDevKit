@@ -17,9 +17,8 @@ info:
        - [PHP](./sdks/nust-lms-api-php_generic_lib_v2.zip)
        - [Ruby](./sdks/nust-lms-api-ruby_generic_lib.zip)
     2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.
-    3. **Initialize a client** with that token — see the per-language code on the
-       **Log in with NUST LMS credentials** endpoint below. Every other sample assumes
-       that `client`.
+    3. **Initialize a client** with that token — see the **SDK Setup** section for the
+       per-language code. Every other sample assumes that `client`.
 
   contact:
     name: NustDevKit Support
@@ -41,10 +40,13 @@ tags:
     description: User profile and preferences operations
   - name: Notifications
     description: Notification retrieval operations
+  - name: SDK Setup
+    description: Install an SDK and initialize a client with your bearer token.
 x-tagGroups:
   - name: Getting Started
     tags:
       - Authentication
+      - SDK Setup
   - name: Academics
     tags:
       - Courses
@@ -1061,16 +1063,6 @@ paths:
                 }
               }
             }
-
-            // Reuse the returned bearer token to build an authenticated
-            // client for every other endpoint:
-            import { Client } from 'nust-lms-apilib';
-
-            const client = new Client({
-              bearerAuthCredentials: {
-                accessToken: 'YOUR_BEARER_TOKEN'
-              },
-            });
         - lang: python
           label: Python
           source: |-
@@ -1085,17 +1077,6 @@ paths:
                 print(result.body)
             elif result.is_error():
                 print(result.errors)
-
-            # Reuse the returned bearer token to build an authenticated
-            # client for every other endpoint:
-            from nustlmsapi.http.auth.oauth_2 import BearerAuthCredentials
-            from nustlmsapi.nustlmsapi_client import NustlmsapiClient
-
-            client = NustlmsapiClient(
-                bearer_auth_credentials=BearerAuthCredentials(
-                    access_token='YOUR_BEARER_TOKEN'
-                )
-            )
         - lang: java
           label: Java
           source: |-
@@ -1121,22 +1102,6 @@ paths:
 
                 return null;
             });
-
-            // Reuse the returned bearer token to build an authenticated
-            // client for every other endpoint:
-            import m18000.m0.m0.m127.NustLmsApiClient;
-            import m18000.m0.m0.m127.authentication.BearerAuthModel;
-
-            public class Program {
-                public static void main(String[] args) {
-                    NustLmsApiClient client = new NustLmsApiClient.Builder()
-                        .bearerAuthCredentials(new BearerAuthModel.Builder(
-                                "YOUR_BEARER_TOKEN"
-                            )
-                            .build())
-                        .build();
-                }
-            }
         - lang: csharp
           label: .NET (C#)
           source: |-
@@ -1158,21 +1123,6 @@ paths:
                    // TODO: Handle AuthLogin401ErrorException exception here
                 }
             }
-
-            // Reuse the returned bearer token to build an authenticated
-            // client for every other endpoint:
-            using NustLmsApi.Standard;
-            using NustLmsApi.Standard.Authentication;
-
-            namespace ConsoleApp;
-
-            NustLmsApiClient client = new NustLmsApiClient.Builder()
-                .BearerAuthCredentials(
-                    new BearerAuthModel.Builder(
-                        "YOUR_BEARER_TOKEN"
-                    )
-                    .Build())
-                .Build();
         - lang: go
           label: Go
           source: |-
@@ -1195,24 +1145,6 @@ paths:
                 // Printing the result and response
                 fmt.Println(apiResponse.Data)
                 fmt.Println(apiResponse.Response.StatusCode)
-            }
-
-            // Reuse the returned bearer token to build an authenticated
-            // client for every other endpoint:
-            package main
-
-            import (
-                "nustLmsApi"
-            )
-
-            func main() {
-                client := nustLmsApi.NewClient(
-                nustLmsApi.CreateConfiguration(
-                        nustLmsApi.WithBearerAuthCredentials(
-                            nustLmsApi.NewBearerAuthCredentials("YOUR_BEARER_TOKEN"),
-                        ),
-                    ),
-                )
             }
         - lang: php
           label: PHP
@@ -1237,19 +1169,6 @@ paths:
                 $error = $apiResponse->getResult();
                 var_dump($error);
             }
-
-            // Reuse the returned bearer token to build an authenticated
-            // client for every other endpoint:
-            use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
-            use NustLmsApiLib\NustLmsApiClientBuilder;
-
-            $client = NustLmsApiClientBuilder::init()
-                ->bearerAuthCredentials(
-                    BearerAuthCredentialsBuilder::init(
-                        'YOUR_BEARER_TOKEN'
-                    )
-                )
-                ->build();
         - lang: ruby
           label: Ruby
           source: |-
@@ -1265,17 +1184,6 @@ paths:
             elsif result.error?
               warn result.errors
             end
-
-            # Reuse the returned bearer token to build an authenticated
-            # client for every other endpoint:
-            require 'nust_lms_api'
-            include NustLmsApi
-
-            client = Client.new(
-              bearer_auth_credentials: BearerAuthCredentials.new(
-                access_token: 'YOUR_BEARER_TOKEN'
-              )
-            )
   /service/core_course_get_recent_courses:
     get:
       operationId: getCoreRecentCourses
@@ -2859,3 +2767,109 @@ paths:
             elsif result.error?
               warn result.errors
             end
+  /sdk/initialize-client:
+    get:
+      operationId: initializeSdkClient
+      summary: Initialize the SDK client
+      tags:
+        - SDK Setup
+      security: []
+      description: Setup reference (not a live endpoint). After installing an SDK and getting a token from `POST /auth/login`, initialize a client with that token — every other code sample assumes this `client`.
+      x-codeSamples:
+        - lang: typescript
+          label: TypeScript
+          source: |-
+            import { Client } from 'nust-lms-apilib';
+
+            const client = new Client({
+              bearerAuthCredentials: {
+                accessToken: 'YOUR_BEARER_TOKEN'
+              },
+            });
+        - lang: python
+          label: Python
+          source: |-
+            from nustlmsapi.http.auth.oauth_2 import BearerAuthCredentials
+            from nustlmsapi.nustlmsapi_client import NustlmsapiClient
+
+            client = NustlmsapiClient(
+                bearer_auth_credentials=BearerAuthCredentials(
+                    access_token='YOUR_BEARER_TOKEN'
+                )
+            )
+        - lang: java
+          label: Java
+          source: |-
+            import m18000.m0.m0.m127.NustLmsApiClient;
+            import m18000.m0.m0.m127.authentication.BearerAuthModel;
+
+            public class Program {
+                public static void main(String[] args) {
+                    NustLmsApiClient client = new NustLmsApiClient.Builder()
+                        .bearerAuthCredentials(new BearerAuthModel.Builder(
+                                "YOUR_BEARER_TOKEN"
+                            )
+                            .build())
+                        .build();
+                }
+            }
+        - lang: csharp
+          label: .NET (C#)
+          source: |-
+            using NustLmsApi.Standard;
+            using NustLmsApi.Standard.Authentication;
+
+            namespace ConsoleApp;
+
+            NustLmsApiClient client = new NustLmsApiClient.Builder()
+                .BearerAuthCredentials(
+                    new BearerAuthModel.Builder(
+                        "YOUR_BEARER_TOKEN"
+                    )
+                    .Build())
+                .Build();
+        - lang: go
+          label: Go
+          source: |-
+            package main
+
+            import (
+                "nustLmsApi"
+            )
+
+            func main() {
+                client := nustLmsApi.NewClient(
+                nustLmsApi.CreateConfiguration(
+                        nustLmsApi.WithBearerAuthCredentials(
+                            nustLmsApi.NewBearerAuthCredentials("YOUR_BEARER_TOKEN"),
+                        ),
+                    ),
+                )
+            }
+        - lang: php
+          label: PHP
+          source: |-
+            use NustLmsApiLib\Authentication\BearerAuthCredentialsBuilder;
+            use NustLmsApiLib\NustLmsApiClientBuilder;
+
+            $client = NustLmsApiClientBuilder::init()
+                ->bearerAuthCredentials(
+                    BearerAuthCredentialsBuilder::init(
+                        'YOUR_BEARER_TOKEN'
+                    )
+                )
+                ->build();
+        - lang: ruby
+          label: Ruby
+          source: |-
+            require 'nust_lms_api'
+            include NustLmsApi
+
+            client = Client.new(
+              bearer_auth_credentials: BearerAuthCredentials.new(
+                access_token: 'YOUR_BEARER_TOKEN'
+              )
+            )
+      responses:
+        "200":
+          description: This section documents client initialization; it is not a callable endpoint.
