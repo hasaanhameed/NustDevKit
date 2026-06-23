@@ -1,11 +1,11 @@
-// Minimal dependency-free static file server for local preview of docs/.
+// Minimal dependency-free static file server for local preview of ndk_frontend/.
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize, resolve } from "node:path";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "docs");
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "ndk_frontend");
 const port = Number(process.env.PORT) || 5173;
 
 const types = {

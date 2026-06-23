@@ -15,7 +15,7 @@
 //   ```
 //
 // We extract the Example Usage block per endpoint per language and attach it as
-// x-codeSamples on the matching operation in docs/openapi.yaml. The canonical
+// x-codeSamples on the matching operation in ndk_frontend/openapi.yaml. The canonical
 // src/spec/openapi.yaml stays clean; only the build artifact is enriched.
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -24,7 +24,7 @@ import AdmZip from "adm-zip";
 import { parse, stringify } from "yaml";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const specPath = resolve(root, "docs/openapi.yaml");
+const specPath = resolve(root, "ndk_frontend/openapi.yaml");
 const sdksDir = resolve(root, "portal/static/sdks");
 
 // zip basename -> { lang (for highlighting), label (tab text) }.
@@ -230,5 +230,5 @@ const total = Object.values(spec.paths).filter(
 ).length;
 writeFileSync(specPath, stringify(spec, { lineWidth: 0 }), "utf8");
 console.log(
-  `✓ Injected x-codeSamples (${byLang.length} langs) into ${total} operation(s) → docs/openapi.yaml`
+  `✓ Injected x-codeSamples (${byLang.length} langs) into ${total} operation(s) → ndk_frontend/openapi.yaml`
 );
