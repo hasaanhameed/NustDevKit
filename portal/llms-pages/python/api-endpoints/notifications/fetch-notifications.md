@@ -7,7 +7,7 @@ Moodle method: `core_fetch_notifications`
 
 ```python
 def fetch_notifications(self,
-                       body)
+                       contextid)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/python/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `int` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -33,11 +33,9 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = FetchNotificationsRequest(
-    contextid=1583361
-)
+contextid = 156
 
-result = notifications_api.fetch_notifications(body)
+result = notifications_api.fetch_notifications(contextid)
 
 if result.is_success():
     print(result.body)

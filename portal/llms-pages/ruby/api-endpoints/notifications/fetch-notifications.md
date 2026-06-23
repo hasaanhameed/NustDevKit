@@ -6,7 +6,7 @@ Returns pending site-level notifications for the given Moodle context. Returns a
 Moodle method: `core_fetch_notifications`
 
 ```ruby
-def fetch_notifications(body)
+def fetch_notifications(contextid)
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/ruby/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `Integer` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -32,11 +32,9 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = FetchNotificationsRequest.new(
-  contextid: 1583361
-)
+contextid = 156
 
-result = notifications_api.fetch_notifications(body)
+result = notifications_api.fetch_notifications(contextid)
 
 if result.success?
   puts result.data

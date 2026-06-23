@@ -1211,7 +1211,7 @@ types:
         - inprogress
         - past
         - future
-        - favourite
+        - favourites
         - hidden
         - allincludinghidden
       sort:
@@ -1425,24 +1425,20 @@ types:
             type: AuthLogin401Error1
 /service:
   /core_course_get_recent_courses:
-    post:
+    get:
       displayName: getCoreRecentCourses
       description: >
         Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
         Moodle method: `core_course_get_recent_courses`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters for the recent courses request.
-          type: GetRecentCoursesRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        limit:
           required: true
-          displayName: Content-Type
-          type: string
-          enum:
-          - application/json
+          default: '10'
+          displayName: limit
+          description: Maximum number of courses to return.
+          type: integer
+          format: int32
       responses:
         '200':
           description: List of recently accessed courses ordered by last access.
@@ -1461,24 +1457,51 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_course_get_enrolled_courses_by_timeline_classification:
-    post:
+    get:
       displayName: getEnrolledCoursesByTimeline
       description: >
         Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
         Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters for the enrolled courses timeline request.
-          type: GetEnrolledCoursesByTimelineRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        offset:
           required: true
-          displayName: Content-Type
+          default: '0'
+          displayName: offset
+          description: Zero-based pagination offset.
+          type: integer
+          format: int32
+        limit:
+          required: true
+          default: '50'
+          displayName: limit
+          description: Maximum number of courses to return.
+          type: integer
+          format: int32
+        classification:
+          required: true
+          displayName: classification
+          description: Timeline classification filter for enrolled courses.
           type: string
           enum:
-          - application/json
+          - all
+          - inprogress
+          - past
+          - future
+          - favourites
+          - hidden
+          - allincludinghidden
+        sort:
+          required: true
+          displayName: sort
+          description: Field used to sort enrolled course results.
+          type: string
+          enum:
+          - fullname
+          - shortname
+          - id
+          - idnumber
+          - timeaccess
       responses:
         '200':
           description: Paginated list of enrolled courses.
@@ -1495,24 +1518,37 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_calendar_get_action_events_by_timesort:
-    post:
+    get:
       displayName: getCalendarEventsByTimesort
       description: >
         Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
         Moodle method: `core_calendar_get_action_events_by_timesort`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters for the time-sorted calendar events request.
-          type: GetCalendarEventsByTimesortRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        limitnum:
           required: true
-          displayName: Content-Type
-          type: string
-          enum:
-          - application/json
+          displayName: limitnum
+          description: Maximum number of events to return.
+          type: integer
+          format: int32
+        timesortfrom:
+          required: true
+          displayName: timesortfrom
+          description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+          type: integer
+          format: int32
+        timesortto:
+          required: false
+          displayName: timesortto
+          description: Only return events with timesort <= this Unix timestamp.
+          type: integer
+          format: int32
+        aftereventid:
+          required: false
+          displayName: aftereventid
+          description: Return events whose ID is greater than this value (cursor pagination).
+          type: integer
+          format: int32
       responses:
         '200':
           description: Calendar events sorted by timesort.
@@ -1529,24 +1565,43 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_calendar_get_action_events_by_course:
-    post:
+    get:
       displayName: getCalendarEventsByCourse
       description: >
         Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
         Moodle method: `core_calendar_get_action_events_by_course`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters for the course-specific calendar events request.
-          type: GetCalendarEventsByCourseRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        courseid:
           required: true
-          displayName: Content-Type
-          type: string
-          enum:
-          - application/json
+          displayName: courseid
+          description: ID of the course to fetch events for.
+          type: integer
+          format: int32
+        timesortfrom:
+          required: false
+          displayName: timesortfrom
+          description: Only return events with timesort >= this Unix timestamp.
+          type: integer
+          format: int32
+        timesortto:
+          required: false
+          displayName: timesortto
+          description: Only return events with timesort <= this Unix timestamp.
+          type: integer
+          format: int32
+        aftereventid:
+          required: false
+          displayName: aftereventid
+          description: Cursor-based pagination — return events after this event ID.
+          type: integer
+          format: int32
+        limitnum:
+          required: false
+          displayName: limitnum
+          description: Maximum number of events to return.
+          type: integer
+          format: int32
       responses:
         '200':
           description: Calendar events for the specified course.
@@ -1563,24 +1618,30 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_user_get_users_by_field:
-    post:
+    get:
       displayName: getUsersByField
       description: >
         Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
         Moodle method: `core_user_get_users_by_field`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters specifying the profile field and values to match.
-          type: GetUsersByFieldRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        field:
           required: true
-          displayName: Content-Type
+          displayName: field
+          description: User profile field to match against when searching for users.
           type: string
           enum:
-          - application/json
+          - id
+          - idnumber
+          - username
+          - email
+        values:
+          required: true
+          displayName: values
+          description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
+          type: array
+          items:
+            type: string
       responses:
         '200':
           description: List of matching user profiles.
@@ -1599,24 +1660,24 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_user_get_user_preferences:
-    post:
+    get:
       displayName: getUserPreferences
       description: >
         Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
         Moodle method: `core_user_get_user_preferences`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters specifying which user's preferences to retrieve.
-          type: GetUserPreferencesRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        userid:
           required: true
-          displayName: Content-Type
+          displayName: userid
+          description: ID of the user whose preferences to retrieve.
+          type: integer
+          format: int32
+        name:
+          required: false
+          displayName: name
+          description: Specific preference name to retrieve. Omit to retrieve all preferences.
           type: string
-          enum:
-          - application/json
       responses:
         '200':
           description: User preferences list and optional warnings.
@@ -1633,24 +1694,19 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /core_fetch_notifications:
-    post:
+    get:
       displayName: fetchNotifications
       description: >
         Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
         Moodle method: `core_fetch_notifications`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters specifying the context to fetch notifications for.
-          type: FetchNotificationsRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        contextid:
           required: true
-          displayName: Content-Type
-          type: string
-          enum:
-          - application/json
+          displayName: contextid
+          description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
+          type: integer
+          format: int32
       responses:
         '200':
           description: Array of site notifications (empty array when none are pending).
@@ -1669,24 +1725,31 @@ types:
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
   /message_popup_get_popup_notifications:
-    post:
+    get:
       displayName: getPopupNotifications
       description: >
         Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 
         Moodle method: `message_popup_get_popup_notifications`
-      body:
-        application/json:
-          displayName: body
-          description: Parameters for the popup notifications request.
-          type: GetPopupNotificationsRequest
-      headers:
-        Content-Type:
+      queryParameters:
+        useridto:
           required: true
-          displayName: Content-Type
+          displayName: useridto
+          description: ID of the recipient user, passed as a string.
           type: string
-          enum:
-          - application/json
+        limit:
+          required: true
+          displayName: limit
+          description: Maximum number of notifications to return.
+          type: integer
+          format: int32
+        offset:
+          required: true
+          default: '0'
+          displayName: offset
+          description: Pagination offset.
+          type: integer
+          format: int32
       responses:
         '200':
           description: Popup notifications and total unread count.

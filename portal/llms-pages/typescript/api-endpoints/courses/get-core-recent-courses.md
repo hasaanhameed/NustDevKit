@@ -7,7 +7,7 @@ Moodle method: `core_course_get_recent_courses`
 
 ```ts
 async getCoreRecentCourses(
-  body: GetRecentCoursesRequest,
+  limit: number,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<RecentCourse[]>>
 ```
@@ -22,7 +22,7 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/typescript/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `number` | Query, Required | Maximum number of courses to return. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,12 +36,10 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetRecentCoursesRequest = {
-  limit: 10,
-};
+const limit = 10;
 
 try {
-  const response = await coursesApi.getCoreRecentCourses(body);
+  const response = await coursesApi.getCoreRecentCourses(limit);
 
   // Extracting fully parsed response body.
   console.log(response.result);

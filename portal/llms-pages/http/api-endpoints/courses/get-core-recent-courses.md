@@ -6,7 +6,7 @@ Returns the courses the authenticated user has accessed most recently, ordered b
 Moodle method: `core_course_get_recent_courses`
 
 ```http
-POST /service/core_course_get_recent_courses
+GET /service/core_course_get_recent_courses
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Recent Courses Request`](/llms-pages/http/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `Number` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -32,14 +32,11 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_course_get_recent_courses'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "limit": 10
-}'
+  -d 'limit=10'
 ```
 
 

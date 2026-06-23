@@ -8,7 +8,7 @@ Moodle method: `core_course_get_recent_courses`
 ```go
 GetCoreRecentCourses(
     ctx context.Context,
-    body models.GetRecentCoursesRequest) (
+    limit int) (
     models.ApiResponse[[]models.RecentCourse],
     error)
 ```
@@ -23,7 +23,7 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetRecentCoursesRequest`](/llms-pages/go/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -38,11 +38,9 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetRecentCoursesRequest{
-    Limit:                 10,
-}
+limit := 10
 
-apiResponse, err := coursesApi.GetCoreRecentCourses(ctx, body)
+apiResponse, err := coursesApi.GetCoreRecentCourses(ctx, limit)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

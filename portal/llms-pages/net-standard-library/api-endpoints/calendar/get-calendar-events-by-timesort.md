@@ -7,7 +7,10 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```csharp
 GetCalendarEventsByTimesortAsync(
-    Models.GetCalendarEventsByTimesortRequest body)
+    int limitnum,
+    int timesortfrom,
+    int? timesortto = null,
+    int? aftereventid = null)
 ```
 
 
@@ -20,7 +23,10 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByTimesortRequest`](/llms-pages/net-standard-library/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `int` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `int` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `int?` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `int?` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -33,15 +39,14 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetCalendarEventsByTimesortRequest body = new GetCalendarEventsByTimesortRequest
-{
-    Limitnum = 20,
-    Timesortfrom = 0,
-};
-
+int limitnum = 32;
+int timesortfrom = 58;
 try
 {
-    ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(body);
+    ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(
+        limitnum,
+        timesortfrom
+    );
 }
 catch (ApiException e)
 {

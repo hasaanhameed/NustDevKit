@@ -7,7 +7,11 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 ```python
 def get_calendar_events_by_course(self,
-                                 body)
+                                 courseid,
+                                 timesortfrom=None,
+                                 timesortto=None,
+                                 aftereventid=None,
+                                 limitnum=None)
 ```
 
 
@@ -20,7 +24,11 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/python/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `int` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `int` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `int` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `int` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `int` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -33,11 +41,9 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetCalendarEventsByCourseRequest(
-    courseid=49906
-)
+courseid = 74
 
-result = calendar_api.get_calendar_events_by_course(body)
+result = calendar_api.get_calendar_events_by_course(courseid)
 
 if result.is_success():
     print(result.body)

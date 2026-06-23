@@ -8,7 +8,8 @@ Moodle method: `core_user_get_users_by_field`
 ```go
 GetUsersByField(
     ctx context.Context,
-    body models.GetUsersByFieldRequest) (
+    field models.UserProfileField,
+    values []string) (
     models.ApiResponse[[]models.UserProfile],
     error)
 ```
@@ -23,7 +24,8 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetUsersByFieldRequest`](/llms-pages/go/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`models.UserProfileField`](/llms-pages/go/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `[]string` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -38,14 +40,15 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetUsersByFieldRequest{
-    Field:                 models.UserProfileField_Id,
-    Values:                []string{
-        "123456",
-    },
+field := models.UserProfileField_Id
+
+values := []string{
+    "values0",
+    "values1",
+    "values2",
 }
 
-apiResponse, err := usersApi.GetUsersByField(ctx, body)
+apiResponse, err := usersApi.GetUsersByField(ctx, field, values)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

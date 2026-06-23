@@ -8,7 +8,10 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 ```go
 GetCalendarEventsByTimesort(
     ctx context.Context,
-    body models.GetCalendarEventsByTimesortRequest) (
+    limitnum int,
+    timesortfrom int,
+    timesortto *int,
+    aftereventid *int) (
     models.ApiResponse[models.CalendarEventsResponse],
     error)
 ```
@@ -23,7 +26,10 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetCalendarEventsByTimesortRequest`](/llms-pages/go/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `int` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `int` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `*int` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `*int` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -38,12 +44,11 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetCalendarEventsByTimesortRequest{
-    Limitnum:              20,
-    Timesortfrom:          0,
-}
+limitnum := 32
 
-apiResponse, err := calendarApi.GetCalendarEventsByTimesort(ctx, body)
+timesortfrom := 58
+
+apiResponse, err := calendarApi.GetCalendarEventsByTimesort(ctx, limitnum, timesortfrom, nil, nil)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

@@ -8,7 +8,7 @@ Moodle method: `core_fetch_notifications`
 ```go
 FetchNotifications(
     ctx context.Context,
-    body models.FetchNotificationsRequest) (
+    contextid int) (
     models.ApiResponse[[]models.SiteNotification],
     error)
 ```
@@ -23,7 +23,7 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.FetchNotificationsRequest`](/llms-pages/go/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `int` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -38,11 +38,9 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.FetchNotificationsRequest{
-    Contextid:             1583361,
-}
+contextid := 156
 
-apiResponse, err := notificationsApi.FetchNotifications(ctx, body)
+apiResponse, err := notificationsApi.FetchNotifications(ctx, contextid)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

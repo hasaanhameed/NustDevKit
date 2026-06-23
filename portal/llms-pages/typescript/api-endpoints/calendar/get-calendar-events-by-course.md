@@ -7,7 +7,11 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 ```ts
 async getCalendarEventsByCourse(
-  body: GetCalendarEventsByCourseRequest,
+  courseid: number,
+  timesortfrom?: number,
+  timesortto?: number,
+  aftereventid?: number,
+  limitnum?: number,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<CalendarEventsResponse>>
 ```
@@ -22,7 +26,11 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/typescript/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `number` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `number \| undefined` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `number \| undefined` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `number \| undefined` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `number \| undefined` | Query, Optional | Maximum number of events to return. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,12 +44,10 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetCalendarEventsByCourseRequest = {
-  courseid: 49906,
-};
+const courseid = 74;
 
 try {
-  const response = await calendarApi.getCalendarEventsByCourse(body);
+  const response = await calendarApi.getCalendarEventsByCourse(courseid);
 
   // Extracting fully parsed response body.
   console.log(response.result);

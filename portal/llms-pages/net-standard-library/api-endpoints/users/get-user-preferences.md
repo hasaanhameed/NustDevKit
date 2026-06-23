@@ -7,7 +7,8 @@ Moodle method: `core_user_get_user_preferences`
 
 ```csharp
 GetUserPreferencesAsync(
-    Models.GetUserPreferencesRequest body)
+    int userid,
+    string name = null)
 ```
 
 
@@ -20,7 +21,8 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/net-standard-library/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `int` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `string` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -33,14 +35,10 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetUserPreferencesRequest body = new GetUserPreferencesRequest
-{
-    Userid = 123456,
-};
-
+int userid = 44;
 try
 {
-    ApiResponse<UserPreferencesResponse> result = await usersApi.GetUserPreferencesAsync(body);
+    ApiResponse<UserPreferencesResponse> result = await usersApi.GetUserPreferencesAsync(userid);
 }
 catch (ApiException e)
 {

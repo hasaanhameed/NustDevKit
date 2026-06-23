@@ -8,7 +8,9 @@ Moodle method: `message_popup_get_popup_notifications`
 ```go
 GetPopupNotifications(
     ctx context.Context,
-    body models.GetPopupNotificationsRequest) (
+    useridto string,
+    limit int,
+    offset int) (
     models.ApiResponse[models.PopupNotificationsResponse],
     error)
 ```
@@ -23,7 +25,9 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetPopupNotificationsRequest`](/llms-pages/go/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `string` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `int` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `int` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -38,13 +42,13 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetPopupNotificationsRequest{
-    Useridto:              "123456",
-    Limit:                 20,
-    Offset:                0,
-}
+useridto := "useridto2"
 
-apiResponse, err := notificationsApi.GetPopupNotifications(ctx, body)
+limit := 172
+
+offset := 0
+
+apiResponse, err := notificationsApi.GetPopupNotifications(ctx, useridto, limit, offset)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

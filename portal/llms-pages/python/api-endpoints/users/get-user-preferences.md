@@ -7,7 +7,8 @@ Moodle method: `core_user_get_user_preferences`
 
 ```python
 def get_user_preferences(self,
-                        body)
+                        userid,
+                        name=None)
 ```
 
 
@@ -20,7 +21,8 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/python/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `int` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `str` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -33,11 +35,9 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetUserPreferencesRequest(
-    userid=123456
-)
+userid = 44
 
-result = users_api.get_user_preferences(body)
+result = users_api.get_user_preferences(userid)
 
 if result.is_success():
     print(result.body)

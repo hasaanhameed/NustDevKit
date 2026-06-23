@@ -6,7 +6,7 @@ Returns the courses the authenticated user has accessed most recently, ordered b
 Moodle method: `core_course_get_recent_courses`
 
 ```php
-function getCoreRecentCourses(GetRecentCoursesRequest $body): ApiResponse
+function getCoreRecentCourses(int $limit): ApiResponse
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/php/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -32,12 +32,10 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetRecentCoursesRequestBuilder::init(
-    10
-)->build();
+$limit = 10;
 
 $coursesApi = $client->getCoursesApi();
-$apiResponse = $coursesApi->getCoreRecentCourses($body);
+$apiResponse = $coursesApi->getCoreRecentCourses($limit);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

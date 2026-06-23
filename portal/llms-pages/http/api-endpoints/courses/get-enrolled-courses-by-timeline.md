@@ -6,7 +6,7 @@ Returns all courses the user is enrolled in, filtered by timeline classification
 Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 ```http
-POST /service/core_course_get_enrolled_courses_by_timeline_classification
+GET /service/core_course_get_enrolled_courses_by_timeline_classification
 ```
 
 
@@ -19,7 +19,10 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Enrolled Courses by Timeline Request`](/llms-pages/http/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `Number` | Query, Required | Zero-based pagination offset. |
+| `limit` | `Number` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`Course Timeline Classification`](/llms-pages/http/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`Course Timeline Sort Field`](/llms-pages/http/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 
 
 # Response Type
@@ -32,17 +35,14 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_course_get_enrolled_courses_by_timeline_classification'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "offset": 0,
-  "limit": 50,
-  "classification": "past",
-  "sort": "id"
-}'
+  -d 'offset=0' \
+  -d 'limit=50' \
+  -d 'classification=inprogress' \
+  -d 'sort=idnumber'
 ```
 
 

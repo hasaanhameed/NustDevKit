@@ -8,7 +8,8 @@ Moodle method: `core_user_get_user_preferences`
 ```go
 GetUserPreferences(
     ctx context.Context,
-    body models.GetUserPreferencesRequest) (
+    userid int,
+    name *string) (
     models.ApiResponse[models.UserPreferencesResponse],
     error)
 ```
@@ -23,7 +24,8 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetUserPreferencesRequest`](/llms-pages/go/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `int` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `*string` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -38,11 +40,9 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetUserPreferencesRequest{
-    Userid:                123456,
-}
+userid := 44
 
-apiResponse, err := usersApi.GetUserPreferences(ctx, body)
+apiResponse, err := usersApi.GetUserPreferences(ctx, userid, nil)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

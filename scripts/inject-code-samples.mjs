@@ -162,12 +162,9 @@ if (initSamples.length) {
         "token from `POST /auth/login`, initialize a client with that token — every " +
         "other code sample assumes this `client`.",
       "x-codeSamples": initSamples,
-      responses: {
-        "200": {
-          description:
-            "This section documents client initialization; it is not a callable endpoint.",
-        },
-      },
+      // No `responses` — this is a docs-only setup section, not a callable endpoint,
+      // so Scalar renders no "Responses / 200" block for it.
+      responses: {},
     },
   };
 

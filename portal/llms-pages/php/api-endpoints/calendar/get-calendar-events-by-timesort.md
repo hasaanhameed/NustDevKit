@@ -6,7 +6,12 @@ Returns action events (deadlines) across all enrolled courses, ordered by their 
 Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```php
-function getCalendarEventsByTimesort(GetCalendarEventsByTimesortRequest $body): ApiResponse
+function getCalendarEventsByTimesort(
+    int $limitnum,
+    int $timesortfrom,
+    ?int $timesortto = null,
+    ?int $aftereventid = null
+): ApiResponse
 ```
 
 
@@ -19,7 +24,10 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByTimesortRequest`](/llms-pages/php/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `int` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `int` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `?int` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `?int` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -32,13 +40,15 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetCalendarEventsByTimesortRequestBuilder::init(
-    20,
-    0
-)->build();
+$limitnum = 32;
+
+$timesortfrom = 58;
 
 $calendarApi = $client->getCalendarApi();
-$apiResponse = $calendarApi->getCalendarEventsByTimesort($body);
+$apiResponse = $calendarApi->getCalendarEventsByTimesort(
+    $limitnum,
+    $timesortfrom
+);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

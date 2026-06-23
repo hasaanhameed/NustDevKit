@@ -7,7 +7,9 @@ Moodle method: `message_popup_get_popup_notifications`
 
 ```python
 def get_popup_notifications(self,
-                           body)
+                           useridto,
+                           limit,
+                           offset)
 ```
 
 
@@ -20,7 +22,9 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/python/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `str` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `int` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `int` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -33,13 +37,17 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetPopupNotificationsRequest(
-    useridto='123456',
-    limit=20,
-    offset=0
-)
+useridto = 'useridto2'
 
-result = notifications_api.get_popup_notifications(body)
+limit = 172
+
+offset = 0
+
+result = notifications_api.get_popup_notifications(
+    useridto,
+    limit,
+    offset
+)
 
 if result.is_success():
     print(result.body)

@@ -173,7 +173,9 @@
 
     <div id="app"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+    <!-- Pinned: our theme CSS / DOM-coupled tweaks target this exact Scalar build.
+         Bump deliberately and re-verify the customizations when upgrading. -->
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.61.0"></script>
     <script>
       Scalar.createApiReference("#app", {
         url: "./openapi.yaml",

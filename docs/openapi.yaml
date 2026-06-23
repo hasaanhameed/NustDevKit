@@ -8,17 +8,19 @@ info:
 
     ## Getting Started with the SDKs
 
-    1. **Download the SDK** for your language and install it (follow the SDK's README):
-       - [TypeScript](./sdks/nust-lms-api-ts_generic_lib.zip)
-       - [Python](./sdks/nust-lms-api-python_generic_lib.zip)
-       - [Java](./sdks/nust-lms-api-java_eclipse_jre_lib.zip)
-       - [.NET (C#)](./sdks/nust-lms-api-cs_net_standard_lib.zip)
-       - [Go](./sdks/nust-lms-api-go_generic_lib.zip)
-       - [PHP](./sdks/nust-lms-api-php_generic_lib_v2.zip)
-       - [Ruby](./sdks/nust-lms-api-ruby_generic_lib.zip)
+    1. **Get the SDK** for your language — download the zip, unzip it, and install it:
+       - **TypeScript** — [download](./sdks/nust-lms-api-ts_generic_lib.zip), then run `npm install` in the unzipped folder, then add it to your project.
+       - **Python** — [download](./sdks/nust-lms-api-python_generic_lib.zip), then run `pip install -r requirements.txt` in the unzipped folder.
+       - **Java** — [download](./sdks/nust-lms-api-java_eclipse_jre_lib.zip), then build the JAR with Gradle and add it to your project.
+       - **.NET (C#)** — [download](./sdks/nust-lms-api-cs_net_standard_lib.zip), then add a project reference to the `NustLmsApi.Standard` project.
+       - **Go** — [download](./sdks/nust-lms-api-go_generic_lib.zip), then add a local `replace` for the folder in your `go.mod`, then run `go get`.
+       - **PHP** — [download](./sdks/nust-lms-api-php_generic_lib_v2.zip), then run `composer install` in the unzipped folder.
+       - **Ruby** — [download](./sdks/nust-lms-api-ruby_generic_lib.zip), then run `gem build nust_lms_api.gemspec && gem install nust_lms_api-1.0.0.gem`.
     2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.
     3. **Initialize a client** with that token — see the **SDK Setup** section for the
        per-language code. Every other sample assumes that `client`.
+
+    _Each SDK's own README has fuller, IDE-specific setup if you want it._
 
   contact:
     name: NustDevKit Support
@@ -1221,12 +1223,10 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetRecentCoursesRequest = {
-              limit: 10,
-            };
+            const limit = 10;
 
             try {
-              const response = await coursesApi.getCoreRecentCourses(body);
+              const response = await coursesApi.getCoreRecentCourses(limit);
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -1253,11 +1253,9 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetRecentCoursesRequest(
-                limit=10
-            )
+            limit = 10
 
-            result = courses_api.get_core_recent_courses(body)
+            result = courses_api.get_core_recent_courses(limit)
 
             if result.is_success():
                 print(result.body)
@@ -1266,12 +1264,9 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetRecentCoursesRequest body = new GetRecentCoursesRequest.Builder(
-                10
-            )
-            .build();
+            int limit = 10;
 
-            coursesApi.getCoreRecentCoursesAsync(body).thenAccept(result -> {
+            coursesApi.getCoreRecentCoursesAsync(limit).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -1290,14 +1285,10 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetRecentCoursesRequest body = new GetRecentCoursesRequest
-            {
-                Limit = 10,
-            };
-
+            int limit = 10;
             try
             {
-                ApiResponse<List<RecentCourse>> result = await coursesApi.GetCoreRecentCoursesAsync(body);
+                ApiResponse<List<RecentCourse>> result = await coursesApi.GetCoreRecentCoursesAsync(limit);
             }
             catch (ApiException e)
             {
@@ -1312,11 +1303,9 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetRecentCoursesRequest{
-                Limit:                 10,
-            }
+            limit := 10
 
-            apiResponse, err := coursesApi.GetCoreRecentCourses(ctx, body)
+            apiResponse, err := coursesApi.GetCoreRecentCourses(ctx, limit)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -1332,12 +1321,10 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetRecentCoursesRequestBuilder::init(
-                10
-            )->build();
+            $limit = 10;
 
             $coursesApi = $client->getCoursesApi();
-            $apiResponse = $coursesApi->getCoreRecentCourses($body);
+            $apiResponse = $coursesApi->getCoreRecentCourses($limit);
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -1354,11 +1341,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetRecentCoursesRequest.new(
-              limit: 10
-            )
+            limit = 10
 
-            result = courses_api.get_core_recent_courses(body)
+            result = courses_api.get_core_recent_courses(limit)
 
             if result.success?
               puts result.data
@@ -1418,15 +1403,21 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetEnrolledCoursesByTimelineRequest = {
-              offset: 0,
-              limit: 50,
-              classification: CourseTimelineClassification.Past,
-              sort: CourseTimelineSortField.Id,
-            };
+            const offset = 0;
+
+            const limit = 50;
+
+            const classification = CourseTimelineClassification.Inprogress;
+
+            const sort = CourseTimelineSortField.Idnumber;
 
             try {
-              const response = await coursesApi.getEnrolledCoursesByTimeline(body);
+              const response = await coursesApi.getEnrolledCoursesByTimeline(
+                offset,
+                limit,
+                classification,
+                sort
+              );
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -1453,14 +1444,20 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetEnrolledCoursesByTimelineRequest(
-                offset=0,
-                limit=50,
-                classification=CourseTimelineClassification.PAST,
-                sort=CourseTimelineSortField.ID
-            )
+            offset = 0
 
-            result = courses_api.get_enrolled_courses_by_timeline(body)
+            limit = 50
+
+            classification = CourseTimelineClassification.INPROGRESS
+
+            sort = CourseTimelineSortField.IDNUMBER
+
+            result = courses_api.get_enrolled_courses_by_timeline(
+                offset,
+                limit,
+                classification,
+                sort
+            )
 
             if result.is_success():
                 print(result.body)
@@ -1469,15 +1466,12 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetEnrolledCoursesByTimelineRequest body = new GetEnrolledCoursesByTimelineRequest.Builder(
-                0,
-                50,
-                CourseTimelineClassification.PAST,
-                CourseTimelineSortField.ID
-            )
-            .build();
+            int offset = 0;
+            int limit = 50;
+            CourseTimelineClassification classification = CourseTimelineClassification.INPROGRESS;
+            CourseTimelineSortField sort = CourseTimelineSortField.IDNUMBER;
 
-            coursesApi.getEnrolledCoursesByTimelineAsync(body).thenAccept(result -> {
+            coursesApi.getEnrolledCoursesByTimelineAsync(offset, limit, classification, sort).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -1496,17 +1490,18 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetEnrolledCoursesByTimelineRequest body = new GetEnrolledCoursesByTimelineRequest
-            {
-                Offset = 0,
-                Limit = 50,
-                Classification = CourseTimelineClassification.Past,
-                Sort = CourseTimelineSortField.Id,
-            };
-
+            int offset = 0;
+            int limit = 50;
+            CourseTimelineClassification classification = CourseTimelineClassification.Inprogress;
+            CourseTimelineSortField sort = CourseTimelineSortField.Idnumber;
             try
             {
-                ApiResponse<EnrolledCoursesResponse> result = await coursesApi.GetEnrolledCoursesByTimelineAsync(body);
+                ApiResponse<EnrolledCoursesResponse> result = await coursesApi.GetEnrolledCoursesByTimelineAsync(
+                    offset,
+                    limit,
+                    classification,
+                    sort
+                );
             }
             catch (ApiException e)
             {
@@ -1521,14 +1516,15 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetEnrolledCoursesByTimelineRequest{
-                Offset:                0,
-                Limit:                 50,
-                Classification:        models.CourseTimelineClassification_Past,
-                Sort:                  models.CourseTimelineSortField_Id,
-            }
+            offset := 0
 
-            apiResponse, err := coursesApi.GetEnrolledCoursesByTimeline(ctx, body)
+            limit := 50
+
+            classification := models.CourseTimelineClassification_Inprogress
+
+            sort := models.CourseTimelineSortField_Idnumber
+
+            apiResponse, err := coursesApi.GetEnrolledCoursesByTimeline(ctx, offset, limit, classification, sort)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -1544,15 +1540,21 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetEnrolledCoursesByTimelineRequestBuilder::init(
-                0,
-                50,
-                CourseTimelineClassification::PAST,
-                CourseTimelineSortField::ID
-            )->build();
+            $offset = 0;
+
+            $limit = 50;
+
+            $classification = CourseTimelineClassification::INPROGRESS;
+
+            $sort = CourseTimelineSortField::IDNUMBER;
 
             $coursesApi = $client->getCoursesApi();
-            $apiResponse = $coursesApi->getEnrolledCoursesByTimeline($body);
+            $apiResponse = $coursesApi->getEnrolledCoursesByTimeline(
+                $offset,
+                $limit,
+                $classification,
+                $sort
+            );
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -1569,14 +1571,20 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetEnrolledCoursesByTimelineRequest.new(
-              offset: 0,
-              limit: 50,
-              classification: CourseTimelineClassification::PAST,
-              sort: CourseTimelineSortField::ID
-            )
+            offset = 0
 
-            result = courses_api.get_enrolled_courses_by_timeline(body)
+            limit = 50
+
+            classification = CourseTimelineClassification::INPROGRESS
+
+            sort = CourseTimelineSortField::IDNUMBER
+
+            result = courses_api.get_enrolled_courses_by_timeline(
+              offset,
+              limit,
+              classification,
+              sort
+            )
 
             if result.success?
               puts result.data
@@ -1620,12 +1628,10 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: FetchNotificationsRequest = {
-              contextid: 1583361,
-            };
+            const contextid = 156;
 
             try {
-              const response = await notificationsApi.fetchNotifications(body);
+              const response = await notificationsApi.fetchNotifications(contextid);
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -1652,11 +1658,9 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = FetchNotificationsRequest(
-                contextid=1583361
-            )
+            contextid = 156
 
-            result = notifications_api.fetch_notifications(body)
+            result = notifications_api.fetch_notifications(contextid)
 
             if result.is_success():
                 print(result.body)
@@ -1665,12 +1669,9 @@ paths:
         - lang: java
           label: Java
           source: |-
-            FetchNotificationsRequest body = new FetchNotificationsRequest.Builder(
-                1583361
-            )
-            .build();
+            int contextid = 156;
 
-            notificationsApi.fetchNotificationsAsync(body).thenAccept(result -> {
+            notificationsApi.fetchNotificationsAsync(contextid).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -1689,14 +1690,10 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            FetchNotificationsRequest body = new FetchNotificationsRequest
-            {
-                Contextid = 1583361,
-            };
-
+            int contextid = 156;
             try
             {
-                ApiResponse<List<SiteNotification>> result = await notificationsApi.FetchNotificationsAsync(body);
+                ApiResponse<List<SiteNotification>> result = await notificationsApi.FetchNotificationsAsync(contextid);
             }
             catch (ApiException e)
             {
@@ -1711,11 +1708,9 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.FetchNotificationsRequest{
-                Contextid:             1583361,
-            }
+            contextid := 156
 
-            apiResponse, err := notificationsApi.FetchNotifications(ctx, body)
+            apiResponse, err := notificationsApi.FetchNotifications(ctx, contextid)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -1731,12 +1726,10 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = FetchNotificationsRequestBuilder::init(
-                1583361
-            )->build();
+            $contextid = 156;
 
             $notificationsApi = $client->getNotificationsApi();
-            $apiResponse = $notificationsApi->fetchNotifications($body);
+            $apiResponse = $notificationsApi->fetchNotifications($contextid);
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -1753,11 +1746,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = FetchNotificationsRequest.new(
-              contextid: 1583361
-            )
+            contextid = 156
 
-            result = notifications_api.fetch_notifications(body)
+            result = notifications_api.fetch_notifications(contextid)
 
             if result.success?
               puts result.data
@@ -1815,13 +1806,15 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetCalendarEventsByTimesortRequest = {
-              limitnum: 20,
-              timesortfrom: 0,
-            };
+            const limitnum = 32;
+
+            const timesortfrom = 58;
 
             try {
-              const response = await calendarApi.getCalendarEventsByTimesort(body);
+              const response = await calendarApi.getCalendarEventsByTimesort(
+                limitnum,
+                timesortfrom
+              );
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -1848,12 +1841,14 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetCalendarEventsByTimesortRequest(
-                limitnum=20,
-                timesortfrom=0
-            )
+            limitnum = 32
 
-            result = calendar_api.get_calendar_events_by_timesort(body)
+            timesortfrom = 58
+
+            result = calendar_api.get_calendar_events_by_timesort(
+                limitnum,
+                timesortfrom
+            )
 
             if result.is_success():
                 print(result.body)
@@ -1862,13 +1857,10 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetCalendarEventsByTimesortRequest body = new GetCalendarEventsByTimesortRequest.Builder(
-                20,
-                0
-            )
-            .build();
+            int limitnum = 32;
+            int timesortfrom = 58;
 
-            calendarApi.getCalendarEventsByTimesortAsync(body).thenAccept(result -> {
+            calendarApi.getCalendarEventsByTimesortAsync(limitnum, timesortfrom, null, null).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -1887,15 +1879,14 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetCalendarEventsByTimesortRequest body = new GetCalendarEventsByTimesortRequest
-            {
-                Limitnum = 20,
-                Timesortfrom = 0,
-            };
-
+            int limitnum = 32;
+            int timesortfrom = 58;
             try
             {
-                ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(body);
+                ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(
+                    limitnum,
+                    timesortfrom
+                );
             }
             catch (ApiException e)
             {
@@ -1910,12 +1901,11 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetCalendarEventsByTimesortRequest{
-                Limitnum:              20,
-                Timesortfrom:          0,
-            }
+            limitnum := 32
 
-            apiResponse, err := calendarApi.GetCalendarEventsByTimesort(ctx, body)
+            timesortfrom := 58
+
+            apiResponse, err := calendarApi.GetCalendarEventsByTimesort(ctx, limitnum, timesortfrom, nil, nil)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -1931,13 +1921,15 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetCalendarEventsByTimesortRequestBuilder::init(
-                20,
-                0
-            )->build();
+            $limitnum = 32;
+
+            $timesortfrom = 58;
 
             $calendarApi = $client->getCalendarApi();
-            $apiResponse = $calendarApi->getCalendarEventsByTimesort($body);
+            $apiResponse = $calendarApi->getCalendarEventsByTimesort(
+                $limitnum,
+                $timesortfrom
+            );
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -1954,12 +1946,14 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetCalendarEventsByTimesortRequest.new(
-              limitnum: 20,
-              timesortfrom: 0
-            )
+            limitnum = 32
 
-            result = calendar_api.get_calendar_events_by_timesort(body)
+            timesortfrom = 58
+
+            result = calendar_api.get_calendar_events_by_timesort(
+              limitnum,
+              timesortfrom
+            )
 
             if result.success?
               puts result.data
@@ -2023,12 +2017,10 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetCalendarEventsByCourseRequest = {
-              courseid: 49906,
-            };
+            const courseid = 74;
 
             try {
-              const response = await calendarApi.getCalendarEventsByCourse(body);
+              const response = await calendarApi.getCalendarEventsByCourse(courseid);
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -2055,11 +2047,9 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetCalendarEventsByCourseRequest(
-                courseid=49906
-            )
+            courseid = 74
 
-            result = calendar_api.get_calendar_events_by_course(body)
+            result = calendar_api.get_calendar_events_by_course(courseid)
 
             if result.is_success():
                 print(result.body)
@@ -2068,12 +2058,9 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetCalendarEventsByCourseRequest body = new GetCalendarEventsByCourseRequest.Builder(
-                49906
-            )
-            .build();
+            int courseid = 74;
 
-            calendarApi.getCalendarEventsByCourseAsync(body).thenAccept(result -> {
+            calendarApi.getCalendarEventsByCourseAsync(courseid, null, null, null, null).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -2092,14 +2079,10 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetCalendarEventsByCourseRequest body = new GetCalendarEventsByCourseRequest
-            {
-                Courseid = 49906,
-            };
-
+            int courseid = 74;
             try
             {
-                ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByCourseAsync(body);
+                ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByCourseAsync(courseid);
             }
             catch (ApiException e)
             {
@@ -2114,11 +2097,9 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetCalendarEventsByCourseRequest{
-                Courseid:              49906,
-            }
+            courseid := 74
 
-            apiResponse, err := calendarApi.GetCalendarEventsByCourse(ctx, body)
+            apiResponse, err := calendarApi.GetCalendarEventsByCourse(ctx, courseid, nil, nil, nil, nil)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -2134,12 +2115,10 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetCalendarEventsByCourseRequestBuilder::init(
-                49906
-            )->build();
+            $courseid = 74;
 
             $calendarApi = $client->getCalendarApi();
-            $apiResponse = $calendarApi->getCalendarEventsByCourse($body);
+            $apiResponse = $calendarApi->getCalendarEventsByCourse($courseid);
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -2156,11 +2135,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetCalendarEventsByCourseRequest.new(
-              courseid: 49906
-            )
+            courseid = 74
 
-            result = calendar_api.get_calendar_events_by_course(body)
+            result = calendar_api.get_calendar_events_by_course(courseid)
 
             if result.success?
               puts result.data
@@ -2214,15 +2191,19 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetUsersByFieldRequest = {
-              field: UserProfileField.Id,
-              values: [
-                '123456'
-              ],
-            };
+            const field = UserProfileField.Id;
+
+            const values: string[] = [
+              'values0',
+              'values1',
+              'values2'
+            ];
 
             try {
-              const response = await usersApi.getUsersByField(body);
+              const response = await usersApi.getUsersByField(
+                field,
+                values
+              );
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -2249,14 +2230,18 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetUsersByFieldRequest(
-                field=UserProfileField.ID,
-                values=[
-                    '123456'
-                ]
-            )
+            field = UserProfileField.ID
 
-            result = users_api.get_users_by_field(body)
+            values = [
+                'values0',
+                'values1',
+                'values2'
+            ]
+
+            result = users_api.get_users_by_field(
+                field,
+                values
+            )
 
             if result.is_success():
                 print(result.body)
@@ -2265,15 +2250,14 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetUsersByFieldRequest body = new GetUsersByFieldRequest.Builder(
-                UserProfileField.ID,
-                Arrays.asList(
-                    "123456"
-                )
-            )
-            .build();
+            UserProfileField field = UserProfileField.ID;
+            List<String> values = Arrays.asList(
+                "values0",
+                "values1",
+                "values2"
+            );
 
-            usersApi.getUsersByFieldAsync(body).thenAccept(result -> {
+            usersApi.getUsersByFieldAsync(field, values).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -2292,18 +2276,20 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetUsersByFieldRequest body = new GetUsersByFieldRequest
+            UserProfileField field = UserProfileField.Id;
+            List<string> values = new List<string>
             {
-                Field = UserProfileField.Id,
-                Values = new List<string>
-                {
-                    "123456",
-                },
+                "values0",
+                "values1",
+                "values2",
             };
 
             try
             {
-                ApiResponse<List<UserProfile>> result = await usersApi.GetUsersByFieldAsync(body);
+                ApiResponse<List<UserProfile>> result = await usersApi.GetUsersByFieldAsync(
+                    field,
+                    values
+                );
             }
             catch (ApiException e)
             {
@@ -2318,14 +2304,15 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetUsersByFieldRequest{
-                Field:                 models.UserProfileField_Id,
-                Values:                []string{
-                    "123456",
-                },
+            field := models.UserProfileField_Id
+
+            values := []string{
+                "values0",
+                "values1",
+                "values2",
             }
 
-            apiResponse, err := usersApi.GetUsersByField(ctx, body)
+            apiResponse, err := usersApi.GetUsersByField(ctx, field, values)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -2341,15 +2328,19 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetUsersByFieldRequestBuilder::init(
-                UserProfileField::ID,
-                [
-                    '123456'
-                ]
-            )->build();
+            $field = UserProfileField::ID;
+
+            $values = [
+                'values0',
+                'values1',
+                'values2'
+            ];
 
             $usersApi = $client->getUsersApi();
-            $apiResponse = $usersApi->getUsersByField($body);
+            $apiResponse = $usersApi->getUsersByField(
+                $field,
+                $values
+            );
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -2366,14 +2357,18 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetUsersByFieldRequest.new(
-              field: UserProfileField::ID,
-              values: [
-                '123456'
-              ]
-            )
+            field = UserProfileField::ID
 
-            result = users_api.get_users_by_field(body)
+            values = [
+              'values0',
+              'values1',
+              'values2'
+            ]
+
+            result = users_api.get_users_by_field(
+              field,
+              values
+            )
 
             if result.success?
               puts result.data
@@ -2419,12 +2414,10 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetUserPreferencesRequest = {
-              userid: 123456,
-            };
+            const userid = 44;
 
             try {
-              const response = await usersApi.getUserPreferences(body);
+              const response = await usersApi.getUserPreferences(userid);
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -2451,11 +2444,9 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetUserPreferencesRequest(
-                userid=123456
-            )
+            userid = 44
 
-            result = users_api.get_user_preferences(body)
+            result = users_api.get_user_preferences(userid)
 
             if result.is_success():
                 print(result.body)
@@ -2464,12 +2455,9 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetUserPreferencesRequest body = new GetUserPreferencesRequest.Builder(
-                123456
-            )
-            .build();
+            int userid = 44;
 
-            usersApi.getUserPreferencesAsync(body).thenAccept(result -> {
+            usersApi.getUserPreferencesAsync(userid, null).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -2488,14 +2476,10 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetUserPreferencesRequest body = new GetUserPreferencesRequest
-            {
-                Userid = 123456,
-            };
-
+            int userid = 44;
             try
             {
-                ApiResponse<UserPreferencesResponse> result = await usersApi.GetUserPreferencesAsync(body);
+                ApiResponse<UserPreferencesResponse> result = await usersApi.GetUserPreferencesAsync(userid);
             }
             catch (ApiException e)
             {
@@ -2510,11 +2494,9 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetUserPreferencesRequest{
-                Userid:                123456,
-            }
+            userid := 44
 
-            apiResponse, err := usersApi.GetUserPreferences(ctx, body)
+            apiResponse, err := usersApi.GetUserPreferences(ctx, userid, nil)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -2530,12 +2512,10 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetUserPreferencesRequestBuilder::init(
-                123456
-            )->build();
+            $userid = 44;
 
             $usersApi = $client->getUsersApi();
-            $apiResponse = $usersApi->getUserPreferences($body);
+            $apiResponse = $usersApi->getUserPreferences($userid);
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -2552,11 +2532,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetUserPreferencesRequest.new(
-              userid: 123456
-            )
+            userid = 44
 
-            result = users_api.get_user_preferences(body)
+            result = users_api.get_user_preferences(userid)
 
             if result.success?
               puts result.data
@@ -2609,14 +2587,18 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const body: GetPopupNotificationsRequest = {
-              useridto: '123456',
-              limit: 20,
-              offset: 0,
-            };
+            const useridto = 'useridto2';
+
+            const limit = 172;
+
+            const offset = 0;
 
             try {
-              const response = await notificationsApi.getPopupNotifications(body);
+              const response = await notificationsApi.getPopupNotifications(
+                useridto,
+                limit,
+                offset
+              );
 
               // Extracting fully parsed response body.
               console.log(response.result);
@@ -2643,13 +2625,17 @@ paths:
         - lang: python
           label: Python
           source: |-
-            body = GetPopupNotificationsRequest(
-                useridto='123456',
-                limit=20,
-                offset=0
-            )
+            useridto = 'useridto2'
 
-            result = notifications_api.get_popup_notifications(body)
+            limit = 172
+
+            offset = 0
+
+            result = notifications_api.get_popup_notifications(
+                useridto,
+                limit,
+                offset
+            )
 
             if result.is_success():
                 print(result.body)
@@ -2658,14 +2644,11 @@ paths:
         - lang: java
           label: Java
           source: |-
-            GetPopupNotificationsRequest body = new GetPopupNotificationsRequest.Builder(
-                "123456",
-                20,
-                0
-            )
-            .build();
+            String useridto = "useridto2";
+            int limit = 172;
+            int offset = 0;
 
-            notificationsApi.getPopupNotificationsAsync(body).thenAccept(result -> {
+            notificationsApi.getPopupNotificationsAsync(useridto, limit, offset).thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
             }).exceptionally(exception -> {
@@ -2684,16 +2667,16 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            GetPopupNotificationsRequest body = new GetPopupNotificationsRequest
-            {
-                Useridto = "123456",
-                Limit = 20,
-                Offset = 0,
-            };
-
+            string useridto = "useridto2";
+            int limit = 172;
+            int offset = 0;
             try
             {
-                ApiResponse<PopupNotificationsResponse> result = await notificationsApi.GetPopupNotificationsAsync(body);
+                ApiResponse<PopupNotificationsResponse> result = await notificationsApi.GetPopupNotificationsAsync(
+                    useridto,
+                    limit,
+                    offset
+                );
             }
             catch (ApiException e)
             {
@@ -2708,13 +2691,13 @@ paths:
           source: |-
             ctx := context.Background()
 
-            body := models.GetPopupNotificationsRequest{
-                Useridto:              "123456",
-                Limit:                 20,
-                Offset:                0,
-            }
+            useridto := "useridto2"
 
-            apiResponse, err := notificationsApi.GetPopupNotifications(ctx, body)
+            limit := 172
+
+            offset := 0
+
+            apiResponse, err := notificationsApi.GetPopupNotifications(ctx, useridto, limit, offset)
             if err != nil {
                 switch typedErr := err.(type) {
                     case *errors.MoodleError:
@@ -2730,14 +2713,18 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $body = GetPopupNotificationsRequestBuilder::init(
-                '123456',
-                20,
-                0
-            )->build();
+            $useridto = 'useridto2';
+
+            $limit = 172;
+
+            $offset = 0;
 
             $notificationsApi = $client->getNotificationsApi();
-            $apiResponse = $notificationsApi->getPopupNotifications($body);
+            $apiResponse = $notificationsApi->getPopupNotifications(
+                $useridto,
+                $limit,
+                $offset
+            );
 
             // Extracting response status code
             var_dump($apiResponse->getStatusCode());
@@ -2754,13 +2741,17 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            body = GetPopupNotificationsRequest.new(
-              useridto: '123456',
-              limit: 20,
-              offset: 0
-            )
+            useridto = 'useridto2'
 
-            result = notifications_api.get_popup_notifications(body)
+            limit = 172
+
+            offset = 0
+
+            result = notifications_api.get_popup_notifications(
+              useridto,
+              limit,
+              offset
+            )
 
             if result.success?
               puts result.data
@@ -2870,6 +2861,4 @@ paths:
                 access_token: 'YOUR_BEARER_TOKEN'
               )
             )
-      responses:
-        "200":
-          description: This section documents client initialization; it is not a callable endpoint.
+      responses: {}

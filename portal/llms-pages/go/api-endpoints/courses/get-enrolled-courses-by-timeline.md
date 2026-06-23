@@ -8,7 +8,10 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 ```go
 GetEnrolledCoursesByTimeline(
     ctx context.Context,
-    body models.GetEnrolledCoursesByTimelineRequest) (
+    offset int,
+    limit int,
+    classification models.CourseTimelineClassification,
+    sort models.CourseTimelineSortField) (
     models.ApiResponse[models.EnrolledCoursesResponse],
     error)
 ```
@@ -23,7 +26,10 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetEnrolledCoursesByTimelineRequest`](/llms-pages/go/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `int` | Query, Required | Zero-based pagination offset. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`models.CourseTimelineClassification`](/llms-pages/go/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`models.CourseTimelineSortField`](/llms-pages/go/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 
 
 # Response Type
@@ -38,14 +44,15 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetEnrolledCoursesByTimelineRequest{
-    Offset:                0,
-    Limit:                 50,
-    Classification:        models.CourseTimelineClassification_Past,
-    Sort:                  models.CourseTimelineSortField_Id,
-}
+offset := 0
 
-apiResponse, err := coursesApi.GetEnrolledCoursesByTimeline(ctx, body)
+limit := 50
+
+classification := models.CourseTimelineClassification_Inprogress
+
+sort := models.CourseTimelineSortField_Idnumber
+
+apiResponse, err := coursesApi.GetEnrolledCoursesByTimeline(ctx, offset, limit, classification, sort)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

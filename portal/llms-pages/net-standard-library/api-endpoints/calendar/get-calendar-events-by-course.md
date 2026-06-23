@@ -7,7 +7,11 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 ```csharp
 GetCalendarEventsByCourseAsync(
-    Models.GetCalendarEventsByCourseRequest body)
+    int courseid,
+    int? timesortfrom = null,
+    int? timesortto = null,
+    int? aftereventid = null,
+    int? limitnum = null)
 ```
 
 
@@ -20,7 +24,11 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/net-standard-library/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `int` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `int?` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `int?` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `int?` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `int?` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -33,14 +41,10 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetCalendarEventsByCourseRequest body = new GetCalendarEventsByCourseRequest
-{
-    Courseid = 49906,
-};
-
+int courseid = 74;
 try
 {
-    ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByCourseAsync(body);
+    ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByCourseAsync(courseid);
 }
 catch (ApiException e)
 {

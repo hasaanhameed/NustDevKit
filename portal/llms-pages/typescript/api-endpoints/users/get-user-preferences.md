@@ -7,7 +7,8 @@ Moodle method: `core_user_get_user_preferences`
 
 ```ts
 async getUserPreferences(
-  body: GetUserPreferencesRequest,
+  userid: number,
+  name?: string,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<UserPreferencesResponse>>
 ```
@@ -22,7 +23,8 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/typescript/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `number` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `string \| undefined` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,12 +38,10 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetUserPreferencesRequest = {
-  userid: 123456,
-};
+const userid = 44;
 
 try {
-  const response = await usersApi.getUserPreferences(body);
+  const response = await usersApi.getUserPreferences(userid);
 
   // Extracting fully parsed response body.
   console.log(response.result);

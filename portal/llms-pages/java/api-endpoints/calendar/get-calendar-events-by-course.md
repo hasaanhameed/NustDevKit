@@ -7,7 +7,11 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 ```java
 CompletableFuture<ApiResponse<CalendarEventsResponse>> getCalendarEventsByCourseAsync(
-    final GetCalendarEventsByCourseRequest body)
+    final int courseid,
+    final Integer timesortfrom,
+    final Integer timesortto,
+    final Integer aftereventid,
+    final Integer limitnum)
 ```
 
 
@@ -20,7 +24,11 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/java/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `int` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `Integer` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `Integer` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Integer` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `Integer` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -33,12 +41,9 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetCalendarEventsByCourseRequest body = new GetCalendarEventsByCourseRequest.Builder(
-    49906
-)
-.build();
+int courseid = 74;
 
-calendarApi.getCalendarEventsByCourseAsync(body).thenAccept(result -> {
+calendarApi.getCalendarEventsByCourseAsync(courseid, null, null, null, null).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

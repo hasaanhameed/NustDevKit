@@ -6,7 +6,7 @@ Returns all action events (deadlines) for a single course — assignment, lab, a
 Moodle method: `core_calendar_get_action_events_by_course`
 
 ```http
-POST /service/core_calendar_get_action_events_by_course
+GET /service/core_calendar_get_action_events_by_course
 ```
 
 
@@ -19,7 +19,11 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Calendar Events by Course Request`](/llms-pages/http/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `Number` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `Number` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `Number` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Number` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `Number` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -32,14 +36,11 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_calendar_get_action_events_by_course'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "courseid": 49906
-}'
+  -d 'courseid=74'
 ```
 
 

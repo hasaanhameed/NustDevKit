@@ -7,7 +7,10 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 ```csharp
 GetEnrolledCoursesByTimelineAsync(
-    Models.GetEnrolledCoursesByTimelineRequest body)
+    int offset,
+    int limit,
+    Models.CourseTimelineClassification classification,
+    Models.CourseTimelineSortField sort)
 ```
 
 
@@ -20,7 +23,10 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetEnrolledCoursesByTimelineRequest`](/llms-pages/net-standard-library/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `int` | Query, Required | Zero-based pagination offset. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`CourseTimelineClassification`](/llms-pages/net-standard-library/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`CourseTimelineSortField`](/llms-pages/net-standard-library/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 
 
 # Response Type
@@ -33,17 +39,18 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetEnrolledCoursesByTimelineRequest body = new GetEnrolledCoursesByTimelineRequest
-{
-    Offset = 0,
-    Limit = 50,
-    Classification = CourseTimelineClassification.Past,
-    Sort = CourseTimelineSortField.Id,
-};
-
+int offset = 0;
+int limit = 50;
+CourseTimelineClassification classification = CourseTimelineClassification.Inprogress;
+CourseTimelineSortField sort = CourseTimelineSortField.Idnumber;
 try
 {
-    ApiResponse<EnrolledCoursesResponse> result = await coursesApi.GetEnrolledCoursesByTimelineAsync(body);
+    ApiResponse<EnrolledCoursesResponse> result = await coursesApi.GetEnrolledCoursesByTimelineAsync(
+        offset,
+        limit,
+        classification,
+        sort
+    );
 }
 catch (ApiException e)
 {

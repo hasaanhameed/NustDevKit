@@ -6,7 +6,7 @@ Returns all stored preference key/value pairs for the specified user. Optionally
 Moodle method: `core_user_get_user_preferences`
 
 ```http
-POST /service/core_user_get_user_preferences
+GET /service/core_user_get_user_preferences
 ```
 
 
@@ -19,7 +19,8 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get User Preferences Request`](/llms-pages/http/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `Number` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `String` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -32,14 +33,11 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_user_get_user_preferences'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "userid": 123456
-}'
+  -d 'userid=44'
 ```
 
 

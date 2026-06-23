@@ -18,7 +18,7 @@ Timeline classification filter for enrolled courses.
 | `INPROGRESS` |
 | `PAST` |
 | `FUTURE` |
-| `FAVOURITE` |
+| `FAVOURITES` |
 | `HIDDEN` |
 | `ALLINCLUDINGHIDDEN` |
 
@@ -28,7 +28,7 @@ Timeline classification filter for enrolled courses.
 ```python
 from nustlmsapi.models.course_timeline_classification import CourseTimelineClassification
 
-course_timeline_classification = CourseTimelineClassification.FAVOURITE
+course_timeline_classification = CourseTimelineClassification.FAVOURITES
 ```
 
 

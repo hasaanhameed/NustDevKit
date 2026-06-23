@@ -13,7 +13,7 @@ Timeline classification filter for enrolled courses.
 | `inprogress` |
 | `past` |
 | `future` |
-| `favourite` |
+| `favourites` |
 | `hidden` |
 | `allincludinghidden` |
 

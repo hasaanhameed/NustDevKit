@@ -7,7 +7,9 @@ Moodle method: `message_popup_get_popup_notifications`
 
 ```csharp
 GetPopupNotificationsAsync(
-    Models.GetPopupNotificationsRequest body)
+    string useridto,
+    int limit,
+    int offset)
 ```
 
 
@@ -20,7 +22,9 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/net-standard-library/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `string` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `int` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `int` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -33,16 +37,16 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetPopupNotificationsRequest body = new GetPopupNotificationsRequest
-{
-    Useridto = "123456",
-    Limit = 20,
-    Offset = 0,
-};
-
+string useridto = "useridto2";
+int limit = 172;
+int offset = 0;
 try
 {
-    ApiResponse<PopupNotificationsResponse> result = await notificationsApi.GetPopupNotificationsAsync(body);
+    ApiResponse<PopupNotificationsResponse> result = await notificationsApi.GetPopupNotificationsAsync(
+        useridto,
+        limit,
+        offset
+    );
 }
 catch (ApiException e)
 {

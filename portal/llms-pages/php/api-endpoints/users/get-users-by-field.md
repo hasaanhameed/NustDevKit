@@ -6,7 +6,7 @@ Retrieves one or more user profiles by matching a specific profile field. Common
 Moodle method: `core_user_get_users_by_field`
 
 ```php
-function getUsersByField(GetUsersByFieldRequest $body): ApiResponse
+function getUsersByField(string $field, array $values): ApiResponse
 ```
 
 
@@ -19,7 +19,8 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUsersByFieldRequest`](/llms-pages/php/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`string(UserProfileField)`](/llms-pages/php/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `string[]` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -32,15 +33,19 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetUsersByFieldRequestBuilder::init(
-    UserProfileField::ID,
-    [
-        '123456'
-    ]
-)->build();
+$field = UserProfileField::ID;
+
+$values = [
+    'values0',
+    'values1',
+    'values2'
+];
 
 $usersApi = $client->getUsersApi();
-$apiResponse = $usersApi->getUsersByField($body);
+$apiResponse = $usersApi->getUsersByField(
+    $field,
+    $values
+);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

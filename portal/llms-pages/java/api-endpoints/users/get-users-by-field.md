@@ -7,7 +7,8 @@ Moodle method: `core_user_get_users_by_field`
 
 ```java
 CompletableFuture<ApiResponse<List<UserProfile>>> getUsersByFieldAsync(
-    final GetUsersByFieldRequest body)
+    final UserProfileField field,
+    final List<String> values)
 ```
 
 
@@ -20,7 +21,8 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUsersByFieldRequest`](/llms-pages/java/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`UserProfileField`](/llms-pages/java/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `List<String>` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -33,15 +35,14 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetUsersByFieldRequest body = new GetUsersByFieldRequest.Builder(
-    UserProfileField.ID,
-    Arrays.asList(
-        "123456"
-    )
-)
-.build();
+UserProfileField field = UserProfileField.ID;
+List<String> values = Arrays.asList(
+    "values0",
+    "values1",
+    "values2"
+);
 
-usersApi.getUsersByFieldAsync(body).thenAccept(result -> {
+usersApi.getUsersByFieldAsync(field, values).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

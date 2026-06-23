@@ -7,7 +7,9 @@ Moodle method: `message_popup_get_popup_notifications`
 
 ```java
 CompletableFuture<ApiResponse<PopupNotificationsResponse>> getPopupNotificationsAsync(
-    final GetPopupNotificationsRequest body)
+    final String useridto,
+    final int limit,
+    final int offset)
 ```
 
 
@@ -20,7 +22,9 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/java/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `String` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `int` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `int` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -33,14 +37,11 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetPopupNotificationsRequest body = new GetPopupNotificationsRequest.Builder(
-    "123456",
-    20,
-    0
-)
-.build();
+String useridto = "useridto2";
+int limit = 172;
+int offset = 0;
 
-notificationsApi.getPopupNotificationsAsync(body).thenAccept(result -> {
+notificationsApi.getPopupNotificationsAsync(useridto, limit, offset).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

@@ -6,7 +6,8 @@ Returns all stored preference key/value pairs for the specified user. Optionally
 Moodle method: `core_user_get_user_preferences`
 
 ```ruby
-def get_user_preferences(body)
+def get_user_preferences(userid,
+                         name: nil)
 ```
 
 
@@ -19,7 +20,8 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/ruby/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `Integer` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `String` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -32,11 +34,9 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetUserPreferencesRequest.new(
-  userid: 123456
-)
+userid = 44
 
-result = users_api.get_user_preferences(body)
+result = users_api.get_user_preferences(userid)
 
 if result.success?
   puts result.data

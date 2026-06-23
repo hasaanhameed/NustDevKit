@@ -54,37 +54,28 @@
       "path": "/service/core_course_get_recent_courses",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`\n",
           "nickname": "getCoreRecentCourses",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "limit",
+              "description": "Maximum number of courses to return.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "defaultValue": "10",
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "string"
-            },
-            {
-              "name": "body",
-              "description": "Parameters for the recent courses request.",
-              "paramType": "body",
-              "required": true,
-              "allowMultiple": false,
-              "uniqueItems": false,
-              "type": "GetRecentCoursesRequest"
+              "type": "integer",
+              "format": "int32"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -106,37 +97,75 @@
       "path": "/service/core_course_get_enrolled_courses_by_timeline_classification",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`\n",
           "nickname": "getEnrolledCoursesByTimeline",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "offset",
+              "description": "Zero-based pagination offset.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "defaultValue": "0",
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "limit",
+              "description": "Maximum number of courses to return.",
+              "paramType": "query",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "50",
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "classification",
+              "description": "Timeline classification filter for enrolled courses.",
+              "paramType": "query",
+              "required": true,
+              "allowMultiple": false,
+              "enum": [
+                "all",
+                "inprogress",
+                "past",
+                "future",
+                "favourites",
+                "hidden",
+                "allincludinghidden"
+              ],
               "uniqueItems": false,
               "type": "string"
             },
             {
-              "name": "body",
-              "description": "Parameters for the enrolled courses timeline request.",
-              "paramType": "body",
+              "name": "sort",
+              "description": "Field used to sort enrolled course results.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
+              "enum": [
+                "fullname",
+                "shortname",
+                "id",
+                "idnumber",
+                "timeaccess"
+              ],
               "uniqueItems": false,
-              "type": "GetEnrolledCoursesByTimelineRequest"
+              "type": "string"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -155,37 +184,63 @@
       "path": "/service/core_calendar_get_action_events_by_timesort",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n",
           "nickname": "getCalendarEventsByTimesort",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "limitnum",
+              "description": "Maximum number of events to return.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
             {
-              "name": "body",
-              "description": "Parameters for the time-sorted calendar events request.",
-              "paramType": "body",
+              "name": "timesortfrom",
+              "description": "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "GetCalendarEventsByTimesortRequest"
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "timesortto",
+              "description": "Only return events with timesort <= this Unix timestamp.",
+              "paramType": "query",
+              "required": false,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "aftereventid",
+              "description": "Return events whose ID is greater than this value (cursor pagination).",
+              "paramType": "query",
+              "required": false,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -204,37 +259,75 @@
       "path": "/service/core_calendar_get_action_events_by_course",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`\n",
           "nickname": "getCalendarEventsByCourse",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "courseid",
+              "description": "ID of the course to fetch events for.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
             {
-              "name": "body",
-              "description": "Parameters for the course-specific calendar events request.",
-              "paramType": "body",
-              "required": true,
+              "name": "timesortfrom",
+              "description": "Only return events with timesort >= this Unix timestamp.",
+              "paramType": "query",
+              "required": false,
               "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "GetCalendarEventsByCourseRequest"
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "timesortto",
+              "description": "Only return events with timesort <= this Unix timestamp.",
+              "paramType": "query",
+              "required": false,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "aftereventid",
+              "description": "Cursor-based pagination — return events after this event ID.",
+              "paramType": "query",
+              "required": false,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "limitnum",
+              "description": "Maximum number of events to return.",
+              "paramType": "query",
+              "required": false,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -253,37 +346,42 @@
       "path": "/service/core_user_get_users_by_field",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n",
           "nickname": "getUsersByField",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "field",
+              "description": "User profile field to match against when searching for users.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "enum": [
+                "id",
+                "idnumber",
+                "username",
+                "email"
+              ],
               "uniqueItems": false,
               "type": "string"
             },
             {
-              "name": "body",
-              "description": "Parameters specifying the profile field and values to match.",
-              "paramType": "body",
+              "name": "values",
+              "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
+              "items": {
+                "type": "string"
+              },
               "uniqueItems": false,
-              "type": "GetUsersByFieldRequest"
+              "type": "array"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -305,37 +403,36 @@
       "path": "/service/core_user_get_user_preferences",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n",
           "nickname": "getUserPreferences",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "userid",
+              "description": "ID of the user whose preferences to retrieve.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
             {
-              "name": "body",
-              "description": "Parameters specifying which user's preferences to retrieve.",
-              "paramType": "body",
-              "required": true,
+              "name": "name",
+              "description": "Specific preference name to retrieve. Omit to retrieve all preferences.",
+              "paramType": "query",
+              "required": false,
               "allowMultiple": false,
               "uniqueItems": false,
-              "type": "GetUserPreferencesRequest"
+              "type": "string"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -354,37 +451,27 @@
       "path": "/service/core_fetch_notifications",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n",
           "nickname": "fetchNotifications",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "contextid",
+              "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "string"
-            },
-            {
-              "name": "body",
-              "description": "Parameters specifying the context to fetch notifications for.",
-              "paramType": "body",
-              "required": true,
-              "allowMultiple": false,
-              "uniqueItems": false,
-              "type": "FetchNotificationsRequest"
+              "type": "integer",
+              "format": "int32"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -406,37 +493,49 @@
       "path": "/service/message_popup_get_popup_notifications",
       "operations": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`\n",
           "nickname": "getPopupNotifications",
           "parameters": [
             {
-              "name": "Content-Type",
-              "description": "",
-              "paramType": "header",
+              "name": "useridto",
+              "description": "ID of the recipient user, passed as a string.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
-              "defaultValue": "application/json",
               "uniqueItems": false,
               "type": "string"
             },
             {
-              "name": "body",
-              "description": "Parameters for the popup notifications request.",
-              "paramType": "body",
+              "name": "limit",
+              "description": "Maximum number of notifications to return.",
+              "paramType": "query",
               "required": true,
               "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
               "uniqueItems": false,
-              "type": "GetPopupNotificationsRequest"
+              "type": "integer",
+              "format": "int32"
+            },
+            {
+              "name": "offset",
+              "description": "Pagination offset.",
+              "paramType": "query",
+              "required": true,
+              "allowMultiple": false,
+              "defaultValue": "0",
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
             }
           ],
           "authorizations": {
             "BearerAuth": []
           },
           "produces": [
-            "application/json"
-          ],
-          "consumes": [
             "application/json"
           ],
           "responseMessages": [
@@ -1683,7 +1782,7 @@
             "inprogress",
             "past",
             "future",
-            "favourite",
+            "favourites",
             "hidden",
             "allincludinghidden"
           ],

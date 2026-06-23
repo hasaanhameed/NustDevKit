@@ -7,7 +7,8 @@ Moodle method: `core_user_get_user_preferences`
 
 ```java
 CompletableFuture<ApiResponse<UserPreferencesResponse>> getUserPreferencesAsync(
-    final GetUserPreferencesRequest body)
+    final int userid,
+    final String name)
 ```
 
 
@@ -20,7 +21,8 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/java/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `int` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `String` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -33,12 +35,9 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetUserPreferencesRequest body = new GetUserPreferencesRequest.Builder(
-    123456
-)
-.build();
+int userid = 44;
 
-usersApi.getUserPreferencesAsync(body).thenAccept(result -> {
+usersApi.getUserPreferencesAsync(userid, null).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

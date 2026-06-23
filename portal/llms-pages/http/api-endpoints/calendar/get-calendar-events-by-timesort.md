@@ -6,7 +6,7 @@ Returns action events (deadlines) across all enrolled courses, ordered by their 
 Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```http
-POST /service/core_calendar_get_action_events_by_timesort
+GET /service/core_calendar_get_action_events_by_timesort
 ```
 
 
@@ -19,7 +19,10 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Calendar Events by Timesort Request`](/llms-pages/http/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `Number` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `Number` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `Number` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Number` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -32,15 +35,12 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_calendar_get_action_events_by_timesort'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "limitnum": 20,
-  "timesortfrom": 0
-}'
+  -d 'limitnum=32' \
+  -d 'timesortfrom=58'
 ```
 
 

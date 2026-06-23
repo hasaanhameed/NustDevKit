@@ -7,7 +7,10 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```ts
 async getCalendarEventsByTimesort(
-  body: GetCalendarEventsByTimesortRequest,
+  limitnum: number,
+  timesortfrom: number,
+  timesortto?: number,
+  aftereventid?: number,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<CalendarEventsResponse>>
 ```
@@ -22,7 +25,10 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByTimesortRequest`](/llms-pages/typescript/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `number` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `number` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `number \| undefined` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `number \| undefined` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,13 +42,15 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetCalendarEventsByTimesortRequest = {
-  limitnum: 20,
-  timesortfrom: 0,
-};
+const limitnum = 32;
+
+const timesortfrom = 58;
 
 try {
-  const response = await calendarApi.getCalendarEventsByTimesort(body);
+  const response = await calendarApi.getCalendarEventsByTimesort(
+    limitnum,
+    timesortfrom
+  );
 
   // Extracting fully parsed response body.
   console.log(response.result);

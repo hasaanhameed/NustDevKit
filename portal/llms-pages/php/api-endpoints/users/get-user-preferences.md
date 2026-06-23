@@ -6,7 +6,7 @@ Returns all stored preference key/value pairs for the specified user. Optionally
 Moodle method: `core_user_get_user_preferences`
 
 ```php
-function getUserPreferences(GetUserPreferencesRequest $body): ApiResponse
+function getUserPreferences(int $userid, ?string $name = null): ApiResponse
 ```
 
 
@@ -19,7 +19,8 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUserPreferencesRequest`](/llms-pages/php/models/structures/get-user-preferences-request.md) | Body, Required | Parameters specifying which user's preferences to retrieve. |
+| `userid` | `int` | Query, Required | ID of the user whose preferences to retrieve. |
+| `name` | `?string` | Query, Optional | Specific preference name to retrieve. Omit to retrieve all preferences. |
 
 
 # Response Type
@@ -32,12 +33,10 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetUserPreferencesRequestBuilder::init(
-    123456
-)->build();
+$userid = 44;
 
 $usersApi = $client->getUsersApi();
-$apiResponse = $usersApi->getUserPreferences($body);
+$apiResponse = $usersApi->getUserPreferences($userid);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

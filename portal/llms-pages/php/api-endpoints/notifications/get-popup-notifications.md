@@ -6,7 +6,7 @@ Returns the most recent popup notifications sent to a user, with support for pag
 Moodle method: `message_popup_get_popup_notifications`
 
 ```php
-function getPopupNotifications(GetPopupNotificationsRequest $body): ApiResponse
+function getPopupNotifications(string $useridto, int $limit, int $offset): ApiResponse
 ```
 
 
@@ -19,7 +19,9 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/php/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `string` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `int` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `int` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -32,14 +34,18 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetPopupNotificationsRequestBuilder::init(
-    '123456',
-    20,
-    0
-)->build();
+$useridto = 'useridto2';
+
+$limit = 172;
+
+$offset = 0;
 
 $notificationsApi = $client->getNotificationsApi();
-$apiResponse = $notificationsApi->getPopupNotifications($body);
+$apiResponse = $notificationsApi->getPopupNotifications(
+    $useridto,
+    $limit,
+    $offset
+);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

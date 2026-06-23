@@ -6,7 +6,7 @@ Returns the courses the authenticated user has accessed most recently, ordered b
 Moodle method: `core_course_get_recent_courses`
 
 ```ruby
-def get_core_recent_courses(body)
+def get_core_recent_courses(limit)
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/ruby/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `Integer` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -32,11 +32,9 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetRecentCoursesRequest.new(
-  limit: 10
-)
+limit = 10
 
-result = courses_api.get_core_recent_courses(body)
+result = courses_api.get_core_recent_courses(limit)
 
 if result.success?
   puts result.data

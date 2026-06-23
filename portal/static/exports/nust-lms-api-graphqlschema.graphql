@@ -6,7 +6,7 @@
 enum CourseTimelineClassification {
     ALL
     ALLINCLUDINGHIDDEN
-    FAVOURITE
+    FAVOURITES
     FUTURE
     HIDDEN
     INPROGRESS
@@ -503,20 +503,12 @@ input CreateLoginInput {
     body: LoginRequestInput!
 }
 
-"Request parameters for retrieving recently accessed courses."
-input GetRecentCoursesRequestInput {
+input GetCoreRecentCoursesInput {
     "Maximum number of courses to return."
     limit: Int!
 }
 
-input CreateGetcorerecentcoursesInput {
-    contentType: String!
-    "Parameters for the recent courses request."
-    body: GetRecentCoursesRequestInput!
-}
-
-"Request parameters for retrieving enrolled courses filtered by timeline classification."
-input GetEnrolledCoursesByTimelineRequestInput {
+input GetEnrolledCoursesByTimelineInput {
     "Zero-based pagination offset."
     offset: Int!
     "Maximum number of courses to return."
@@ -527,92 +519,50 @@ input GetEnrolledCoursesByTimelineRequestInput {
     sort: CourseTimelineSortField!
 }
 
-input CreateGetenrolledcoursesbytimelineInput {
-    contentType: String!
-    "Parameters for the enrolled courses timeline request."
-    body: GetEnrolledCoursesByTimelineRequestInput!
-}
-
-"Request parameters for retrieving calendar action events sorted by time."
-input GetCalendarEventsByTimesortRequestInput {
+input GetCalendarEventsByTimesortInput {
     "Maximum number of events to return."
     limitnum: Int!
     "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound."
     timesortfrom: Int!
-    "Only return events with timesort <= this Unix timestamp. Optional."
+    "Only return events with timesort <= this Unix timestamp."
     timesortto: Int!
-    "Return events whose ID is greater than this value (cursor pagination). Optional."
+    "Return events whose ID is greater than this value (cursor pagination)."
     aftereventid: Int!
 }
 
-input CreateGetcalendareventsbytimesortInput {
-    contentType: String!
-    "Parameters for the time-sorted calendar events request."
-    body: GetCalendarEventsByTimesortRequestInput!
-}
-
-"Request parameters for retrieving calendar action events for a specific course."
-input GetCalendarEventsByCourseRequestInput {
+input GetCalendarEventsByCourseInput {
     "ID of the course to fetch events for."
     courseid: Int!
-    "Only return events with timesort >= this Unix timestamp. Optional."
+    "Only return events with timesort >= this Unix timestamp."
     timesortfrom: Int!
-    "Only return events with timesort <= this Unix timestamp. Optional."
+    "Only return events with timesort <= this Unix timestamp."
     timesortto: Int!
-    "Cursor-based pagination — return events after this event ID. Optional."
+    "Cursor-based pagination — return events after this event ID."
     aftereventid: Int!
-    "Maximum number of events to return. Optional."
+    "Maximum number of events to return."
     limitnum: Int!
 }
 
-input CreateGetcalendareventsbycourseInput {
-    contentType: String!
-    "Parameters for the course-specific calendar events request."
-    body: GetCalendarEventsByCourseRequestInput!
-}
-
-"Request parameters for retrieving user profiles by a profile field value."
-input GetUsersByFieldRequestInput {
+input GetUsersByFieldInput {
     "User profile field to match against when searching for users."
     field: UserProfileField!
     "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID)."
     values: [String!]
 }
 
-input CreateGetusersbyfieldInput {
-    contentType: String!
-    "Parameters specifying the profile field and values to match."
-    body: GetUsersByFieldRequestInput!
-}
-
-"Request parameters for retrieving user preferences."
-input GetUserPreferencesRequestInput {
+input GetUserPreferencesInput {
     "ID of the user whose preferences to retrieve."
     userid: Int!
     "Specific preference name to retrieve. Omit to retrieve all preferences."
     name: String!
 }
 
-input CreateGetuserpreferencesInput {
-    contentType: String!
-    "Parameters specifying which user's preferences to retrieve."
-    body: GetUserPreferencesRequestInput!
-}
-
-"Request parameters for fetching site-level notifications."
-input FetchNotificationsRequestInput {
+input FetchNotificationsInput {
     "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment."
     contextid: Int!
 }
 
-input CreateFetchnotificationsInput {
-    contentType: String!
-    "Parameters specifying the context to fetch notifications for."
-    body: FetchNotificationsRequestInput!
-}
-
-"Request parameters for retrieving popup notifications for a user."
-input GetPopupNotificationsRequestInput {
+input GetPopupNotificationsInput {
     "ID of the recipient user, passed as a string."
     useridto: String!
     "Maximum number of notifications to return."
@@ -621,35 +571,28 @@ input GetPopupNotificationsRequestInput {
     offset: Int!
 }
 
-input CreateGetpopupnotificationsInput {
-    contentType: String!
-    "Parameters for the popup notifications request."
-    body: GetPopupNotificationsRequestInput!
-}
-
 type Query {
-    _: Boolean
+    "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`"
+    getCoreRecentCourses(input: GetCoreRecentCoursesInput!): [RecentCourse!]
+    "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"
+    getEnrolledCoursesByTimeline(input: GetEnrolledCoursesByTimelineInput!): EnrolledCoursesResponse!
+    "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
+    getCalendarEventsByTimesort(input: GetCalendarEventsByTimesortInput!): CalendarEventsResponse!
+    "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`"
+    getCalendarEventsByCourse(input: GetCalendarEventsByCourseInput!): CalendarEventsResponse!
+    "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`"
+    getUsersByField(input: GetUsersByFieldInput!): [UserProfile!]
+    "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`"
+    getUserPreferences(input: GetUserPreferencesInput!): UserPreferencesResponse!
+    "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`"
+    fetchNotifications(input: FetchNotificationsInput!): [SiteNotification!]
+    "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`"
+    getPopupNotifications(input: GetPopupNotificationsInput!): PopupNotificationsResponse!
 }
 
 type Mutation {
     "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation."
     createLogin(input: CreateLoginInput!): TokenResponse!
-    "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`"
-    createGetcorerecentcourses(input: CreateGetcorerecentcoursesInput!): [RecentCourse!]
-    "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"
-    createGetenrolledcoursesbytimeline(input: CreateGetenrolledcoursesbytimelineInput!): EnrolledCoursesResponse!
-    "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
-    createGetcalendareventsbytimesort(input: CreateGetcalendareventsbytimesortInput!): CalendarEventsResponse!
-    "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`"
-    createGetcalendareventsbycourse(input: CreateGetcalendareventsbycourseInput!): CalendarEventsResponse!
-    "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`"
-    createGetusersbyfield(input: CreateGetusersbyfieldInput!): [UserProfile!]
-    "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`"
-    createGetuserpreferences(input: CreateGetuserpreferencesInput!): UserPreferencesResponse!
-    "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`"
-    createFetchnotifications(input: CreateFetchnotificationsInput!): [SiteNotification!]
-    "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`"
-    createGetpopupnotifications(input: CreateGetpopupnotificationsInput!): PopupNotificationsResponse!
 }
 
 schema {

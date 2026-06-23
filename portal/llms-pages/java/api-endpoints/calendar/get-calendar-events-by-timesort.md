@@ -7,7 +7,10 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```java
 CompletableFuture<ApiResponse<CalendarEventsResponse>> getCalendarEventsByTimesortAsync(
-    final GetCalendarEventsByTimesortRequest body)
+    final int limitnum,
+    final int timesortfrom,
+    final Integer timesortto,
+    final Integer aftereventid)
 ```
 
 
@@ -20,7 +23,10 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByTimesortRequest`](/llms-pages/java/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `int` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `int` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `Integer` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Integer` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -33,13 +39,10 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetCalendarEventsByTimesortRequest body = new GetCalendarEventsByTimesortRequest.Builder(
-    20,
-    0
-)
-.build();
+int limitnum = 32;
+int timesortfrom = 58;
 
-calendarApi.getCalendarEventsByTimesortAsync(body).thenAccept(result -> {
+calendarApi.getCalendarEventsByTimesortAsync(limitnum, timesortfrom, null, null).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

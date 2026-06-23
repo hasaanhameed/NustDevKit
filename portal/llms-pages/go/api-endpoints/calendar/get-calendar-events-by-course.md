@@ -8,7 +8,11 @@ Moodle method: `core_calendar_get_action_events_by_course`
 ```go
 GetCalendarEventsByCourse(
     ctx context.Context,
-    body models.GetCalendarEventsByCourseRequest) (
+    courseid int,
+    timesortfrom *int,
+    timesortto *int,
+    aftereventid *int,
+    limitnum *int) (
     models.ApiResponse[models.CalendarEventsResponse],
     error)
 ```
@@ -23,7 +27,11 @@ This endpoint requires [BearerAuth](/llms-pages/go/getting-started/sdk-quickstar
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`models.GetCalendarEventsByCourseRequest`](/llms-pages/go/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `int` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `*int` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `*int` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `*int` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `*int` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -38,11 +46,9 @@ This method returns an [`ApiResponse`](/llms-pages/go/sdk-infrastructure/utiliti
 ```go
 ctx := context.Background()
 
-body := models.GetCalendarEventsByCourseRequest{
-    Courseid:              49906,
-}
+courseid := 74
 
-apiResponse, err := calendarApi.GetCalendarEventsByCourse(ctx, body)
+apiResponse, err := calendarApi.GetCalendarEventsByCourse(ctx, courseid, nil, nil, nil, nil)
 if err != nil {
     switch typedErr := err.(type) {
         case *errors.MoodleError:

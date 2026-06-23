@@ -7,7 +7,7 @@ Moodle method: `core_course_get_recent_courses`
 
 ```python
 def get_core_recent_courses(self,
-                           body)
+                           limit)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/python/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -33,11 +33,9 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetRecentCoursesRequest(
-    limit=10
-)
+limit = 10
 
-result = courses_api.get_core_recent_courses(body)
+result = courses_api.get_core_recent_courses(limit)
 
 if result.is_success():
     print(result.body)

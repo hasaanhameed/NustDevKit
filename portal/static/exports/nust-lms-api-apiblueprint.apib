@@ -51,17 +51,17 @@ Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS
 
 Course listing and enrollment operations
 
-## Service Core Course Get Recent Courses [/service/core_course_get_recent_courses]
+## Service Core Course Get Recent Courses [/service/core_course_get_recent_courses{?limit}]
 
-### getCoreRecentCourses [POST]
+### getCoreRecentCourses [GET]
 Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 Moodle method: `core_course_get_recent_courses`
++ Parameters
+    + limit (number, optional) -
 
-+ Request (<<Add Header Value>>)
+        Maximum number of courses to return.
 
-    + Attributes (GetRecentCoursesRequest)
-
-
+        + Default: 10
 
 + Response 200 (application/json)
 
@@ -80,16 +80,45 @@ Moodle method: `core_course_get_recent_courses`
 
 
 
-## Service Core Course Get Enrolled Courses By Timeline Classification [/service/core_course_get_enrolled_courses_by_timeline_classification]
+## Service Core Course Get Enrolled Courses By Timeline Classification [/service/core_course_get_enrolled_courses_by_timeline_classification{?offset,limit,classification,sort}]
 
-### getEnrolledCoursesByTimeline [POST]
+### getEnrolledCoursesByTimeline [GET]
 Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
++ Parameters
+    + offset (number, optional) -
 
-+ Request (<<Add Header Value>>)
+        Zero-based pagination offset.
 
-    + Attributes (GetEnrolledCoursesByTimelineRequest)
+        + Default: 0
+    + limit (number, optional) -
 
+        Maximum number of courses to return.
+
+        + Default: 50
+    + classification (enum[string], required)
+
+        Timeline classification filter for enrolled courses.
+
+        + Members
+            + `all` 
+            + `inprogress` 
+            + `past` 
+            + `future` 
+            + `favourites` 
+            + `hidden` 
+            + `allincludinghidden` 
+
+    + sort (enum[string], required)
+
+        Field used to sort enrolled course results.
+
+        + Members
+            + `fullname` 
+            + `shortname` 
+            + `id` 
+            + `idnumber` 
+            + `timeaccess` 
 
 
 + Response 200 (application/json)
@@ -115,16 +144,27 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
 
 
-## Service Core Calendar Get Action Events By Timesort [/service/core_calendar_get_action_events_by_timesort]
+## Service Core Calendar Get Action Events By Timesort [/service/core_calendar_get_action_events_by_timesort{?limitnum,timesortfrom,timesortto,aftereventid}]
 
-### getCalendarEventsByTimesort [POST]
+### getCalendarEventsByTimesort [GET]
 Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 Moodle method: `core_calendar_get_action_events_by_timesort`
++ Parameters
+    + limitnum (number, required)
 
-+ Request (<<Add Header Value>>)
+        Maximum number of events to return.
 
-    + Attributes (GetCalendarEventsByTimesortRequest)
+    + timesortfrom (number, required)
 
+        Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+
+    + timesortto (number, optional)
+
+        Only return events with timesort <= this Unix timestamp.
+
+    + aftereventid (number, optional)
+
+        Return events whose ID is greater than this value (cursor pagination).
 
 
 + Response 200 (application/json)
@@ -144,16 +184,31 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 
 
 
-## Service Core Calendar Get Action Events By Course [/service/core_calendar_get_action_events_by_course]
+## Service Core Calendar Get Action Events By Course [/service/core_calendar_get_action_events_by_course{?courseid,timesortfrom,timesortto,aftereventid,limitnum}]
 
-### getCalendarEventsByCourse [POST]
+### getCalendarEventsByCourse [GET]
 Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 Moodle method: `core_calendar_get_action_events_by_course`
++ Parameters
+    + courseid (number, required)
 
-+ Request (<<Add Header Value>>)
+        ID of the course to fetch events for.
 
-    + Attributes (GetCalendarEventsByCourseRequest)
+    + timesortfrom (number, optional)
 
+        Only return events with timesort >= this Unix timestamp.
+
+    + timesortto (number, optional)
+
+        Only return events with timesort <= this Unix timestamp.
+
+    + aftereventid (number, optional)
+
+        Cursor-based pagination — return events after this event ID.
+
+    + limitnum (number, optional)
+
+        Maximum number of events to return.
 
 
 + Response 200 (application/json)
@@ -178,16 +233,25 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 User profile and preferences operations
 
-## Service Core User Get Users By Field [/service/core_user_get_users_by_field]
+## Service Core User Get Users By Field [/service/core_user_get_users_by_field{?field,values}]
 
-### getUsersByField [POST]
+### getUsersByField [GET]
 Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 Moodle method: `core_user_get_users_by_field`
++ Parameters
+    + field (enum[string], required)
 
-+ Request (<<Add Header Value>>)
+        User profile field to match against when searching for users.
 
-    + Attributes (GetUsersByFieldRequest)
+        + Members
+            + `id` 
+            + `idnumber` 
+            + `username` 
+            + `email` 
 
+    + values (array[string], required)
+
+        List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
 
 
 + Response 200 (application/json)
@@ -207,16 +271,19 @@ Moodle method: `core_user_get_users_by_field`
 
 
 
-## Service Core User Get User Preferences [/service/core_user_get_user_preferences]
+## Service Core User Get User Preferences [/service/core_user_get_user_preferences{?userid,name}]
 
-### getUserPreferences [POST]
+### getUserPreferences [GET]
 Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 Moodle method: `core_user_get_user_preferences`
++ Parameters
+    + userid (number, required)
 
-+ Request (<<Add Header Value>>)
+        ID of the user whose preferences to retrieve.
 
-    + Attributes (GetUserPreferencesRequest)
+    + name (string, optional)
 
+        Specific preference name to retrieve. Omit to retrieve all preferences.
 
 
 + Response 200 (application/json)
@@ -241,16 +308,15 @@ Moodle method: `core_user_get_user_preferences`
 
 Notification retrieval operations
 
-## Service Core Fetch Notifications [/service/core_fetch_notifications]
+## Service Core Fetch Notifications [/service/core_fetch_notifications{?contextid}]
 
-### fetchNotifications [POST]
+### fetchNotifications [GET]
 Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 Moodle method: `core_fetch_notifications`
++ Parameters
+    + contextid (number, required)
 
-+ Request (<<Add Header Value>>)
-
-    + Attributes (FetchNotificationsRequest)
-
+        Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
 
 
 + Response 200 (application/json)
@@ -270,17 +336,25 @@ Moodle method: `core_fetch_notifications`
 
 
 
-## Service Message Popup Get Popup Notifications [/service/message_popup_get_popup_notifications]
+## Service Message Popup Get Popup Notifications [/service/message_popup_get_popup_notifications{?useridto,limit,offset}]
 
-### getPopupNotifications [POST]
+### getPopupNotifications [GET]
 Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 Moodle method: `message_popup_get_popup_notifications`
++ Parameters
+    + useridto (string, required)
 
-+ Request (<<Add Header Value>>)
+        ID of the recipient user, passed as a string.
 
-    + Attributes (GetPopupNotificationsRequest)
+    + limit (number, required)
 
+        Maximum number of notifications to return.
 
+    + offset (number, optional) -
+
+        Pagination offset.
+
+        + Default: 0
 
 + Response 200 (application/json)
 
@@ -590,7 +664,7 @@ Request parameters for retrieving enrolled courses filtered by timeline classifi
     + `inprogress`
     + `past`
     + `future`
-    + `favourite`
+    + `favourites`
     + `hidden`
     + `allincludinghidden`
 + `sort` (enum[string], required) - Field used to sort enrolled course results.

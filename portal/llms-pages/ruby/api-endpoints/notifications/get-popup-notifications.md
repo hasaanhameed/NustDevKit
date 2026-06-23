@@ -6,7 +6,9 @@ Returns the most recent popup notifications sent to a user, with support for pag
 Moodle method: `message_popup_get_popup_notifications`
 
 ```ruby
-def get_popup_notifications(body)
+def get_popup_notifications(useridto,
+                            limit,
+                            offset)
 ```
 
 
@@ -19,7 +21,9 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/ruby/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `String` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `Integer` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `Integer` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -32,13 +36,17 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetPopupNotificationsRequest.new(
-  useridto: '123456',
-  limit: 20,
-  offset: 0
-)
+useridto = 'useridto2'
 
-result = notifications_api.get_popup_notifications(body)
+limit = 172
+
+offset = 0
+
+result = notifications_api.get_popup_notifications(
+  useridto,
+  limit,
+  offset
+)
 
 if result.success?
   puts result.data

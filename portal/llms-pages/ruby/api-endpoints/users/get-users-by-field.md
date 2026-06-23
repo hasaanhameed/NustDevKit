@@ -6,7 +6,8 @@ Retrieves one or more user profiles by matching a specific profile field. Common
 Moodle method: `core_user_get_users_by_field`
 
 ```ruby
-def get_users_by_field(body)
+def get_users_by_field(field,
+                       values)
 ```
 
 
@@ -19,7 +20,8 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUsersByFieldRequest`](/llms-pages/ruby/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`UserProfileField`](/llms-pages/ruby/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `Array[String]` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -32,14 +34,18 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetUsersByFieldRequest.new(
-  field: UserProfileField::ID,
-  values: [
-    '123456'
-  ]
-)
+field = UserProfileField::ID
 
-result = users_api.get_users_by_field(body)
+values = [
+  'values0',
+  'values1',
+  'values2'
+]
+
+result = users_api.get_users_by_field(
+  field,
+  values
+)
 
 if result.success?
   puts result.data

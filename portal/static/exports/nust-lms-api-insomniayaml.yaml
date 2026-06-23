@@ -4,36 +4,36 @@ __export_source: apimatic.transformer
 resources:
 - name: NUST LMS API
   _type: workspace
-  _id: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: wrk_27d790b3a91b45209a700736cfea1e8e
   description: >
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
 
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 - name: Authentication
   _type: request_group
-  _id: fld_97e3b452daf24d3493da3b0798158444
-  parentId: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: fld_db20bd8a6a6c430784c181040a1c1a53
+  parentId: wrk_27d790b3a91b45209a700736cfea1e8e
   description: Exchange NUST LMS credentials for a gateway bearer token
 - name: Courses
   _type: request_group
-  _id: fld_eef61e6d7d984754a3bb2b6b4a0d37d9
-  parentId: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: fld_3a0c67718bd042ffa427bd759a355161
+  parentId: wrk_27d790b3a91b45209a700736cfea1e8e
   description: Course listing and enrollment operations
 - name: Calendar
   _type: request_group
-  _id: fld_40bf1d43605a4345a841da2f5b12bb50
-  parentId: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: fld_bf31a8bcb71d447f94500dc00c5daebf
+  parentId: wrk_27d790b3a91b45209a700736cfea1e8e
   description: >
     Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
 - name: Users
   _type: request_group
-  _id: fld_03ca44023c474b2b9bf9ff52b5facca2
-  parentId: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: fld_b7e0d231f61648d7951a18541bea6c79
+  parentId: wrk_27d790b3a91b45209a700736cfea1e8e
   description: User profile and preferences operations
 - name: Notifications
   _type: request_group
-  _id: fld_cf0795ba9db74c1bb987164e7a191aae
-  parentId: wrk_6b73d060aade4e72873cf8d524fad9e0
+  _id: fld_fe2e84381a294c93a4f1565c8c1c2fc6
+  parentId: wrk_27d790b3a91b45209a700736cfea1e8e
   description: Notification retrieval operations
 - name: login
   method: POST
@@ -43,7 +43,7 @@ resources:
     text: >-
       {
         "username": "johndoe.bscs23seecs",
-        "password": "password30"
+        "password": "password74"
       }
   headers:
   - name: Content-Type
@@ -51,190 +51,168 @@ resources:
     disabled: false
   authentication: {}
   _type: request
-  _id: req_94fb33d9cd9f4d60b1b344fd0f7f4f0d
-  parentId: fld_97e3b452daf24d3493da3b0798158444
+  _id: req_6dbd00bb7d894de6bf337b03eb4159ef
+  parentId: fld_db20bd8a6a6c430784c181040a1c1a53
   description: >
     Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
 - name: getCoreRecentCourses
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_course_get_recent_courses
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "limit": 10
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: limit
+    value: '10'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_6d707e117b924bb0b01efc5883d0064f
-  parentId: fld_eef61e6d7d984754a3bb2b6b4a0d37d9
+  _id: req_a884e16f2ec74fd9bc32d4abec9261d0
+  parentId: fld_3a0c67718bd042ffa427bd759a355161
   description: >
     Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
     Moodle method: `core_course_get_recent_courses`
 - name: getEnrolledCoursesByTimeline
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_course_get_enrolled_courses_by_timeline_classification
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "offset": 0,
-        "limit": 50,
-        "classification": "all",
-        "sort": "idnumber"
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: offset
+    value: '0'
+    disabled: false
+  - name: limit
+    value: '50'
+    disabled: false
+  - name: classification
+    value: future
+    disabled: false
+  - name: sort
+    value: idnumber
     disabled: false
   authentication: {}
   _type: request
-  _id: req_959ca00bd16c4ca08de65cc0156c9cb4
-  parentId: fld_eef61e6d7d984754a3bb2b6b4a0d37d9
+  _id: req_59e2ea721a28431985515864f8c2acb5
+  parentId: fld_3a0c67718bd042ffa427bd759a355161
   description: >
     Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
     Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 - name: getCalendarEventsByTimesort
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_calendar_get_action_events_by_timesort
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "limitnum": 20,
-        "timesortfrom": 0,
-        "timesortto": 154,
-        "aftereventid": 82
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: limitnum
+    value: '155'
+    disabled: false
+  - name: timesortfrom
+    value: '168'
+    disabled: false
+  - name: timesortto
+    value: '178'
+    disabled: false
+  - name: aftereventid
+    value: '169'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_5c6acbac75ce4e599df4ee4000e161d4
-  parentId: fld_40bf1d43605a4345a841da2f5b12bb50
+  _id: req_0850bed67506412b9989fd2f2018d5b1
+  parentId: fld_bf31a8bcb71d447f94500dc00c5daebf
   description: >
     Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
     Moodle method: `core_calendar_get_action_events_by_timesort`
 - name: getCalendarEventsByCourse
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_calendar_get_action_events_by_course
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "courseid": 49906,
-        "timesortfrom": 99,
-        "timesortto": 73,
-        "aftereventid": 193,
-        "limitnum": 103
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: courseid
+    value: '108'
+    disabled: false
+  - name: timesortfrom
+    value: '128'
+    disabled: false
+  - name: timesortto
+    value: '134'
+    disabled: false
+  - name: aftereventid
+    value: '183'
+    disabled: false
+  - name: limitnum
+    value: '239'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_744813f519e84f8192660a5165e62176
-  parentId: fld_40bf1d43605a4345a841da2f5b12bb50
+  _id: req_b2807d77b74441cdacbf337e97fe6a10
+  parentId: fld_bf31a8bcb71d447f94500dc00c5daebf
   description: >
     Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
     Moodle method: `core_calendar_get_action_events_by_course`
 - name: getUsersByField
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_user_get_users_by_field
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "field": "id",
-        "values": [
-          "123456"
-        ]
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: field
+    value: id
+    disabled: false
+  - name: values
+    value: '["values3"]'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_fd294146a5df4224a8481f9db07de61a
-  parentId: fld_03ca44023c474b2b9bf9ff52b5facca2
+  _id: req_fe63b83a71824f34ba1e45652480f44b
+  parentId: fld_b7e0d231f61648d7951a18541bea6c79
   description: >
     Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
     Moodle method: `core_user_get_users_by_field`
 - name: getUserPreferences
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_user_get_user_preferences
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "userid": 123456,
-        "name": "name21"
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: userid
+    value: '233'
+    disabled: false
+  - name: name
+    value: name4
     disabled: false
   authentication: {}
   _type: request
-  _id: req_68c85fc5e0c849b594b1657ef7f40ce9
-  parentId: fld_03ca44023c474b2b9bf9ff52b5facca2
+  _id: req_74a1cc635b8a457893e785b5e0162125
+  parentId: fld_b7e0d231f61648d7951a18541bea6c79
   description: >
     Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
     Moodle method: `core_user_get_user_preferences`
 - name: fetchNotifications
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/core_fetch_notifications
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "contextid": 1583361
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: contextid
+    value: '224'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_41630fe3f4a540deab4b91419908e884
-  parentId: fld_cf0795ba9db74c1bb987164e7a191aae
+  _id: req_e53a13d0ae9d4ca3a4bf23622e9a6eb5
+  parentId: fld_fe2e84381a294c93a4f1565c8c1c2fc6
   description: >
     Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
     Moodle method: `core_fetch_notifications`
 - name: getPopupNotifications
-  method: POST
+  method: GET
   url: http://127.0.0.1:8000/service/message_popup_get_popup_notifications
-  body:
-    mimeType: application/json
-    text: >-
-      {
-        "useridto": "123456",
-        "limit": 20,
-        "offset": 0
-      }
-  headers:
-  - name: Content-Type
-    value: application/json
+  parameters:
+  - name: useridto
+    value: useridto24
+    disabled: false
+  - name: limit
+    value: '217'
+    disabled: false
+  - name: offset
+    value: '0'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_7964c28637e14c8eaef42756e198b1f4
-  parentId: fld_cf0795ba9db74c1bb987164e7a191aae
+  _id: req_5ecdbb3532a8418cb3070a023f69036f
+  parentId: fld_fe2e84381a294c93a4f1565c8c1c2fc6
   description: >
     Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 

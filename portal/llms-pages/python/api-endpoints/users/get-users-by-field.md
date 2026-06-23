@@ -7,7 +7,8 @@ Moodle method: `core_user_get_users_by_field`
 
 ```python
 def get_users_by_field(self,
-                      body)
+                      field,
+                      values)
 ```
 
 
@@ -20,7 +21,8 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUsersByFieldRequest`](/llms-pages/python/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`UserProfileField`](/llms-pages/python/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `List[str]` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -33,14 +35,18 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetUsersByFieldRequest(
-    field=UserProfileField.ID,
-    values=[
-        '123456'
-    ]
-)
+field = UserProfileField.ID
 
-result = users_api.get_users_by_field(body)
+values = [
+    'values0',
+    'values1',
+    'values2'
+]
+
+result = users_api.get_users_by_field(
+    field,
+    values
+)
 
 if result.is_success():
     print(result.body)

@@ -6,7 +6,7 @@ Retrieves one or more user profiles by matching a specific profile field. Common
 Moodle method: `core_user_get_users_by_field`
 
 ```http
-POST /service/core_user_get_users_by_field
+GET /service/core_user_get_users_by_field
 ```
 
 
@@ -19,7 +19,8 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Users by Field Request`](/llms-pages/http/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`User Profile Field`](/llms-pages/http/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `array<String>` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 
 
 # Response Type
@@ -32,17 +33,14 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_user_get_users_by_field'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "field": "id",
-  "values": [
-    "123456"
-  ]
-}'
+  -d 'field=id' \
+  -d 'values[0]=values0' \
+  -d 'values[1]=values1' \
+  -d 'values[2]=values2'
 ```
 
 

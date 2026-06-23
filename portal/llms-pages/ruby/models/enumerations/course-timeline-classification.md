@@ -18,7 +18,7 @@ Timeline classification filter for enrolled courses.
 | `INPROGRESS` |
 | `PAST` |
 | `FUTURE` |
-| `FAVOURITE` |
+| `FAVOURITES` |
 | `HIDDEN` |
 | `ALLINCLUDINGHIDDEN` |
 
@@ -26,7 +26,7 @@ Timeline classification filter for enrolled courses.
 # Example
 
 ```ruby
-course_timeline_classification = CourseTimelineClassification::FAVOURITE
+course_timeline_classification = CourseTimelineClassification::FAVOURITES
 ```
 
 

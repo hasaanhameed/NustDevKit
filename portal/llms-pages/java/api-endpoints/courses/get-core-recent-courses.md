@@ -7,7 +7,7 @@ Moodle method: `core_course_get_recent_courses`
 
 ```java
 CompletableFuture<ApiResponse<List<RecentCourse>>> getCoreRecentCoursesAsync(
-    final GetRecentCoursesRequest body)
+    final int limit)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/java/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -33,12 +33,9 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-GetRecentCoursesRequest body = new GetRecentCoursesRequest.Builder(
-    10
-)
-.build();
+int limit = 10;
 
-coursesApi.getCoreRecentCoursesAsync(body).thenAccept(result -> {
+coursesApi.getCoreRecentCoursesAsync(limit).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

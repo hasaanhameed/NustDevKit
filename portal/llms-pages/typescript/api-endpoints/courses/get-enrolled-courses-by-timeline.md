@@ -7,7 +7,10 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 ```ts
 async getEnrolledCoursesByTimeline(
-  body: GetEnrolledCoursesByTimelineRequest,
+  offset: number,
+  limit: number,
+  classification: CourseTimelineClassification,
+  sort: CourseTimelineSortField,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<EnrolledCoursesResponse>>
 ```
@@ -22,7 +25,10 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetEnrolledCoursesByTimelineRequest`](/llms-pages/typescript/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `number` | Query, Required | Zero-based pagination offset. |
+| `limit` | `number` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`CourseTimelineClassification`](/llms-pages/typescript/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`CourseTimelineSortField`](/llms-pages/typescript/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,15 +42,21 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetEnrolledCoursesByTimelineRequest = {
-  offset: 0,
-  limit: 50,
-  classification: CourseTimelineClassification.Past,
-  sort: CourseTimelineSortField.Id,
-};
+const offset = 0;
+
+const limit = 50;
+
+const classification = CourseTimelineClassification.Inprogress;
+
+const sort = CourseTimelineSortField.Idnumber;
 
 try {
-  const response = await coursesApi.getEnrolledCoursesByTimeline(body);
+  const response = await coursesApi.getEnrolledCoursesByTimeline(
+    offset,
+    limit,
+    classification,
+    sort
+  );
 
   // Extracting fully parsed response body.
   console.log(response.result);

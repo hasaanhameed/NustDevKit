@@ -7,7 +7,7 @@ Moodle method: `core_fetch_notifications`
 
 ```java
 CompletableFuture<ApiResponse<List<SiteNotification>>> fetchNotificationsAsync(
-    final FetchNotificationsRequest body)
+    final int contextid)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/java/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/java/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `int` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -33,12 +33,9 @@ This method returns an [`ApiResponse`](/llms-pages/java/sdk-infrastructure/utili
 # Example Usage
 
 ```java
-FetchNotificationsRequest body = new FetchNotificationsRequest.Builder(
-    1583361
-)
-.build();
+int contextid = 156;
 
-notificationsApi.fetchNotificationsAsync(body).thenAccept(result -> {
+notificationsApi.fetchNotificationsAsync(contextid).thenAccept(result -> {
     // TODO success callback handler
     System.out.println(result);
 }).exceptionally(exception -> {

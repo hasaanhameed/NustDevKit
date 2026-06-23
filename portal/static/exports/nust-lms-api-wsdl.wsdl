@@ -5,30 +5,30 @@
       <xs:element name="POST_login_InputMessage" type="schemas:POST_login_InputMessage" />
       <xs:element name="POST_login_OutputMessage" type="schemas:POST_login_OutputMessage" />
       <xs:element name="POST_login_401" type="schemas:POST_login_401" />
-      <xs:element name="POST_getCoreRecentCourses_InputMessage" type="schemas:POST_getCoreRecentCourses_InputMessage" />
-      <xs:element name="POST_getCoreRecentCourses_OutputMessage" type="schemas:POST_getCoreRecentCourses_OutputMessage" />
-      <xs:element name="POST_getCoreRecentCourses_400" type="schemas:POST_getCoreRecentCourses_400" />
-      <xs:element name="POST_getEnrolledCoursesByTimeline_InputMessage" type="schemas:POST_getEnrolledCoursesByTimeline_InputMessage" />
-      <xs:element name="POST_getEnrolledCoursesByTimeline_OutputMessage" type="schemas:POST_getEnrolledCoursesByTimeline_OutputMessage" />
-      <xs:element name="POST_getEnrolledCoursesByTimeline_400" type="schemas:POST_getEnrolledCoursesByTimeline_400" />
-      <xs:element name="POST_getCalendarEventsByTimesort_InputMessage" type="schemas:POST_getCalendarEventsByTimesort_InputMessage" />
-      <xs:element name="POST_getCalendarEventsByTimesort_OutputMessage" type="schemas:POST_getCalendarEventsByTimesort_OutputMessage" />
-      <xs:element name="POST_getCalendarEventsByTimesort_400" type="schemas:POST_getCalendarEventsByTimesort_400" />
-      <xs:element name="POST_getCalendarEventsByCourse_InputMessage" type="schemas:POST_getCalendarEventsByCourse_InputMessage" />
-      <xs:element name="POST_getCalendarEventsByCourse_OutputMessage" type="schemas:POST_getCalendarEventsByCourse_OutputMessage" />
-      <xs:element name="POST_getCalendarEventsByCourse_400" type="schemas:POST_getCalendarEventsByCourse_400" />
-      <xs:element name="POST_getUsersByField_InputMessage" type="schemas:POST_getUsersByField_InputMessage" />
-      <xs:element name="POST_getUsersByField_OutputMessage" type="schemas:POST_getUsersByField_OutputMessage" />
-      <xs:element name="POST_getUsersByField_400" type="schemas:POST_getUsersByField_400" />
-      <xs:element name="POST_getUserPreferences_InputMessage" type="schemas:POST_getUserPreferences_InputMessage" />
-      <xs:element name="POST_getUserPreferences_OutputMessage" type="schemas:POST_getUserPreferences_OutputMessage" />
-      <xs:element name="POST_getUserPreferences_400" type="schemas:POST_getUserPreferences_400" />
-      <xs:element name="POST_fetchNotifications_InputMessage" type="schemas:POST_fetchNotifications_InputMessage" />
-      <xs:element name="POST_fetchNotifications_OutputMessage" type="schemas:POST_fetchNotifications_OutputMessage" />
-      <xs:element name="POST_fetchNotifications_400" type="schemas:POST_fetchNotifications_400" />
-      <xs:element name="POST_getPopupNotifications_InputMessage" type="schemas:POST_getPopupNotifications_InputMessage" />
-      <xs:element name="POST_getPopupNotifications_OutputMessage" type="schemas:POST_getPopupNotifications_OutputMessage" />
-      <xs:element name="POST_getPopupNotifications_400" type="schemas:POST_getPopupNotifications_400" />
+      <xs:element name="GET_getCoreRecentCourses_InputMessage" type="schemas:GET_getCoreRecentCourses_InputMessage" />
+      <xs:element name="GET_getCoreRecentCourses_OutputMessage" type="schemas:GET_getCoreRecentCourses_OutputMessage" />
+      <xs:element name="GET_getCoreRecentCourses_400" type="schemas:GET_getCoreRecentCourses_400" />
+      <xs:element name="GET_getEnrolledCoursesByTimeline_InputMessage" type="schemas:GET_getEnrolledCoursesByTimeline_InputMessage" />
+      <xs:element name="GET_getEnrolledCoursesByTimeline_OutputMessage" type="schemas:GET_getEnrolledCoursesByTimeline_OutputMessage" />
+      <xs:element name="GET_getEnrolledCoursesByTimeline_400" type="schemas:GET_getEnrolledCoursesByTimeline_400" />
+      <xs:element name="GET_getCalendarEventsByTimesort_InputMessage" type="schemas:GET_getCalendarEventsByTimesort_InputMessage" />
+      <xs:element name="GET_getCalendarEventsByTimesort_OutputMessage" type="schemas:GET_getCalendarEventsByTimesort_OutputMessage" />
+      <xs:element name="GET_getCalendarEventsByTimesort_400" type="schemas:GET_getCalendarEventsByTimesort_400" />
+      <xs:element name="GET_getCalendarEventsByCourse_InputMessage" type="schemas:GET_getCalendarEventsByCourse_InputMessage" />
+      <xs:element name="GET_getCalendarEventsByCourse_OutputMessage" type="schemas:GET_getCalendarEventsByCourse_OutputMessage" />
+      <xs:element name="GET_getCalendarEventsByCourse_400" type="schemas:GET_getCalendarEventsByCourse_400" />
+      <xs:element name="GET_getUsersByField_InputMessage" type="schemas:GET_getUsersByField_InputMessage" />
+      <xs:element name="GET_getUsersByField_OutputMessage" type="schemas:GET_getUsersByField_OutputMessage" />
+      <xs:element name="GET_getUsersByField_400" type="schemas:GET_getUsersByField_400" />
+      <xs:element name="GET_getUserPreferences_InputMessage" type="schemas:GET_getUserPreferences_InputMessage" />
+      <xs:element name="GET_getUserPreferences_OutputMessage" type="schemas:GET_getUserPreferences_OutputMessage" />
+      <xs:element name="GET_getUserPreferences_400" type="schemas:GET_getUserPreferences_400" />
+      <xs:element name="GET_fetchNotifications_InputMessage" type="schemas:GET_fetchNotifications_InputMessage" />
+      <xs:element name="GET_fetchNotifications_OutputMessage" type="schemas:GET_fetchNotifications_OutputMessage" />
+      <xs:element name="GET_fetchNotifications_400" type="schemas:GET_fetchNotifications_400" />
+      <xs:element name="GET_getPopupNotifications_InputMessage" type="schemas:GET_getPopupNotifications_InputMessage" />
+      <xs:element name="GET_getPopupNotifications_OutputMessage" type="schemas:GET_getPopupNotifications_OutputMessage" />
+      <xs:element name="GET_getPopupNotifications_400" type="schemas:GET_getPopupNotifications_400" />
       <xs:complexType name="LoginRequest">
         <xs:annotation>
           <xs:documentation>NUST LMS credentials used to obtain a gateway bearer token.</xs:documentation>
@@ -68,7 +68,7 @@
           <xs:enumeration value="inprogress" />
           <xs:enumeration value="past" />
           <xs:enumeration value="future" />
-          <xs:enumeration value="favourite" />
+          <xs:enumeration value="favourites" />
           <xs:enumeration value="hidden" />
           <xs:enumeration value="allincludinghidden" />
         </xs:restriction>
@@ -1163,17 +1163,16 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCoreRecentCourses_InputMessage">
+      <xs:complexType name="GET_getCoreRecentCourses_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetRecentCoursesRequest">
+          <xs:element minOccurs="1" default="10" name="limit" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters for the recent courses request.</xs:documentation>
+              <xs:documentation>Maximum number of courses to return.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCoreRecentCourses_OutputMessage">
+      <xs:complexType name="GET_getCoreRecentCourses_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:RecentCourse">
             <xs:annotation>
@@ -1182,7 +1181,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCoreRecentCourses_400">
+      <xs:complexType name="GET_getCoreRecentCourses_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1191,17 +1190,31 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getEnrolledCoursesByTimeline_InputMessage">
+      <xs:complexType name="GET_getEnrolledCoursesByTimeline_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetEnrolledCoursesByTimelineRequest">
+          <xs:element minOccurs="1" default="0" name="offset" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters for the enrolled courses timeline request.</xs:documentation>
+              <xs:documentation>Zero-based pagination offset.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" default="50" name="limit" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of courses to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="classification" type="schemas:CourseTimelineClassification">
+            <xs:annotation>
+              <xs:documentation>Timeline classification filter for enrolled courses.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="sort" type="schemas:CourseTimelineSortField">
+            <xs:annotation>
+              <xs:documentation>Field used to sort enrolled course results.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getEnrolledCoursesByTimeline_OutputMessage">
+      <xs:complexType name="GET_getEnrolledCoursesByTimeline_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:EnrolledCoursesResponse">
             <xs:annotation>
@@ -1210,7 +1223,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getEnrolledCoursesByTimeline_400">
+      <xs:complexType name="GET_getEnrolledCoursesByTimeline_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1219,17 +1232,31 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByTimesort_InputMessage">
+      <xs:complexType name="GET_getCalendarEventsByTimesort_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByTimesortRequest">
+          <xs:element minOccurs="1" name="limitnum" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters for the time-sorted calendar events request.</xs:documentation>
+              <xs:documentation>Maximum number of events to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="timesortfrom" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &gt;= this Unix timestamp. Pass 0 for no lower bound.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortto" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &lt;= this Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="aftereventid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Return events whose ID is greater than this value (cursor pagination).</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByTimesort_OutputMessage">
+      <xs:complexType name="GET_getCalendarEventsByTimesort_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
             <xs:annotation>
@@ -1238,7 +1265,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByTimesort_400">
+      <xs:complexType name="GET_getCalendarEventsByTimesort_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1247,17 +1274,36 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByCourse_InputMessage">
+      <xs:complexType name="GET_getCalendarEventsByCourse_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByCourseRequest">
+          <xs:element minOccurs="1" name="courseid" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters for the course-specific calendar events request.</xs:documentation>
+              <xs:documentation>ID of the course to fetch events for.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortfrom" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &gt;= this Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timesortto" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Only return events with timesort &lt;= this Unix timestamp.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="aftereventid" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Cursor-based pagination — return events after this event ID.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="limitnum" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of events to return.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByCourse_OutputMessage">
+      <xs:complexType name="GET_getCalendarEventsByCourse_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
             <xs:annotation>
@@ -1266,7 +1312,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getCalendarEventsByCourse_400">
+      <xs:complexType name="GET_getCalendarEventsByCourse_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1275,17 +1321,21 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUsersByField_InputMessage">
+      <xs:complexType name="GET_getUsersByField_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetUsersByFieldRequest">
+          <xs:element minOccurs="1" name="field" type="schemas:UserProfileField">
             <xs:annotation>
-              <xs:documentation>Parameters specifying the profile field and values to match.</xs:documentation>
+              <xs:documentation>User profile field to match against when searching for users.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="values" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUsersByField_OutputMessage">
+      <xs:complexType name="GET_getUsersByField_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:UserProfile">
             <xs:annotation>
@@ -1294,7 +1344,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUsersByField_400">
+      <xs:complexType name="GET_getUsersByField_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1303,17 +1353,21 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUserPreferences_InputMessage">
+      <xs:complexType name="GET_getUserPreferences_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetUserPreferencesRequest">
+          <xs:element minOccurs="1" name="userid" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters specifying which user's preferences to retrieve.</xs:documentation>
+              <xs:documentation>ID of the user whose preferences to retrieve.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Specific preference name to retrieve. Omit to retrieve all preferences.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUserPreferences_OutputMessage">
+      <xs:complexType name="GET_getUserPreferences_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:UserPreferencesResponse">
             <xs:annotation>
@@ -1322,7 +1376,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getUserPreferences_400">
+      <xs:complexType name="GET_getUserPreferences_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1331,17 +1385,16 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_fetchNotifications_InputMessage">
+      <xs:complexType name="GET_fetchNotifications_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:FetchNotificationsRequest">
+          <xs:element minOccurs="1" name="contextid" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Parameters specifying the context to fetch notifications for.</xs:documentation>
+              <xs:documentation>Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_fetchNotifications_OutputMessage">
+      <xs:complexType name="GET_fetchNotifications_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:SiteNotification">
             <xs:annotation>
@@ -1350,7 +1403,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_fetchNotifications_400">
+      <xs:complexType name="GET_fetchNotifications_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1359,17 +1412,26 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getPopupNotifications_InputMessage">
+      <xs:complexType name="GET_getPopupNotifications_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" fixed="application/json" name="Content-Type" type="xs:string" />
-          <xs:element minOccurs="1" name="body" type="schemas:GetPopupNotificationsRequest">
+          <xs:element minOccurs="1" name="useridto" type="xs:string">
             <xs:annotation>
-              <xs:documentation>Parameters for the popup notifications request.</xs:documentation>
+              <xs:documentation>ID of the recipient user, passed as a string.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="limit" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Maximum number of notifications to return.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" default="0" name="offset" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Pagination offset.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getPopupNotifications_OutputMessage">
+      <xs:complexType name="GET_getPopupNotifications_OutputMessage">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:PopupNotificationsResponse">
             <xs:annotation>
@@ -1378,7 +1440,7 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="POST_getPopupNotifications_400">
+      <xs:complexType name="GET_getPopupNotifications_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1398,77 +1460,77 @@
   <message name="POST_login_401">
     <part name="POST_login_401" element="schemas:POST_login_401" />
   </message>
-  <message name="POST_getCoreRecentCourses_InputMessage">
-    <part name="POST_getCoreRecentCourses_InputMessage" element="schemas:POST_getCoreRecentCourses_InputMessage" />
+  <message name="GET_getCoreRecentCourses_InputMessage">
+    <part name="GET_getCoreRecentCourses_InputMessage" element="schemas:GET_getCoreRecentCourses_InputMessage" />
   </message>
-  <message name="POST_getCoreRecentCourses_OutputMessage">
-    <part name="POST_getCoreRecentCourses_OutputMessage" element="schemas:POST_getCoreRecentCourses_OutputMessage" />
+  <message name="GET_getCoreRecentCourses_OutputMessage">
+    <part name="GET_getCoreRecentCourses_OutputMessage" element="schemas:GET_getCoreRecentCourses_OutputMessage" />
   </message>
-  <message name="POST_getCoreRecentCourses_400">
-    <part name="POST_getCoreRecentCourses_400" element="schemas:POST_getCoreRecentCourses_400" />
+  <message name="GET_getCoreRecentCourses_400">
+    <part name="GET_getCoreRecentCourses_400" element="schemas:GET_getCoreRecentCourses_400" />
   </message>
-  <message name="POST_getEnrolledCoursesByTimeline_InputMessage">
-    <part name="POST_getEnrolledCoursesByTimeline_InputMessage" element="schemas:POST_getEnrolledCoursesByTimeline_InputMessage" />
+  <message name="GET_getEnrolledCoursesByTimeline_InputMessage">
+    <part name="GET_getEnrolledCoursesByTimeline_InputMessage" element="schemas:GET_getEnrolledCoursesByTimeline_InputMessage" />
   </message>
-  <message name="POST_getEnrolledCoursesByTimeline_OutputMessage">
-    <part name="POST_getEnrolledCoursesByTimeline_OutputMessage" element="schemas:POST_getEnrolledCoursesByTimeline_OutputMessage" />
+  <message name="GET_getEnrolledCoursesByTimeline_OutputMessage">
+    <part name="GET_getEnrolledCoursesByTimeline_OutputMessage" element="schemas:GET_getEnrolledCoursesByTimeline_OutputMessage" />
   </message>
-  <message name="POST_getEnrolledCoursesByTimeline_400">
-    <part name="POST_getEnrolledCoursesByTimeline_400" element="schemas:POST_getEnrolledCoursesByTimeline_400" />
+  <message name="GET_getEnrolledCoursesByTimeline_400">
+    <part name="GET_getEnrolledCoursesByTimeline_400" element="schemas:GET_getEnrolledCoursesByTimeline_400" />
   </message>
-  <message name="POST_getCalendarEventsByTimesort_InputMessage">
-    <part name="POST_getCalendarEventsByTimesort_InputMessage" element="schemas:POST_getCalendarEventsByTimesort_InputMessage" />
+  <message name="GET_getCalendarEventsByTimesort_InputMessage">
+    <part name="GET_getCalendarEventsByTimesort_InputMessage" element="schemas:GET_getCalendarEventsByTimesort_InputMessage" />
   </message>
-  <message name="POST_getCalendarEventsByTimesort_OutputMessage">
-    <part name="POST_getCalendarEventsByTimesort_OutputMessage" element="schemas:POST_getCalendarEventsByTimesort_OutputMessage" />
+  <message name="GET_getCalendarEventsByTimesort_OutputMessage">
+    <part name="GET_getCalendarEventsByTimesort_OutputMessage" element="schemas:GET_getCalendarEventsByTimesort_OutputMessage" />
   </message>
-  <message name="POST_getCalendarEventsByTimesort_400">
-    <part name="POST_getCalendarEventsByTimesort_400" element="schemas:POST_getCalendarEventsByTimesort_400" />
+  <message name="GET_getCalendarEventsByTimesort_400">
+    <part name="GET_getCalendarEventsByTimesort_400" element="schemas:GET_getCalendarEventsByTimesort_400" />
   </message>
-  <message name="POST_getCalendarEventsByCourse_InputMessage">
-    <part name="POST_getCalendarEventsByCourse_InputMessage" element="schemas:POST_getCalendarEventsByCourse_InputMessage" />
+  <message name="GET_getCalendarEventsByCourse_InputMessage">
+    <part name="GET_getCalendarEventsByCourse_InputMessage" element="schemas:GET_getCalendarEventsByCourse_InputMessage" />
   </message>
-  <message name="POST_getCalendarEventsByCourse_OutputMessage">
-    <part name="POST_getCalendarEventsByCourse_OutputMessage" element="schemas:POST_getCalendarEventsByCourse_OutputMessage" />
+  <message name="GET_getCalendarEventsByCourse_OutputMessage">
+    <part name="GET_getCalendarEventsByCourse_OutputMessage" element="schemas:GET_getCalendarEventsByCourse_OutputMessage" />
   </message>
-  <message name="POST_getCalendarEventsByCourse_400">
-    <part name="POST_getCalendarEventsByCourse_400" element="schemas:POST_getCalendarEventsByCourse_400" />
+  <message name="GET_getCalendarEventsByCourse_400">
+    <part name="GET_getCalendarEventsByCourse_400" element="schemas:GET_getCalendarEventsByCourse_400" />
   </message>
-  <message name="POST_getUsersByField_InputMessage">
-    <part name="POST_getUsersByField_InputMessage" element="schemas:POST_getUsersByField_InputMessage" />
+  <message name="GET_getUsersByField_InputMessage">
+    <part name="GET_getUsersByField_InputMessage" element="schemas:GET_getUsersByField_InputMessage" />
   </message>
-  <message name="POST_getUsersByField_OutputMessage">
-    <part name="POST_getUsersByField_OutputMessage" element="schemas:POST_getUsersByField_OutputMessage" />
+  <message name="GET_getUsersByField_OutputMessage">
+    <part name="GET_getUsersByField_OutputMessage" element="schemas:GET_getUsersByField_OutputMessage" />
   </message>
-  <message name="POST_getUsersByField_400">
-    <part name="POST_getUsersByField_400" element="schemas:POST_getUsersByField_400" />
+  <message name="GET_getUsersByField_400">
+    <part name="GET_getUsersByField_400" element="schemas:GET_getUsersByField_400" />
   </message>
-  <message name="POST_getUserPreferences_InputMessage">
-    <part name="POST_getUserPreferences_InputMessage" element="schemas:POST_getUserPreferences_InputMessage" />
+  <message name="GET_getUserPreferences_InputMessage">
+    <part name="GET_getUserPreferences_InputMessage" element="schemas:GET_getUserPreferences_InputMessage" />
   </message>
-  <message name="POST_getUserPreferences_OutputMessage">
-    <part name="POST_getUserPreferences_OutputMessage" element="schemas:POST_getUserPreferences_OutputMessage" />
+  <message name="GET_getUserPreferences_OutputMessage">
+    <part name="GET_getUserPreferences_OutputMessage" element="schemas:GET_getUserPreferences_OutputMessage" />
   </message>
-  <message name="POST_getUserPreferences_400">
-    <part name="POST_getUserPreferences_400" element="schemas:POST_getUserPreferences_400" />
+  <message name="GET_getUserPreferences_400">
+    <part name="GET_getUserPreferences_400" element="schemas:GET_getUserPreferences_400" />
   </message>
-  <message name="POST_fetchNotifications_InputMessage">
-    <part name="POST_fetchNotifications_InputMessage" element="schemas:POST_fetchNotifications_InputMessage" />
+  <message name="GET_fetchNotifications_InputMessage">
+    <part name="GET_fetchNotifications_InputMessage" element="schemas:GET_fetchNotifications_InputMessage" />
   </message>
-  <message name="POST_fetchNotifications_OutputMessage">
-    <part name="POST_fetchNotifications_OutputMessage" element="schemas:POST_fetchNotifications_OutputMessage" />
+  <message name="GET_fetchNotifications_OutputMessage">
+    <part name="GET_fetchNotifications_OutputMessage" element="schemas:GET_fetchNotifications_OutputMessage" />
   </message>
-  <message name="POST_fetchNotifications_400">
-    <part name="POST_fetchNotifications_400" element="schemas:POST_fetchNotifications_400" />
+  <message name="GET_fetchNotifications_400">
+    <part name="GET_fetchNotifications_400" element="schemas:GET_fetchNotifications_400" />
   </message>
-  <message name="POST_getPopupNotifications_InputMessage">
-    <part name="POST_getPopupNotifications_InputMessage" element="schemas:POST_getPopupNotifications_InputMessage" />
+  <message name="GET_getPopupNotifications_InputMessage">
+    <part name="GET_getPopupNotifications_InputMessage" element="schemas:GET_getPopupNotifications_InputMessage" />
   </message>
-  <message name="POST_getPopupNotifications_OutputMessage">
-    <part name="POST_getPopupNotifications_OutputMessage" element="schemas:POST_getPopupNotifications_OutputMessage" />
+  <message name="GET_getPopupNotifications_OutputMessage">
+    <part name="GET_getPopupNotifications_OutputMessage" element="schemas:GET_getPopupNotifications_OutputMessage" />
   </message>
-  <message name="POST_getPopupNotifications_400">
-    <part name="POST_getPopupNotifications_400" element="schemas:POST_getPopupNotifications_400" />
+  <message name="GET_getPopupNotifications_400">
+    <part name="GET_getPopupNotifications_400" element="schemas:GET_getPopupNotifications_400" />
   </message>
   <portType name="NUST_x0020_LMS_x0020_API_PortType">
     <operation name="POST_login">
@@ -1482,99 +1544,99 @@
         <documentation>Invalid LMS credentials.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getCoreRecentCourses">
+    <operation name="GET_getCoreRecentCourses">
       <documentation>Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 Moodle method: `core_course_get_recent_courses`
 </documentation>
-      <input message="wsdl:POST_getCoreRecentCourses_InputMessage" />
-      <output message="wsdl:POST_getCoreRecentCourses_OutputMessage">
+      <input message="wsdl:GET_getCoreRecentCourses_InputMessage" />
+      <output message="wsdl:GET_getCoreRecentCourses_OutputMessage">
         <documentation>List of recently accessed courses ordered by last access.</documentation>
       </output>
-      <fault name="POST_getCoreRecentCourses_400" message="wsdl:POST_getCoreRecentCourses_400">
+      <fault name="GET_getCoreRecentCourses_400" message="wsdl:GET_getCoreRecentCourses_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getEnrolledCoursesByTimeline">
+    <operation name="GET_getEnrolledCoursesByTimeline">
       <documentation>Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 </documentation>
-      <input message="wsdl:POST_getEnrolledCoursesByTimeline_InputMessage" />
-      <output message="wsdl:POST_getEnrolledCoursesByTimeline_OutputMessage">
+      <input message="wsdl:GET_getEnrolledCoursesByTimeline_InputMessage" />
+      <output message="wsdl:GET_getEnrolledCoursesByTimeline_OutputMessage">
         <documentation>Paginated list of enrolled courses.</documentation>
       </output>
-      <fault name="POST_getEnrolledCoursesByTimeline_400" message="wsdl:POST_getEnrolledCoursesByTimeline_400">
+      <fault name="GET_getEnrolledCoursesByTimeline_400" message="wsdl:GET_getEnrolledCoursesByTimeline_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getCalendarEventsByTimesort">
+    <operation name="GET_getCalendarEventsByTimesort">
       <documentation>Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 Moodle method: `core_calendar_get_action_events_by_timesort`
 </documentation>
-      <input message="wsdl:POST_getCalendarEventsByTimesort_InputMessage" />
-      <output message="wsdl:POST_getCalendarEventsByTimesort_OutputMessage">
+      <input message="wsdl:GET_getCalendarEventsByTimesort_InputMessage" />
+      <output message="wsdl:GET_getCalendarEventsByTimesort_OutputMessage">
         <documentation>Calendar events sorted by timesort.</documentation>
       </output>
-      <fault name="POST_getCalendarEventsByTimesort_400" message="wsdl:POST_getCalendarEventsByTimesort_400">
+      <fault name="GET_getCalendarEventsByTimesort_400" message="wsdl:GET_getCalendarEventsByTimesort_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getCalendarEventsByCourse">
+    <operation name="GET_getCalendarEventsByCourse">
       <documentation>Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 Moodle method: `core_calendar_get_action_events_by_course`
 </documentation>
-      <input message="wsdl:POST_getCalendarEventsByCourse_InputMessage" />
-      <output message="wsdl:POST_getCalendarEventsByCourse_OutputMessage">
+      <input message="wsdl:GET_getCalendarEventsByCourse_InputMessage" />
+      <output message="wsdl:GET_getCalendarEventsByCourse_OutputMessage">
         <documentation>Calendar events for the specified course.</documentation>
       </output>
-      <fault name="POST_getCalendarEventsByCourse_400" message="wsdl:POST_getCalendarEventsByCourse_400">
+      <fault name="GET_getCalendarEventsByCourse_400" message="wsdl:GET_getCalendarEventsByCourse_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getUsersByField">
+    <operation name="GET_getUsersByField">
       <documentation>Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 Moodle method: `core_user_get_users_by_field`
 </documentation>
-      <input message="wsdl:POST_getUsersByField_InputMessage" />
-      <output message="wsdl:POST_getUsersByField_OutputMessage">
+      <input message="wsdl:GET_getUsersByField_InputMessage" />
+      <output message="wsdl:GET_getUsersByField_OutputMessage">
         <documentation>List of matching user profiles.</documentation>
       </output>
-      <fault name="POST_getUsersByField_400" message="wsdl:POST_getUsersByField_400">
+      <fault name="GET_getUsersByField_400" message="wsdl:GET_getUsersByField_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getUserPreferences">
+    <operation name="GET_getUserPreferences">
       <documentation>Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 Moodle method: `core_user_get_user_preferences`
 </documentation>
-      <input message="wsdl:POST_getUserPreferences_InputMessage" />
-      <output message="wsdl:POST_getUserPreferences_OutputMessage">
+      <input message="wsdl:GET_getUserPreferences_InputMessage" />
+      <output message="wsdl:GET_getUserPreferences_OutputMessage">
         <documentation>User preferences list and optional warnings.</documentation>
       </output>
-      <fault name="POST_getUserPreferences_400" message="wsdl:POST_getUserPreferences_400">
+      <fault name="GET_getUserPreferences_400" message="wsdl:GET_getUserPreferences_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_fetchNotifications">
+    <operation name="GET_fetchNotifications">
       <documentation>Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 Moodle method: `core_fetch_notifications`
 </documentation>
-      <input message="wsdl:POST_fetchNotifications_InputMessage" />
-      <output message="wsdl:POST_fetchNotifications_OutputMessage">
+      <input message="wsdl:GET_fetchNotifications_InputMessage" />
+      <output message="wsdl:GET_fetchNotifications_OutputMessage">
         <documentation>Array of site notifications (empty array when none are pending).</documentation>
       </output>
-      <fault name="POST_fetchNotifications_400" message="wsdl:POST_fetchNotifications_400">
+      <fault name="GET_fetchNotifications_400" message="wsdl:GET_fetchNotifications_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="POST_getPopupNotifications">
+    <operation name="GET_getPopupNotifications">
       <documentation>Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 Moodle method: `message_popup_get_popup_notifications`
 </documentation>
-      <input message="wsdl:POST_getPopupNotifications_InputMessage" />
-      <output message="wsdl:POST_getPopupNotifications_OutputMessage">
+      <input message="wsdl:GET_getPopupNotifications_InputMessage" />
+      <output message="wsdl:GET_getPopupNotifications_OutputMessage">
         <documentation>Popup notifications and total unread count.</documentation>
       </output>
-      <fault name="POST_getPopupNotifications_400" message="wsdl:POST_getPopupNotifications_400">
+      <fault name="GET_getPopupNotifications_400" message="wsdl:GET_getPopupNotifications_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
@@ -1593,100 +1655,100 @@ Moodle method: `message_popup_get_popup_notifications`
         <soap:fault use="literal" name="POST_login_401" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getCoreRecentCourses">
-      <soap:operation soapAction="POST_getCoreRecentCourses" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getCoreRecentCourses">
+      <soap:operation soapAction="GET_getCoreRecentCourses" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getCoreRecentCourses_400">
-        <soap:fault use="literal" name="POST_getCoreRecentCourses_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getCoreRecentCourses_400">
+        <soap:fault use="literal" name="GET_getCoreRecentCourses_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getEnrolledCoursesByTimeline">
-      <soap:operation soapAction="POST_getEnrolledCoursesByTimeline" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getEnrolledCoursesByTimeline">
+      <soap:operation soapAction="GET_getEnrolledCoursesByTimeline" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getEnrolledCoursesByTimeline_400">
-        <soap:fault use="literal" name="POST_getEnrolledCoursesByTimeline_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getEnrolledCoursesByTimeline_400">
+        <soap:fault use="literal" name="GET_getEnrolledCoursesByTimeline_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getCalendarEventsByTimesort">
-      <soap:operation soapAction="POST_getCalendarEventsByTimesort" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getCalendarEventsByTimesort">
+      <soap:operation soapAction="GET_getCalendarEventsByTimesort" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getCalendarEventsByTimesort_400">
-        <soap:fault use="literal" name="POST_getCalendarEventsByTimesort_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getCalendarEventsByTimesort_400">
+        <soap:fault use="literal" name="GET_getCalendarEventsByTimesort_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getCalendarEventsByCourse">
-      <soap:operation soapAction="POST_getCalendarEventsByCourse" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getCalendarEventsByCourse">
+      <soap:operation soapAction="GET_getCalendarEventsByCourse" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getCalendarEventsByCourse_400">
-        <soap:fault use="literal" name="POST_getCalendarEventsByCourse_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getCalendarEventsByCourse_400">
+        <soap:fault use="literal" name="GET_getCalendarEventsByCourse_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getUsersByField">
-      <soap:operation soapAction="POST_getUsersByField" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getUsersByField">
+      <soap:operation soapAction="GET_getUsersByField" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getUsersByField_400">
-        <soap:fault use="literal" name="POST_getUsersByField_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getUsersByField_400">
+        <soap:fault use="literal" name="GET_getUsersByField_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getUserPreferences">
-      <soap:operation soapAction="POST_getUserPreferences" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getUserPreferences">
+      <soap:operation soapAction="GET_getUserPreferences" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getUserPreferences_400">
-        <soap:fault use="literal" name="POST_getUserPreferences_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getUserPreferences_400">
+        <soap:fault use="literal" name="GET_getUserPreferences_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_fetchNotifications">
-      <soap:operation soapAction="POST_fetchNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_fetchNotifications">
+      <soap:operation soapAction="GET_fetchNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_fetchNotifications_400">
-        <soap:fault use="literal" name="POST_fetchNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_fetchNotifications_400">
+        <soap:fault use="literal" name="GET_fetchNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="POST_getPopupNotifications">
-      <soap:operation soapAction="POST_getPopupNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getPopupNotifications">
+      <soap:operation soapAction="GET_getPopupNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="POST_getPopupNotifications_400">
-        <soap:fault use="literal" name="POST_getPopupNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getPopupNotifications_400">
+        <soap:fault use="literal" name="GET_getPopupNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
   </binding>

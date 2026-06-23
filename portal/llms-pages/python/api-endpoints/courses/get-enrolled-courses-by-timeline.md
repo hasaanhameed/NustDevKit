@@ -7,7 +7,10 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 ```python
 def get_enrolled_courses_by_timeline(self,
-                                    body)
+                                    offset,
+                                    limit,
+                                    classification,
+                                    sort)
 ```
 
 
@@ -20,7 +23,10 @@ This endpoint requires [BearerAuth](/llms-pages/python/getting-started/sdk-quick
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetEnrolledCoursesByTimelineRequest`](/llms-pages/python/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `int` | Query, Required | Zero-based pagination offset. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`CourseTimelineClassification`](/llms-pages/python/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`CourseTimelineSortField`](/llms-pages/python/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 
 
 # Response Type
@@ -33,14 +39,20 @@ This method returns an [`ApiResponse`](/llms-pages/python/sdk-infrastructure/uti
 # Example Usage
 
 ```python
-body = GetEnrolledCoursesByTimelineRequest(
-    offset=0,
-    limit=50,
-    classification=CourseTimelineClassification.PAST,
-    sort=CourseTimelineSortField.ID
-)
+offset = 0
 
-result = courses_api.get_enrolled_courses_by_timeline(body)
+limit = 50
+
+classification = CourseTimelineClassification.INPROGRESS
+
+sort = CourseTimelineSortField.IDNUMBER
+
+result = courses_api.get_enrolled_courses_by_timeline(
+    offset,
+    limit,
+    classification,
+    sort
+)
 
 if result.is_success():
     print(result.body)

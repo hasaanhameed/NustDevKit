@@ -7,7 +7,8 @@ Moodle method: `core_user_get_users_by_field`
 
 ```ts
 async getUsersByField(
-  body: GetUsersByFieldRequest,
+  field: UserProfileField,
+  values: string[],
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<UserProfile[]>>
 ```
@@ -22,7 +23,8 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetUsersByFieldRequest`](/llms-pages/typescript/models/structures/get-users-by-field-request.md) | Body, Required | Parameters specifying the profile field and values to match. |
+| `field` | [`UserProfileField`](/llms-pages/typescript/models/enumerations/user-profile-field.md) | Query, Required | User profile field to match against when searching for users. |
+| `values` | `string[]` | Query, Required | List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID). |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,15 +38,19 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetUsersByFieldRequest = {
-  field: UserProfileField.Id,
-  values: [
-    '123456'
-  ],
-};
+const field = UserProfileField.Id;
+
+const values: string[] = [
+  'values0',
+  'values1',
+  'values2'
+];
 
 try {
-  const response = await usersApi.getUsersByField(body);
+  const response = await usersApi.getUsersByField(
+    field,
+    values
+  );
 
   // Extracting fully parsed response body.
   console.log(response.result);

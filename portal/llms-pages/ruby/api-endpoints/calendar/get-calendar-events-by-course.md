@@ -6,7 +6,11 @@ Returns all action events (deadlines) for a single course — assignment, lab, a
 Moodle method: `core_calendar_get_action_events_by_course`
 
 ```ruby
-def get_calendar_events_by_course(body)
+def get_calendar_events_by_course(courseid,
+                                  timesortfrom: nil,
+                                  timesortto: nil,
+                                  aftereventid: nil,
+                                  limitnum: nil)
 ```
 
 
@@ -19,7 +23,11 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/ruby/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `Integer` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `Integer` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `Integer` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Integer` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `Integer` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -32,11 +40,9 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetCalendarEventsByCourseRequest.new(
-  courseid: 49906
-)
+courseid = 74
 
-result = calendar_api.get_calendar_events_by_course(body)
+result = calendar_api.get_calendar_events_by_course(courseid)
 
 if result.success?
   puts result.data

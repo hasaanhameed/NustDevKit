@@ -6,7 +6,7 @@ Returns pending site-level notifications for the given Moodle context. Returns a
 Moodle method: `core_fetch_notifications`
 
 ```php
-function fetchNotifications(FetchNotificationsRequest $body): ApiResponse
+function fetchNotifications(int $contextid): ApiResponse
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/php/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `int` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -32,12 +32,10 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = FetchNotificationsRequestBuilder::init(
-    1583361
-)->build();
+$contextid = 156;
 
 $notificationsApi = $client->getNotificationsApi();
-$apiResponse = $notificationsApi->fetchNotifications($body);
+$apiResponse = $notificationsApi->fetchNotifications($contextid);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

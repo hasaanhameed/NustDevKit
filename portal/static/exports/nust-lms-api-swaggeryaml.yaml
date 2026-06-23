@@ -59,7 +59,7 @@ paths:
           headers: {}
       security: []
   /service/core_course_get_recent_courses:
-    post:
+    get:
       description: >
         Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
@@ -71,27 +71,18 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: limit
+        in: query
         required: true
-        description: Parameters for the recent courses request.
-        schema:
-          $ref: '#/definitions/GetRecentCoursesRequest'
+        type: integer
+        format: int32
+        description: Maximum number of courses to return.
       responses:
         '200':
           description: List of recently accessed courses ordered by last access.
@@ -106,7 +97,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_course_get_enrolled_courses_by_timeline_classification:
-    post:
+    get:
       description: >
         Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
@@ -118,27 +109,48 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: offset
+        in: query
         required: true
-        description: Parameters for the enrolled courses timeline request.
-        schema:
-          $ref: '#/definitions/GetEnrolledCoursesByTimelineRequest'
+        type: integer
+        format: int32
+        description: Zero-based pagination offset.
+      - name: limit
+        in: query
+        required: true
+        type: integer
+        format: int32
+        description: Maximum number of courses to return.
+      - name: classification
+        in: query
+        required: true
+        enum:
+        - all
+        - inprogress
+        - past
+        - future
+        - favourites
+        - hidden
+        - allincludinghidden
+        type: string
+        description: Timeline classification filter for enrolled courses.
+      - name: sort
+        in: query
+        required: true
+        enum:
+        - fullname
+        - shortname
+        - id
+        - idnumber
+        - timeaccess
+        type: string
+        description: Field used to sort enrolled course results.
       responses:
         '200':
           description: Paginated list of enrolled courses.
@@ -151,7 +163,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_calendar_get_action_events_by_timesort:
-    post:
+    get:
       description: >
         Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
@@ -163,27 +175,36 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: limitnum
+        in: query
         required: true
-        description: Parameters for the time-sorted calendar events request.
-        schema:
-          $ref: '#/definitions/GetCalendarEventsByTimesortRequest'
+        type: integer
+        format: int32
+        description: Maximum number of events to return.
+      - name: timesortfrom
+        in: query
+        required: true
+        type: integer
+        format: int32
+        description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+      - name: timesortto
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Only return events with timesort <= this Unix timestamp.
+      - name: aftereventid
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Return events whose ID is greater than this value (cursor pagination).
       responses:
         '200':
           description: Calendar events sorted by timesort.
@@ -196,7 +217,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_calendar_get_action_events_by_course:
-    post:
+    get:
       description: >
         Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
@@ -208,27 +229,42 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: courseid
+        in: query
         required: true
-        description: Parameters for the course-specific calendar events request.
-        schema:
-          $ref: '#/definitions/GetCalendarEventsByCourseRequest'
+        type: integer
+        format: int32
+        description: ID of the course to fetch events for.
+      - name: timesortfrom
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Only return events with timesort >= this Unix timestamp.
+      - name: timesortto
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Only return events with timesort <= this Unix timestamp.
+      - name: aftereventid
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Cursor-based pagination — return events after this event ID.
+      - name: limitnum
+        in: query
+        required: false
+        type: integer
+        format: int32
+        description: Maximum number of events to return.
       responses:
         '200':
           description: Calendar events for the specified course.
@@ -241,7 +277,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_user_get_users_by_field:
-    post:
+    get:
       description: >
         Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
@@ -253,27 +289,29 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: field
+        in: query
         required: true
-        description: Parameters specifying the profile field and values to match.
-        schema:
-          $ref: '#/definitions/GetUsersByFieldRequest'
+        enum:
+        - id
+        - idnumber
+        - username
+        - email
+        type: string
+        description: User profile field to match against when searching for users.
+      - name: values
+        in: query
+        required: true
+        type: array
+        items:
+          type: string
+        description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
       responses:
         '200':
           description: List of matching user profiles.
@@ -288,7 +326,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_user_get_user_preferences:
-    post:
+    get:
       description: >
         Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
@@ -300,27 +338,23 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: userid
+        in: query
         required: true
-        description: Parameters specifying which user's preferences to retrieve.
-        schema:
-          $ref: '#/definitions/GetUserPreferencesRequest'
+        type: integer
+        format: int32
+        description: ID of the user whose preferences to retrieve.
+      - name: name
+        in: query
+        required: false
+        type: string
+        description: Specific preference name to retrieve. Omit to retrieve all preferences.
       responses:
         '200':
           description: User preferences list and optional warnings.
@@ -333,7 +367,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/core_fetch_notifications:
-    post:
+    get:
       description: >
         Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
@@ -345,27 +379,18 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: contextid
+        in: query
         required: true
-        description: Parameters specifying the context to fetch notifications for.
-        schema:
-          $ref: '#/definitions/FetchNotificationsRequest'
+        type: integer
+        format: int32
+        description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
       responses:
         '200':
           description: Array of site notifications (empty array when none are pending).
@@ -380,7 +405,7 @@ paths:
             $ref: '#/definitions/MoodleError'
           headers: {}
   /service/message_popup_get_popup_notifications:
-    post:
+    get:
       description: >
         Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 
@@ -392,27 +417,29 @@ paths:
       deprecated: false
       produces:
       - application/json
-      consumes:
-      - application/json
       parameters:
       - name: Authorization
         in: header
         required: false
         default: Bearer {token}
         type: string
-      - name: Content-Type
-        in: header
-        required: false
-        enum:
-        - application/json
-        type: string
-        description: ''
-      - name: body
-        in: body
+      - name: useridto
+        in: query
         required: true
-        description: Parameters for the popup notifications request.
-        schema:
-          $ref: '#/definitions/GetPopupNotificationsRequest'
+        type: string
+        description: ID of the recipient user, passed as a string.
+      - name: limit
+        in: query
+        required: true
+        type: integer
+        format: int32
+        description: Maximum number of notifications to return.
+      - name: offset
+        in: query
+        required: true
+        type: integer
+        format: int32
+        description: Pagination offset.
       responses:
         '200':
           description: Popup notifications and total unread count.
@@ -465,7 +492,7 @@ definitions:
     - inprogress
     - past
     - future
-    - favourite
+    - favourites
     - hidden
     - allincludinghidden
   CourseTimelineSortField:

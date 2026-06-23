@@ -40,28 +40,20 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="login_Request" type="schemas:login_Request" />
       <xs:element name="login200_Response0" type="schemas:login200_Response0" />
       <xs:element name="login401_Response0" type="schemas:login401_Response0" />
-      <xs:element name="getCoreRecentCourses_Request" type="schemas:getCoreRecentCourses_Request" />
       <xs:element name="getCoreRecentCourses200_Response0" type="schemas:getCoreRecentCourses200_Response0" />
       <xs:element name="getCoreRecentCourses400_Response0" type="schemas:getCoreRecentCourses400_Response0" />
-      <xs:element name="getEnrolledCoursesByTimeline_Request" type="schemas:getEnrolledCoursesByTimeline_Request" />
       <xs:element name="getEnrolledCoursesByTimeline200_Response0" type="schemas:getEnrolledCoursesByTimeline200_Response0" />
       <xs:element name="getEnrolledCoursesByTimeline400_Response0" type="schemas:getEnrolledCoursesByTimeline400_Response0" />
-      <xs:element name="getCalendarEventsByTimesort_Request" type="schemas:getCalendarEventsByTimesort_Request" />
       <xs:element name="getCalendarEventsByTimesort200_Response0" type="schemas:getCalendarEventsByTimesort200_Response0" />
       <xs:element name="getCalendarEventsByTimesort400_Response0" type="schemas:getCalendarEventsByTimesort400_Response0" />
-      <xs:element name="getCalendarEventsByCourse_Request" type="schemas:getCalendarEventsByCourse_Request" />
       <xs:element name="getCalendarEventsByCourse200_Response0" type="schemas:getCalendarEventsByCourse200_Response0" />
       <xs:element name="getCalendarEventsByCourse400_Response0" type="schemas:getCalendarEventsByCourse400_Response0" />
-      <xs:element name="getUsersByField_Request" type="schemas:getUsersByField_Request" />
       <xs:element name="getUsersByField200_Response0" type="schemas:getUsersByField200_Response0" />
       <xs:element name="getUsersByField400_Response0" type="schemas:getUsersByField400_Response0" />
-      <xs:element name="getUserPreferences_Request" type="schemas:getUserPreferences_Request" />
       <xs:element name="getUserPreferences200_Response0" type="schemas:getUserPreferences200_Response0" />
       <xs:element name="getUserPreferences400_Response0" type="schemas:getUserPreferences400_Response0" />
-      <xs:element name="fetchNotifications_Request" type="schemas:fetchNotifications_Request" />
       <xs:element name="fetchNotifications200_Response0" type="schemas:fetchNotifications200_Response0" />
       <xs:element name="fetchNotifications400_Response0" type="schemas:fetchNotifications400_Response0" />
-      <xs:element name="getPopupNotifications_Request" type="schemas:getPopupNotifications_Request" />
       <xs:element name="getPopupNotifications200_Response0" type="schemas:getPopupNotifications200_Response0" />
       <xs:element name="getPopupNotifications400_Response0" type="schemas:getPopupNotifications400_Response0" />
       <xs:complexType name="LoginRequest">
@@ -103,7 +95,7 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:enumeration value="inprogress" />
           <xs:enumeration value="past" />
           <xs:enumeration value="future" />
-          <xs:enumeration value="favourite" />
+          <xs:enumeration value="favourites" />
           <xs:enumeration value="hidden" />
           <xs:enumeration value="allincludinghidden" />
         </xs:restriction>
@@ -1197,15 +1189,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getCoreRecentCourses_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetRecentCoursesRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters for the recent courses request.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="getCoreRecentCourses200_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:RecentCourse">
@@ -1220,15 +1203,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
               <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getEnrolledCoursesByTimeline_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetEnrolledCoursesByTimelineRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters for the enrolled courses timeline request.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -1251,15 +1225,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getCalendarEventsByTimesort_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByTimesortRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters for the time-sorted calendar events request.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="getCalendarEventsByTimesort200_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
@@ -1274,15 +1239,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
               <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getCalendarEventsByCourse_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetCalendarEventsByCourseRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters for the course-specific calendar events request.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -1305,15 +1261,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getUsersByField_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetUsersByFieldRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters specifying the profile field and values to match.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="getUsersByField200_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:UserProfile">
@@ -1328,15 +1275,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
               <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUserPreferences_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetUserPreferencesRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters specifying which user's preferences to retrieve.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -1359,15 +1297,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="fetchNotifications_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:FetchNotificationsRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters specifying the context to fetch notifications for.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="fetchNotifications200_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:SiteNotification">
@@ -1382,15 +1311,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
               <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getPopupNotifications_Request">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="body" type="schemas:GetPopupNotificationsRequest">
-            <xs:annotation>
-              <xs:documentation>Parameters for the popup notifications request.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -1437,15 +1357,14 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       </method>
     </resource>
     <resource id="_servicecore_course_get_recent_courses" path="/service/core_course_get_recent_courses">
-      <method id="getCoreRecentCourses" name="POST">
+      <method id="getCoreRecentCourses" name="GET">
         <doc title="getCoreRecentCourses" xml:lang="en">Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 Moodle method: `core_course_get_recent_courses`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="limit" style="query" type="xsd:integer" default="10" required="true">
+            <doc title="limit" xml:lang="en">Maximum number of courses to return.</doc>
           </param>
-          <representation element="schemas:getCoreRecentCourses_Request" mediaType="application/json" />
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">List of recently accessed courses ordered by last access.</doc>
@@ -1458,15 +1377,59 @@ Moodle method: `core_course_get_recent_courses`
       </method>
     </resource>
     <resource id="_servicecore_course_get_enrolled_courses_by_timeline_classification" path="/service/core_course_get_enrolled_courses_by_timeline_classification">
-      <method id="getEnrolledCoursesByTimeline" name="POST">
+      <method id="getEnrolledCoursesByTimeline" name="GET">
         <doc title="getEnrolledCoursesByTimeline" xml:lang="en">Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="offset" style="query" type="xsd:integer" default="0" required="true">
+            <doc title="offset" xml:lang="en">Zero-based pagination offset.</doc>
           </param>
-          <representation element="schemas:getEnrolledCoursesByTimeline_Request" mediaType="application/json" />
+          <param name="limit" style="query" type="xsd:integer" default="50" required="true">
+            <doc title="limit" xml:lang="en">Maximum number of courses to return.</doc>
+          </param>
+          <param name="classification" style="query" required="true">
+            <doc title="classification" xml:lang="en">Timeline classification filter for enrolled courses.</doc>
+            <option value="all">
+              <doc title="all" xml:lang="en" />
+            </option>
+            <option value="inprogress">
+              <doc title="inprogress" xml:lang="en" />
+            </option>
+            <option value="past">
+              <doc title="past" xml:lang="en" />
+            </option>
+            <option value="future">
+              <doc title="future" xml:lang="en" />
+            </option>
+            <option value="favourites">
+              <doc title="favourites" xml:lang="en" />
+            </option>
+            <option value="hidden">
+              <doc title="hidden" xml:lang="en" />
+            </option>
+            <option value="allincludinghidden">
+              <doc title="allincludinghidden" xml:lang="en" />
+            </option>
+          </param>
+          <param name="sort" style="query" required="true">
+            <doc title="sort" xml:lang="en">Field used to sort enrolled course results.</doc>
+            <option value="fullname">
+              <doc title="fullname" xml:lang="en" />
+            </option>
+            <option value="shortname">
+              <doc title="shortname" xml:lang="en" />
+            </option>
+            <option value="id">
+              <doc title="id" xml:lang="en" />
+            </option>
+            <option value="idnumber">
+              <doc title="idnumber" xml:lang="en" />
+            </option>
+            <option value="timeaccess">
+              <doc title="timeaccess" xml:lang="en" />
+            </option>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">Paginated list of enrolled courses.</doc>
@@ -1479,15 +1442,23 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
       </method>
     </resource>
     <resource id="_servicecore_calendar_get_action_events_by_timesort" path="/service/core_calendar_get_action_events_by_timesort">
-      <method id="getCalendarEventsByTimesort" name="POST">
+      <method id="getCalendarEventsByTimesort" name="GET">
         <doc title="getCalendarEventsByTimesort" xml:lang="en">Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 Moodle method: `core_calendar_get_action_events_by_timesort`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="limitnum" style="query" type="xsd:integer" required="true">
+            <doc title="limitnum" xml:lang="en">Maximum number of events to return.</doc>
           </param>
-          <representation element="schemas:getCalendarEventsByTimesort_Request" mediaType="application/json" />
+          <param name="timesortfrom" style="query" type="xsd:integer" required="true">
+            <doc title="timesortfrom" xml:lang="en">Only return events with timesort &gt;= this Unix timestamp. Pass 0 for no lower bound.</doc>
+          </param>
+          <param name="timesortto" style="query" type="xsd:integer">
+            <doc title="timesortto" xml:lang="en">Only return events with timesort &lt;= this Unix timestamp.</doc>
+          </param>
+          <param name="aftereventid" style="query" type="xsd:integer">
+            <doc title="aftereventid" xml:lang="en">Return events whose ID is greater than this value (cursor pagination).</doc>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">Calendar events sorted by timesort.</doc>
@@ -1500,15 +1471,26 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
       </method>
     </resource>
     <resource id="_servicecore_calendar_get_action_events_by_course" path="/service/core_calendar_get_action_events_by_course">
-      <method id="getCalendarEventsByCourse" name="POST">
+      <method id="getCalendarEventsByCourse" name="GET">
         <doc title="getCalendarEventsByCourse" xml:lang="en">Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 Moodle method: `core_calendar_get_action_events_by_course`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="courseid" style="query" type="xsd:integer" required="true">
+            <doc title="courseid" xml:lang="en">ID of the course to fetch events for.</doc>
           </param>
-          <representation element="schemas:getCalendarEventsByCourse_Request" mediaType="application/json" />
+          <param name="timesortfrom" style="query" type="xsd:integer">
+            <doc title="timesortfrom" xml:lang="en">Only return events with timesort &gt;= this Unix timestamp.</doc>
+          </param>
+          <param name="timesortto" style="query" type="xsd:integer">
+            <doc title="timesortto" xml:lang="en">Only return events with timesort &lt;= this Unix timestamp.</doc>
+          </param>
+          <param name="aftereventid" style="query" type="xsd:integer">
+            <doc title="aftereventid" xml:lang="en">Cursor-based pagination — return events after this event ID.</doc>
+          </param>
+          <param name="limitnum" style="query" type="xsd:integer">
+            <doc title="limitnum" xml:lang="en">Maximum number of events to return.</doc>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">Calendar events for the specified course.</doc>
@@ -1521,15 +1503,29 @@ Moodle method: `core_calendar_get_action_events_by_course`
       </method>
     </resource>
     <resource id="_servicecore_user_get_users_by_field" path="/service/core_user_get_users_by_field">
-      <method id="getUsersByField" name="POST">
+      <method id="getUsersByField" name="GET">
         <doc title="getUsersByField" xml:lang="en">Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 Moodle method: `core_user_get_users_by_field`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="field" style="query" required="true">
+            <doc title="field" xml:lang="en">User profile field to match against when searching for users.</doc>
+            <option value="id">
+              <doc title="id" xml:lang="en" />
+            </option>
+            <option value="idnumber">
+              <doc title="idnumber" xml:lang="en" />
+            </option>
+            <option value="username">
+              <doc title="username" xml:lang="en" />
+            </option>
+            <option value="email">
+              <doc title="email" xml:lang="en" />
+            </option>
           </param>
-          <representation element="schemas:getUsersByField_Request" mediaType="application/json" />
+          <param name="values" style="query" type="xsd:string" required="true" repeating="true">
+            <doc title="values" xml:lang="en">List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).</doc>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">List of matching user profiles.</doc>
@@ -1542,15 +1538,17 @@ Moodle method: `core_user_get_users_by_field`
       </method>
     </resource>
     <resource id="_servicecore_user_get_user_preferences" path="/service/core_user_get_user_preferences">
-      <method id="getUserPreferences" name="POST">
+      <method id="getUserPreferences" name="GET">
         <doc title="getUserPreferences" xml:lang="en">Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 Moodle method: `core_user_get_user_preferences`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="userid" style="query" type="xsd:integer" required="true">
+            <doc title="userid" xml:lang="en">ID of the user whose preferences to retrieve.</doc>
           </param>
-          <representation element="schemas:getUserPreferences_Request" mediaType="application/json" />
+          <param name="name" style="query" type="xsd:string">
+            <doc title="name" xml:lang="en">Specific preference name to retrieve. Omit to retrieve all preferences.</doc>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">User preferences list and optional warnings.</doc>
@@ -1563,15 +1561,14 @@ Moodle method: `core_user_get_user_preferences`
       </method>
     </resource>
     <resource id="_servicecore_fetch_notifications" path="/service/core_fetch_notifications">
-      <method id="fetchNotifications" name="POST">
+      <method id="fetchNotifications" name="GET">
         <doc title="fetchNotifications" xml:lang="en">Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 Moodle method: `core_fetch_notifications`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="contextid" style="query" type="xsd:integer" required="true">
+            <doc title="contextid" xml:lang="en">Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</doc>
           </param>
-          <representation element="schemas:fetchNotifications_Request" mediaType="application/json" />
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">Array of site notifications (empty array when none are pending).</doc>
@@ -1584,15 +1581,20 @@ Moodle method: `core_fetch_notifications`
       </method>
     </resource>
     <resource id="_servicemessage_popup_get_popup_notifications" path="/service/message_popup_get_popup_notifications">
-      <method id="getPopupNotifications" name="POST">
+      <method id="getPopupNotifications" name="GET">
         <doc title="getPopupNotifications" xml:lang="en">Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 Moodle method: `message_popup_get_popup_notifications`
 </doc>
         <request>
-          <param name="Content-Type" style="header" type="xsd:string" default="application/json" required="true" fixed="application/json">
-            <doc title="Content-Type" xml:lang="en" />
+          <param name="useridto" style="query" type="xsd:string" required="true">
+            <doc title="useridto" xml:lang="en">ID of the recipient user, passed as a string.</doc>
           </param>
-          <representation element="schemas:getPopupNotifications_Request" mediaType="application/json" />
+          <param name="limit" style="query" type="xsd:integer" required="true">
+            <doc title="limit" xml:lang="en">Maximum number of notifications to return.</doc>
+          </param>
+          <param name="offset" style="query" type="xsd:integer" default="0" required="true">
+            <doc title="offset" xml:lang="en">Pagination offset.</doc>
+          </param>
         </request>
         <response status="200">
           <doc title="200" xml:lang="en">Popup notifications and total unread count.</doc>

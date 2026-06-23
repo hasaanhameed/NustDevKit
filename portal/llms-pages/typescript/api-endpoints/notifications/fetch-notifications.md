@@ -7,7 +7,7 @@ Moodle method: `core_fetch_notifications`
 
 ```ts
 async fetchNotifications(
-  body: FetchNotificationsRequest,
+  contextid: number,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<SiteNotification[]>>
 ```
@@ -22,7 +22,7 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/typescript/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `number` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,12 +36,10 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: FetchNotificationsRequest = {
-  contextid: 1583361,
-};
+const contextid = 156;
 
 try {
-  const response = await notificationsApi.fetchNotifications(body);
+  const response = await notificationsApi.fetchNotifications(contextid);
 
   // Extracting fully parsed response body.
   console.log(response.result);

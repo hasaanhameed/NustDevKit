@@ -56,7 +56,7 @@ paths:
       security: []
     parameters: []
   /service/core_course_get_recent_courses:
-    post:
+    get:
       tags:
       - Courses
       summary: getCoreRecentCourses
@@ -65,17 +65,16 @@ paths:
 
         Moodle method: `core_course_get_recent_courses`
       operationId: getCoreRecentCourses
-      parameters: []
-      requestBody:
-        description: Parameters for the recent courses request.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetRecentCoursesRequest'
-              - description: Parameters for the recent courses request.
-              contentMediaType: application/json
+      parameters:
+      - name: limit
+        in: query
+        description: Maximum number of courses to return.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
       responses:
         '200':
           description: List of recently accessed courses ordered by last access.
@@ -101,7 +100,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_course_get_enrolled_courses_by_timeline_classification:
-    post:
+    get:
       tags:
       - Courses
       summary: getEnrolledCoursesByTimeline
@@ -110,17 +109,45 @@ paths:
 
         Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
       operationId: getEnrolledCoursesByTimeline
-      parameters: []
-      requestBody:
-        description: Parameters for the enrolled courses timeline request.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetEnrolledCoursesByTimelineRequest'
-              - description: Parameters for the enrolled courses timeline request.
-              contentMediaType: application/json
+      parameters:
+      - name: offset
+        in: query
+        description: Zero-based pagination offset.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: limit
+        in: query
+        description: Maximum number of courses to return.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: classification
+        in: query
+        description: Timeline classification filter for enrolled courses.
+        required: true
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CourseTimelineClassification'
+          - description: Timeline classification filter for enrolled courses.
+      - name: sort
+        in: query
+        description: Field used to sort enrolled course results.
+        required: true
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CourseTimelineSortField'
+          - description: Field used to sort enrolled course results.
       responses:
         '200':
           description: Paginated list of enrolled courses.
@@ -145,7 +172,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_calendar_get_action_events_by_timesort:
-    post:
+    get:
       tags:
       - Calendar
       summary: getCalendarEventsByTimesort
@@ -154,17 +181,41 @@ paths:
 
         Moodle method: `core_calendar_get_action_events_by_timesort`
       operationId: getCalendarEventsByTimesort
-      parameters: []
-      requestBody:
-        description: Parameters for the time-sorted calendar events request.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetCalendarEventsByTimesortRequest'
-              - description: Parameters for the time-sorted calendar events request.
-              contentMediaType: application/json
+      parameters:
+      - name: limitnum
+        in: query
+        description: Maximum number of events to return.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: timesortfrom
+        in: query
+        description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: timesortto
+        in: query
+        description: Only return events with timesort <= this Unix timestamp.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: aftereventid
+        in: query
+        description: Return events whose ID is greater than this value (cursor pagination).
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
       responses:
         '200':
           description: Calendar events sorted by timesort.
@@ -189,7 +240,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_calendar_get_action_events_by_course:
-    post:
+    get:
       tags:
       - Calendar
       summary: getCalendarEventsByCourse
@@ -198,17 +249,48 @@ paths:
 
         Moodle method: `core_calendar_get_action_events_by_course`
       operationId: getCalendarEventsByCourse
-      parameters: []
-      requestBody:
-        description: Parameters for the course-specific calendar events request.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetCalendarEventsByCourseRequest'
-              - description: Parameters for the course-specific calendar events request.
-              contentMediaType: application/json
+      parameters:
+      - name: courseid
+        in: query
+        description: ID of the course to fetch events for.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: timesortfrom
+        in: query
+        description: Only return events with timesort >= this Unix timestamp.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: timesortto
+        in: query
+        description: Only return events with timesort <= this Unix timestamp.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: aftereventid
+        in: query
+        description: Cursor-based pagination — return events after this event ID.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: limitnum
+        in: query
+        description: Maximum number of events to return.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
       responses:
         '200':
           description: Calendar events for the specified course.
@@ -233,7 +315,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_user_get_users_by_field:
-    post:
+    get:
       tags:
       - Users
       summary: getUsersByField
@@ -242,17 +324,27 @@ paths:
 
         Moodle method: `core_user_get_users_by_field`
       operationId: getUsersByField
-      parameters: []
-      requestBody:
-        description: Parameters specifying the profile field and values to match.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetUsersByFieldRequest'
-              - description: Parameters specifying the profile field and values to match.
-              contentMediaType: application/json
+      parameters:
+      - name: field
+        in: query
+        description: User profile field to match against when searching for users.
         required: true
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/UserProfileField'
+          - description: User profile field to match against when searching for users.
+      - name: values
+        in: query
+        description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         '200':
           description: List of matching user profiles.
@@ -278,7 +370,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_user_get_user_preferences:
-    post:
+    get:
       tags:
       - Users
       summary: getUserPreferences
@@ -287,17 +379,23 @@ paths:
 
         Moodle method: `core_user_get_user_preferences`
       operationId: getUserPreferences
-      parameters: []
-      requestBody:
-        description: Parameters specifying which user's preferences to retrieve.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetUserPreferencesRequest'
-              - description: Parameters specifying which user's preferences to retrieve.
-              contentMediaType: application/json
+      parameters:
+      - name: userid
+        in: query
+        description: ID of the user whose preferences to retrieve.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: name
+        in: query
+        description: Specific preference name to retrieve. Omit to retrieve all preferences.
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         '200':
           description: User preferences list and optional warnings.
@@ -322,7 +420,7 @@ paths:
       deprecated: false
     parameters: []
   /service/core_fetch_notifications:
-    post:
+    get:
       tags:
       - Notifications
       summary: fetchNotifications
@@ -331,17 +429,16 @@ paths:
 
         Moodle method: `core_fetch_notifications`
       operationId: fetchNotifications
-      parameters: []
-      requestBody:
-        description: Parameters specifying the context to fetch notifications for.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/FetchNotificationsRequest'
-              - description: Parameters specifying the context to fetch notifications for.
-              contentMediaType: application/json
+      parameters:
+      - name: contextid
+        in: query
+        description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
       responses:
         '200':
           description: Array of site notifications (empty array when none are pending).
@@ -367,7 +464,7 @@ paths:
       deprecated: false
     parameters: []
   /service/message_popup_get_popup_notifications:
-    post:
+    get:
       tags:
       - Notifications
       summary: getPopupNotifications
@@ -376,17 +473,33 @@ paths:
 
         Moodle method: `message_popup_get_popup_notifications`
       operationId: getPopupNotifications
-      parameters: []
-      requestBody:
-        description: Parameters for the popup notifications request.
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/GetPopupNotificationsRequest'
-              - description: Parameters for the popup notifications request.
-              contentMediaType: application/json
+      parameters:
+      - name: useridto
+        in: query
+        description: ID of the recipient user, passed as a string.
         required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of notifications to return.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: offset
+        in: query
+        description: Pagination offset.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
       responses:
         '200':
           description: Popup notifications and total unread count.
@@ -451,7 +564,7 @@ components:
       - inprogress
       - past
       - future
-      - favourite
+      - favourites
       - hidden
       - allincludinghidden
       type: string

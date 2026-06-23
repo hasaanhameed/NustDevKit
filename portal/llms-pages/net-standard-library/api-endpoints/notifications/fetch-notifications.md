@@ -7,7 +7,7 @@ Moodle method: `core_fetch_notifications`
 
 ```csharp
 FetchNotificationsAsync(
-    Models.FetchNotificationsRequest body)
+    int contextid)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`FetchNotificationsRequest`](/llms-pages/net-standard-library/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `int` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -33,14 +33,10 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-FetchNotificationsRequest body = new FetchNotificationsRequest
-{
-    Contextid = 1583361,
-};
-
+int contextid = 156;
 try
 {
-    ApiResponse<List<SiteNotification>> result = await notificationsApi.FetchNotificationsAsync(body);
+    ApiResponse<List<SiteNotification>> result = await notificationsApi.FetchNotificationsAsync(contextid);
 }
 catch (ApiException e)
 {

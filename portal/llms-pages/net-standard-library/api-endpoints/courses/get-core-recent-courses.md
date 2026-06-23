@@ -7,7 +7,7 @@ Moodle method: `core_course_get_recent_courses`
 
 ```csharp
 GetCoreRecentCoursesAsync(
-    Models.GetRecentCoursesRequest body)
+    int limit)
 ```
 
 
@@ -20,7 +20,7 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetRecentCoursesRequest`](/llms-pages/net-standard-library/models/structures/get-recent-courses-request.md) | Body, Required | Parameters for the recent courses request. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
 
 
 # Response Type
@@ -33,14 +33,10 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-GetRecentCoursesRequest body = new GetRecentCoursesRequest
-{
-    Limit = 10,
-};
-
+int limit = 10;
 try
 {
-    ApiResponse<List<RecentCourse>> result = await coursesApi.GetCoreRecentCoursesAsync(body);
+    ApiResponse<List<RecentCourse>> result = await coursesApi.GetCoreRecentCoursesAsync(limit);
 }
 catch (ApiException e)
 {

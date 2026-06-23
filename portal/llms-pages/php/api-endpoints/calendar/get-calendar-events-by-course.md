@@ -6,7 +6,13 @@ Returns all action events (deadlines) for a single course — assignment, lab, a
 Moodle method: `core_calendar_get_action_events_by_course`
 
 ```php
-function getCalendarEventsByCourse(GetCalendarEventsByCourseRequest $body): ApiResponse
+function getCalendarEventsByCourse(
+    int $courseid,
+    ?int $timesortfrom = null,
+    ?int $timesortto = null,
+    ?int $aftereventid = null,
+    ?int $limitnum = null
+): ApiResponse
 ```
 
 
@@ -19,7 +25,11 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByCourseRequest`](/llms-pages/php/models/structures/get-calendar-events-by-course-request.md) | Body, Required | Parameters for the course-specific calendar events request. |
+| `courseid` | `int` | Query, Required | ID of the course to fetch events for. |
+| `timesortfrom` | `?int` | Query, Optional | Only return events with timesort >= this Unix timestamp. |
+| `timesortto` | `?int` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `?int` | Query, Optional | Cursor-based pagination — return events after this event ID. |
+| `limitnum` | `?int` | Query, Optional | Maximum number of events to return. |
 
 
 # Response Type
@@ -32,12 +42,10 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetCalendarEventsByCourseRequestBuilder::init(
-    49906
-)->build();
+$courseid = 74;
 
 $calendarApi = $client->getCalendarApi();
-$apiResponse = $calendarApi->getCalendarEventsByCourse($body);
+$apiResponse = $calendarApi->getCalendarEventsByCourse($courseid);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

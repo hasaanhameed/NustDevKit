@@ -6,7 +6,12 @@ Returns all courses the user is enrolled in, filtered by timeline classification
 Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 ```php
-function getEnrolledCoursesByTimeline(GetEnrolledCoursesByTimelineRequest $body): ApiResponse
+function getEnrolledCoursesByTimeline(
+    int $offset,
+    int $limit,
+    string $classification,
+    string $sort
+): ApiResponse
 ```
 
 
@@ -19,7 +24,10 @@ This endpoint requires [BearerAuth](/llms-pages/php/getting-started/sdk-quicksta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetEnrolledCoursesByTimelineRequest`](/llms-pages/php/models/structures/get-enrolled-courses-by-timeline-request.md) | Body, Required | Parameters for the enrolled courses timeline request. |
+| `offset` | `int` | Query, Required | Zero-based pagination offset. |
+| `limit` | `int` | Query, Required | Maximum number of courses to return. |
+| `classification` | [`string(CourseTimelineClassification)`](/llms-pages/php/models/enumerations/course-timeline-classification.md) | Query, Required | Timeline classification filter for enrolled courses. |
+| `sort` | [`string(CourseTimelineSortField)`](/llms-pages/php/models/enumerations/course-timeline-sort-field.md) | Query, Required | Field used to sort enrolled course results. |
 
 
 # Response Type
@@ -32,15 +40,21 @@ This method returns an [`ApiResponse`](/llms-pages/php/sdk-infrastructure/utilit
 # Example Usage
 
 ```php
-$body = GetEnrolledCoursesByTimelineRequestBuilder::init(
-    0,
-    50,
-    CourseTimelineClassification::PAST,
-    CourseTimelineSortField::ID
-)->build();
+$offset = 0;
+
+$limit = 50;
+
+$classification = CourseTimelineClassification::INPROGRESS;
+
+$sort = CourseTimelineSortField::IDNUMBER;
 
 $coursesApi = $client->getCoursesApi();
-$apiResponse = $coursesApi->getEnrolledCoursesByTimeline($body);
+$apiResponse = $coursesApi->getEnrolledCoursesByTimeline(
+    $offset,
+    $limit,
+    $classification,
+    $sort
+);
 
 // Extracting response status code
 var_dump($apiResponse->getStatusCode());

@@ -6,7 +6,7 @@ Returns pending site-level notifications for the given Moodle context. Returns a
 Moodle method: `core_fetch_notifications`
 
 ```http
-POST /service/core_fetch_notifications
+GET /service/core_fetch_notifications
 ```
 
 
@@ -19,7 +19,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Fetch Notifications Request`](/llms-pages/http/models/structures/fetch-notifications-request.md) | Body, Required | Parameters specifying the context to fetch notifications for. |
+| `contextid` | `Number` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 
 
 # Response Type
@@ -32,14 +32,11 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_fetch_notifications'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "contextid": 1583361
-}'
+  -d 'contextid=156'
 ```
 
 

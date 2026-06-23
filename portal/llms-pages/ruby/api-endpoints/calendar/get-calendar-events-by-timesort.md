@@ -6,7 +6,10 @@ Returns action events (deadlines) across all enrolled courses, ordered by their 
 Moodle method: `core_calendar_get_action_events_by_timesort`
 
 ```ruby
-def get_calendar_events_by_timesort(body)
+def get_calendar_events_by_timesort(limitnum,
+                                    timesortfrom,
+                                    timesortto: nil,
+                                    aftereventid: nil)
 ```
 
 
@@ -19,7 +22,10 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetCalendarEventsByTimesortRequest`](/llms-pages/ruby/models/structures/get-calendar-events-by-timesort-request.md) | Body, Required | Parameters for the time-sorted calendar events request. |
+| `limitnum` | `Integer` | Query, Required | Maximum number of events to return. |
+| `timesortfrom` | `Integer` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `timesortto` | `Integer` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
+| `aftereventid` | `Integer` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
 
 # Response Type
@@ -32,12 +38,14 @@ This method returns an [`ApiResponse`](/llms-pages/ruby/sdk-infrastructure/utili
 # Example Usage
 
 ```ruby
-body = GetCalendarEventsByTimesortRequest.new(
-  limitnum: 20,
-  timesortfrom: 0
-)
+limitnum = 32
 
-result = calendar_api.get_calendar_events_by_timesort(body)
+timesortfrom = 58
+
+result = calendar_api.get_calendar_events_by_timesort(
+  limitnum,
+  timesortfrom
+)
 
 if result.success?
   puts result.data

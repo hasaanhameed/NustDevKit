@@ -72,7 +72,7 @@ schemas:
         "inprogress",
         "past",
         "future",
-        "favourite",
+        "favourites",
         "hidden",
         "allincludinghidden"
       ]
@@ -2228,7 +2228,7 @@ schemas:
             "inprogress",
             "past",
             "future",
-            "favourite",
+            "favourites",
             "hidden",
             "allincludinghidden"
           ]
@@ -2533,38 +2533,18 @@ schemas:
               }
 /service:
   /core_course_get_recent_courses:
-    post:
+    get:
       description: >
         Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
         Moodle method: `core_course_get_recent_courses`
-      headers:
-        Content-Type:
+      queryParameters:
+        limit:
+          description: Maximum number of courses to return.
+          type: integer
+          default: '10'
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetRecentCoursesRequest",
-              "title": "GetRecentCoursesRequest",
-              "description": "Parameters for the recent courses request.",
-              "type": "object",
-              "properties": {
-                "limit": {
-                  "description": "Maximum number of courses to return.",
-                  "example": 10,
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "required": [
-                "limit"
-              ]
-            }
-          example: ''
+          displayName: limit
       responses:
         '200':
           description: List of recently accessed courses ordered by last access.
@@ -2735,75 +2715,46 @@ schemas:
                   }
                 }
   /core_course_get_enrolled_courses_by_timeline_classification:
-    post:
+    get:
       description: >
         Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
         Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
-      headers:
-        Content-Type:
+      queryParameters:
+        offset:
+          description: Zero-based pagination offset.
+          type: integer
+          default: '0'
           required: true
-          displayName: Content-Type
+          displayName: offset
+        limit:
+          description: Maximum number of courses to return.
+          type: integer
+          default: '50'
+          required: true
+          displayName: limit
+        classification:
+          description: Timeline classification filter for enrolled courses.
+          required: true
+          displayName: classification
           enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetEnrolledCoursesByTimelineRequest",
-              "title": "GetEnrolledCoursesByTimelineRequest",
-              "description": "Parameters for the enrolled courses timeline request.",
-              "type": "object",
-              "properties": {
-                "offset": {
-                  "description": "Zero-based pagination offset.",
-                  "example": 0,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "limit": {
-                  "description": "Maximum number of courses to return.",
-                  "example": 50,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "classification": {
-                  "title": "CourseTimelineClassification",
-                  "description": "Timeline classification filter for enrolled courses.",
-                  "type": "string",
-                  "additionalProperties": false,
-                  "enum": [
-                    "all",
-                    "inprogress",
-                    "past",
-                    "future",
-                    "favourite",
-                    "hidden",
-                    "allincludinghidden"
-                  ]
-                },
-                "sort": {
-                  "title": "CourseTimelineSortField",
-                  "description": "Field used to sort enrolled course results.",
-                  "type": "string",
-                  "additionalProperties": false,
-                  "enum": [
-                    "fullname",
-                    "shortname",
-                    "id",
-                    "idnumber",
-                    "timeaccess"
-                  ]
-                }
-              },
-              "required": [
-                "offset",
-                "limit",
-                "classification",
-                "sort"
-              ]
-            }
-          example: ''
+          - all
+          - inprogress
+          - past
+          - future
+          - favourites
+          - hidden
+          - allincludinghidden
+        sort:
+          description: Field used to sort enrolled course results.
+          required: true
+          displayName: sort
+          enum:
+          - fullname
+          - shortname
+          - id
+          - idnumber
+          - timeaccess
       responses:
         '200':
           description: Paginated list of enrolled courses.
@@ -2985,55 +2936,32 @@ schemas:
                   }
                 }
   /core_calendar_get_action_events_by_timesort:
-    post:
+    get:
       description: >
         Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
         Moodle method: `core_calendar_get_action_events_by_timesort`
-      headers:
-        Content-Type:
+      queryParameters:
+        limitnum:
+          description: Maximum number of events to return.
+          type: integer
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetCalendarEventsByTimesortRequest",
-              "title": "GetCalendarEventsByTimesortRequest",
-              "description": "Parameters for the time-sorted calendar events request.",
-              "type": "object",
-              "properties": {
-                "limitnum": {
-                  "description": "Maximum number of events to return.",
-                  "example": 20,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "timesortfrom": {
-                  "description": "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.",
-                  "example": 0,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "timesortto": {
-                  "description": "Only return events with timesort <= this Unix timestamp. Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "aftereventid": {
-                  "description": "Return events whose ID is greater than this value (cursor pagination). Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "required": [
-                "limitnum",
-                "timesortfrom"
-              ]
-            }
-          example: ''
+          displayName: limitnum
+        timesortfrom:
+          description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+          type: integer
+          required: true
+          displayName: timesortfrom
+        timesortto:
+          description: Only return events with timesort <= this Unix timestamp.
+          type: integer
+          required: false
+          displayName: timesortto
+        aftereventid:
+          description: Return events whose ID is greater than this value (cursor pagination).
+          type: integer
+          required: false
+          displayName: aftereventid
       responses:
         '200':
           description: Calendar events sorted by timesort.
@@ -3529,58 +3457,37 @@ schemas:
                   }
                 }
   /core_calendar_get_action_events_by_course:
-    post:
+    get:
       description: >
         Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
         Moodle method: `core_calendar_get_action_events_by_course`
-      headers:
-        Content-Type:
+      queryParameters:
+        courseid:
+          description: ID of the course to fetch events for.
+          type: integer
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetCalendarEventsByCourseRequest",
-              "title": "GetCalendarEventsByCourseRequest",
-              "description": "Parameters for the course-specific calendar events request.",
-              "type": "object",
-              "properties": {
-                "courseid": {
-                  "description": "ID of the course to fetch events for.",
-                  "example": 49906,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "timesortfrom": {
-                  "description": "Only return events with timesort >= this Unix timestamp. Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "timesortto": {
-                  "description": "Only return events with timesort <= this Unix timestamp. Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "aftereventid": {
-                  "description": "Cursor-based pagination — return events after this event ID. Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "limitnum": {
-                  "description": "Maximum number of events to return. Optional.",
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "required": [
-                "courseid"
-              ]
-            }
-          example: ''
+          displayName: courseid
+        timesortfrom:
+          description: Only return events with timesort >= this Unix timestamp.
+          type: integer
+          required: false
+          displayName: timesortfrom
+        timesortto:
+          description: Only return events with timesort <= this Unix timestamp.
+          type: integer
+          required: false
+          displayName: timesortto
+        aftereventid:
+          description: Cursor-based pagination — return events after this event ID.
+          type: integer
+          required: false
+          displayName: aftereventid
+        limitnum:
+          description: Maximum number of events to return.
+          type: integer
+          required: false
+          displayName: limitnum
       responses:
         '200':
           description: Calendar events for the specified course.
@@ -4076,55 +3983,26 @@ schemas:
                   }
                 }
   /core_user_get_users_by_field:
-    post:
+    get:
       description: >
         Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
 
         Moodle method: `core_user_get_users_by_field`
-      headers:
-        Content-Type:
+      queryParameters:
+        field:
+          description: User profile field to match against when searching for users.
           required: true
-          displayName: Content-Type
+          displayName: field
           enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetUsersByFieldRequest",
-              "title": "GetUsersByFieldRequest",
-              "description": "Parameters specifying the profile field and values to match.",
-              "type": "object",
-              "properties": {
-                "field": {
-                  "title": "UserProfileField",
-                  "description": "User profile field to match against when searching for users.",
-                  "type": "string",
-                  "additionalProperties": false,
-                  "enum": [
-                    "id",
-                    "idnumber",
-                    "username",
-                    "email"
-                  ]
-                },
-                "values": {
-                  "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
-                  "example": [
-                    "123456"
-                  ],
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "required": [
-                "field",
-                "values"
-              ]
-            }
-          example: ''
+          - id
+          - idnumber
+          - username
+          - email
+        values:
+          description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
+          type: string
+          required: true
+          displayName: values
       responses:
         '200':
           description: List of matching user profiles.
@@ -4336,42 +4214,22 @@ schemas:
                   }
                 }
   /core_user_get_user_preferences:
-    post:
+    get:
       description: >
         Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
 
         Moodle method: `core_user_get_user_preferences`
-      headers:
-        Content-Type:
+      queryParameters:
+        userid:
+          description: ID of the user whose preferences to retrieve.
+          type: integer
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetUserPreferencesRequest",
-              "title": "GetUserPreferencesRequest",
-              "description": "Parameters specifying which user's preferences to retrieve.",
-              "type": "object",
-              "properties": {
-                "userid": {
-                  "description": "ID of the user whose preferences to retrieve.",
-                  "example": 123456,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "name": {
-                  "description": "Specific preference name to retrieve. Omit to retrieve all preferences.",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "userid"
-              ]
-            }
-          example: ''
+          displayName: userid
+        name:
+          description: Specific preference name to retrieve. Omit to retrieve all preferences.
+          type: string
+          required: false
+          displayName: name
       responses:
         '200':
           description: User preferences list and optional warnings.
@@ -4482,38 +4340,17 @@ schemas:
                   }
                 }
   /core_fetch_notifications:
-    post:
+    get:
       description: >
         Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
 
         Moodle method: `core_fetch_notifications`
-      headers:
-        Content-Type:
+      queryParameters:
+        contextid:
+          description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
+          type: integer
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "FetchNotificationsRequest",
-              "title": "FetchNotificationsRequest",
-              "description": "Parameters specifying the context to fetch notifications for.",
-              "type": "object",
-              "properties": {
-                "contextid": {
-                  "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
-                  "example": 1583361,
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "required": [
-                "contextid"
-              ]
-            }
-          example: ''
+          displayName: contextid
       responses:
         '200':
           description: Array of site notifications (empty array when none are pending).
@@ -4581,51 +4418,28 @@ schemas:
                   }
                 }
   /message_popup_get_popup_notifications:
-    post:
+    get:
       description: >
         Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 
         Moodle method: `message_popup_get_popup_notifications`
-      headers:
-        Content-Type:
+      queryParameters:
+        useridto:
+          description: ID of the recipient user, passed as a string.
+          type: string
           required: true
-          displayName: Content-Type
-          enum:
-          - application/json
-      body:
-        application/json:
-          schema: |
-            {
-              "id": "GetPopupNotificationsRequest",
-              "title": "GetPopupNotificationsRequest",
-              "description": "Parameters for the popup notifications request.",
-              "type": "object",
-              "properties": {
-                "useridto": {
-                  "description": "ID of the recipient user, passed as a string.",
-                  "example": "123456",
-                  "type": "string"
-                },
-                "limit": {
-                  "description": "Maximum number of notifications to return.",
-                  "example": 20,
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "offset": {
-                  "description": "Pagination offset.",
-                  "example": 0,
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "required": [
-                "useridto",
-                "limit",
-                "offset"
-              ]
-            }
-          example: ''
+          displayName: useridto
+        limit:
+          description: Maximum number of notifications to return.
+          type: integer
+          required: true
+          displayName: limit
+        offset:
+          description: Pagination offset.
+          type: integer
+          default: '0'
+          required: true
+          displayName: offset
       responses:
         '200':
           description: Popup notifications and total unread count.

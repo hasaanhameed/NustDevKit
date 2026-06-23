@@ -6,7 +6,7 @@ Returns the most recent popup notifications sent to a user, with support for pag
 Moodle method: `message_popup_get_popup_notifications`
 
 ```http
-POST /service/message_popup_get_popup_notifications
+GET /service/message_popup_get_popup_notifications
 ```
 
 
@@ -19,7 +19,9 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`Get Popup Notifications Request`](/llms-pages/http/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `String` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `Number` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `Number` | Query, Required | Pagination offset. |
 
 
 # Response Type
@@ -32,16 +34,13 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 # Example Usage
 
 ```bash
-curl -X POST \
+curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/message_popup_get_popup_notifications'  \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  --data-raw '{
-  "useridto": "123456",
-  "limit": 20,
-  "offset": 0
-}'
+  -d 'useridto=useridto2' \
+  -d 'limit=172' \
+  -d 'offset=0'
 ```
 
 

@@ -7,7 +7,9 @@ Moodle method: `message_popup_get_popup_notifications`
 
 ```ts
 async getPopupNotifications(
-  body: GetPopupNotificationsRequest,
+  useridto: string,
+  limit: number,
+  offset: number,
   requestOptions?: RequestOptions
 ): Promise<ApiResponse<PopupNotificationsResponse>>
 ```
@@ -22,7 +24,9 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `body` | [`GetPopupNotificationsRequest`](/llms-pages/typescript/models/structures/get-popup-notifications-request.md) | Body, Required | Parameters for the popup notifications request. |
+| `useridto` | `string` | Query, Required | ID of the recipient user, passed as a string. |
+| `limit` | `number` | Query, Required | Maximum number of notifications to return. |
+| `offset` | `number` | Query, Required | Pagination offset. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
@@ -36,14 +40,18 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const body: GetPopupNotificationsRequest = {
-  useridto: '123456',
-  limit: 20,
-  offset: 0,
-};
+const useridto = 'useridto2';
+
+const limit = 172;
+
+const offset = 0;
 
 try {
-  const response = await notificationsApi.getPopupNotifications(body);
+  const response = await notificationsApi.getPopupNotifications(
+    useridto,
+    limit,
+    offset
+  );
 
   // Extracting fully parsed response body.
   console.log(response.result);
