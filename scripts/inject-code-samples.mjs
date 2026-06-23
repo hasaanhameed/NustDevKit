@@ -183,21 +183,40 @@ if (initSamples.length) {
 }
 
 // Append a "Getting Started" section to info.description: per-language SDK download
-// links + setup steps. The per-language init CODE lives (tabbed) in the SDK Setup section.
-const downloadLinks = LANGS.filter(([zipName]) =>
-  existsSync(resolve(sdksDir, `nust-lms-api-${zipName}.zip`))
-).map(([zipName, meta]) => `   - [${meta.label}](./sdks/nust-lms-api-${zipName}.zip)`);
+// link + concise install command (the SDKs are unpublished, so install is from the
+// downloaded folder). The per-language init CODE lives (tabbed) in the SDK Setup section.
+// Concise, IDE-neutral install steps so users don't need each SDK's (PyCharm-flavoured)
+// README. Keyed by zip basename.
+const INSTALL = {
+  python_generic_lib: "run `pip install -r requirements.txt` in the unzipped folder",
+  ts_generic_lib: "run `npm install` in the unzipped folder, then add it to your project",
+  php_generic_lib_v2: "run `composer install` in the unzipped folder",
+  ruby_generic_lib: "run `gem build nust_lms_api.gemspec && gem install nust_lms_api-1.0.0.gem`",
+  go_generic_lib: "add a local `replace` for the folder in your `go.mod`, then run `go get`",
+  cs_net_standard_lib: "add a project reference to the `NustLmsApi.Standard` project",
+  java_eclipse_jre_lib: "build the JAR with Gradle and add it to your project",
+};
 
-if (downloadLinks.length && spec.info) {
+const sdkItems = LANGS.filter(([zipName]) =>
+  existsSync(resolve(sdksDir, `nust-lms-api-${zipName}.zip`))
+).map(
+  ([zipName, meta]) =>
+    `   - **${meta.label}** — [download](./sdks/nust-lms-api-${zipName}.zip), then ` +
+    `${INSTALL[zipName] ?? "install from the unzipped folder (see its README)"}.`
+);
+
+if (sdkItems.length && spec.info) {
   const gettingStarted = [
     "",
     "## Getting Started with the SDKs",
     "",
-    "1. **Download the SDK** for your language and install it (follow the SDK's README):",
-    ...downloadLinks,
+    "1. **Get the SDK** for your language — download the zip, unzip it, and install it:",
+    ...sdkItems,
     "2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.",
     "3. **Initialize a client** with that token — see the **SDK Setup** section for the",
     "   per-language code. Every other sample assumes that `client`.",
+    "",
+    "_Each SDK's own README has fuller, IDE-specific setup if you want it._",
     "",
   ].join("\n");
   spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${gettingStarted}\n`;
