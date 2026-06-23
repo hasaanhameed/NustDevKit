@@ -17,8 +17,6 @@ from app.schemas.service import (
     GetEnrolledCoursesByTimelineRequest,
     GetPopupNotificationsRequest,
     GetRecentCoursesRequest,
-    GetUserPreferencesRequest,
-    GetUsersByFieldRequest,
 )
 from app.services.lms_session import LMSSession
 
@@ -75,26 +73,6 @@ async def get_calendar_events_by_course(
     return await session.call_ajax(
         "core_calendar_get_action_events_by_course",
         params.model_dump(exclude_none=True),
-    )
-
-
-@router.get("/core_user_get_users_by_field")
-async def get_users_by_field(
-    params: Annotated[GetUsersByFieldRequest, Query()],
-    session: LMSSession = Depends(get_current_session),
-) -> Any:
-    return await session.call_ajax(
-        "core_user_get_users_by_field", params.model_dump(exclude_none=True)
-    )
-
-
-@router.get("/core_user_get_user_preferences")
-async def get_user_preferences(
-    params: Annotated[GetUserPreferencesRequest, Query()],
-    session: LMSSession = Depends(get_current_session),
-) -> Any:
-    return await session.call_ajax(
-        "core_user_get_user_preferences", params.model_dump(exclude_none=True)
     )
 
 

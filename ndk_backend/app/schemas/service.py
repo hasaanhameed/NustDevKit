@@ -27,13 +27,6 @@ class CourseTimelineSortField(str, Enum):
     timeaccess = "timeaccess"
 
 
-class UserProfileField(str, Enum):
-    id = "id"
-    idnumber = "idnumber"
-    username = "username"
-    email = "email"
-
-
 class GetRecentCoursesRequest(BaseModel):
     limit: int = Field(default=10, description="Maximum number of courses to return.")
 
@@ -62,16 +55,6 @@ class GetCalendarEventsByCourseRequest(BaseModel):
     timesortto: int | None = None
     aftereventid: int | None = None
     limitnum: int | None = None
-
-
-class GetUsersByFieldRequest(BaseModel):
-    field: UserProfileField
-    values: list[str] = Field(..., description="Field values to look up (always strings).")
-
-
-class GetUserPreferencesRequest(BaseModel):
-    userid: int = Field(..., description="ID of the user whose preferences to retrieve.")
-    name: str | None = Field(default=None, description="Specific preference name; omit for all.")
 
 
 class GetPopupNotificationsRequest(BaseModel):
