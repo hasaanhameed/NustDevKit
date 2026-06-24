@@ -12,13 +12,19 @@ from app.services.session_store import InMemorySessionStore, get_session_store
 bearer_scheme = HTTPBearer(auto_error=True)
 
 
-async def get_current_session(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-    store: InMemorySessionStore = Depends(get_session_store),
+async def resolve_session_from_token(
+    token: str,
+    store: InMemorySessionStore,
 ) -> LMSSession:
-    """Resolve the Bearer JWT to the LMS session it represents, or 401."""
+    """Resolve a raw Bearer JWT string to the live LMS session it represents.
+
+    Single source of truth for bearer auth, shared by the REST routes (which get
+    the token from FastAPI's HTTPBearer dependency) and the MCP tools (which read
+    it from the raw Authorization header). Raises HTTP 401 on invalid/expired
+    tokens or lost sessions.
+    """
     try:
-        payload = decode_access_token(credentials.credentials)
+        payload = decode_access_token(token)
     except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,3 +39,11 @@ async def get_current_session(
             detail="Session expired; please log in again",
         )
     return session
+
+
+async def get_current_session(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    store: InMemorySessionStore = Depends(get_session_store),
+) -> LMSSession:
+    """Resolve the Bearer JWT to the LMS session it represents, or 401."""
+    return await resolve_session_from_token(credentials.credentials, store)

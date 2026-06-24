@@ -8,8 +8,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
+from app.mcp_server import mcp
 from app.routes import auth, service
 from app.services.lms_session import LMSAjaxError, LMSAuthError
+
+# Build the MCP ASGI app first: it carries a lifespan that initializes FastMCP's
+# session manager. That lifespan MUST be handed to FastAPI below — without it,
+# every request to /mcp fails because the session manager never starts.
+mcp_app = mcp.http_app(path="/")
 
 app = FastAPI(
     title=settings.app_name,
@@ -18,6 +24,7 @@ app = FastAPI(
         "Gateway that authenticates against NUST LMS on the user's behalf and "
         "proxies the Moodle AJAX service behind a clean bearer-token API."
     ),
+    lifespan=mcp_app.lifespan,
 )
 
 app.add_middleware(
@@ -33,6 +40,10 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(service.router)
+
+# Mount the MCP server. AI assistants connect to http://<host>/mcp with their
+# bearer token; each tool resolves that token to the caller's live LMS session.
+app.mount("/mcp", mcp_app)
 
 
 @app.exception_handler(LMSAjaxError)
