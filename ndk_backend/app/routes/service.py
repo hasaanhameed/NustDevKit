@@ -11,7 +11,6 @@ from fastapi import APIRouter, Depends, Query
 
 from app.dependencies import get_current_session
 from app.schemas.service import (
-    FetchNotificationsRequest,
     GetCalendarEventsByCourseRequest,
     GetCalendarEventsByTimesortRequest,
     GetCourseContentsRequest,
@@ -57,14 +56,12 @@ async def get_course_contents(
     )
 
 
-@router.get("/core_fetch_notifications")
-async def fetch_notifications(
-    params: Annotated[FetchNotificationsRequest, Query()],
+@router.get("/core_webservice_get_site_info")
+async def get_site_info(
     session: LMSSession = Depends(get_current_session),
 ) -> Any:
-    return await session.call_ajax(
-        "core_fetch_notifications", params.model_dump(exclude_none=True)
-    )
+    # Returns your identity (userid, fullname, ...) + site info. REST-only function.
+    return await session.call_rest("core_webservice_get_site_info", {})
 
 
 @router.get("/core_calendar_get_action_events_by_timesort")

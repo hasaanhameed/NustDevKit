@@ -6,10 +6,11 @@ grouped by domain (mirroring the REST routes) and wired in via each module's
 """
 from fastmcp import FastMCP
 
-from app.mcp.tools import calendar, courses, notifications
+from app.mcp.tools import account, calendar, courses, notifications
 
 mcp = FastMCP("NUST LMS")
 
+account.register(mcp)
 courses.register(mcp)
 calendar.register(mcp)
 notifications.register(mcp)

@@ -42,10 +42,6 @@ class GetCourseContentsRequest(BaseModel):
     courseid: int = Field(..., description="ID of the course whose contents to retrieve.")
 
 
-class FetchNotificationsRequest(BaseModel):
-    contextid: int = Field(..., description="Moodle context ID to fetch notifications for.")
-
-
 class GetCalendarEventsByTimesortRequest(BaseModel):
     limitnum: int = Field(..., description="Maximum number of events to return.")
     timesortfrom: int = Field(..., description="Only events with timesort >= this Unix timestamp.")

@@ -62,6 +62,8 @@ tags:
   - name: Calendar
     description: |
       Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
+  - name: Account
+    description: Your identity and account/site information
   - name: Notifications
     description: Notification retrieval operations
   - name: SDK Setup
@@ -75,8 +77,9 @@ x-tagGroups:
     tags:
       - Courses
       - Calendar
-  - name: Messaging
+  - name: Profile & Messaging
     tags:
+      - Account
       - Notifications
 components:
   securitySchemes:
@@ -160,19 +163,58 @@ components:
           type: string
           description: Human-readable warning description.
           example: ""
-    SiteNotification:
+    SiteInfo:
       type: object
-      description: A site-level notification (structure varies by type).
+      description: |
+        Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).
+      required:
+        - userid
+        - username
+        - fullname
+        - sitename
       properties:
-        id:
+        userid:
           type: integer
-          description: Unique identifier for the site notification.
-        message:
+          description: Your numeric Moodle user ID.
+          example: 234567
+        username:
           type: string
-          description: Notification message content.
-        type:
+          description: Your login username.
+          example: johndoe.bscs23seecs
+        firstname:
           type: string
-          description: Notification type identifier.
+          description: Your first name.
+          example: John
+        lastname:
+          type: string
+          description: Your last name.
+          example: Doe
+        fullname:
+          type: string
+          description: Your full display name.
+          example: John Doe
+        userpictureurl:
+          type: string
+          format: uri
+          description: URL of your profile picture.
+          example: https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1
+        lang:
+          type: string
+          description: Your preferred interface language code.
+          example: en
+        sitename:
+          type: string
+          description: Name of the LMS site.
+          example: NUST LMS
+        siteurl:
+          type: string
+          format: uri
+          description: Base URL of the LMS site.
+          example: https://lms.nust.edu.pk/portal
+        release:
+          type: string
+          description: Moodle release/version string of the site.
+          example: 4.1.2
     MoodleError:
       x-scalar-ignore: true
       type: object
@@ -885,18 +927,6 @@ components:
           $ref: "#/components/schemas/CourseTimelineClassification"
         sort:
           $ref: "#/components/schemas/CourseTimelineSortField"
-    FetchNotificationsRequest:
-      x-scalar-ignore: true
-      type: object
-      description: Request parameters for fetching site-level notifications.
-      required:
-        - contextid
-      properties:
-        contextid:
-          type: integer
-          description: |
-            Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-          example: 1583361
     GetCalendarEventsByTimesortRequest:
       x-scalar-ignore: true
       type: object
@@ -1723,170 +1753,28 @@ paths:
             elsif result.error?
               warn result.errors
             end
-  /service/core_fetch_notifications:
+  /service/core_webservice_get_site_info:
     get:
-      operationId: fetchNotifications
-      summary: Fetch site-level notifications for a context
+      operationId: getSiteInfo
+      summary: Get your account and site info
       description: |
-        Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
-        Moodle method: `core_fetch_notifications`
+        Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
+        Moodle method: `core_webservice_get_site_info`
       tags:
-        - Notifications
-      parameters:
-        - name: contextid
-          in: query
-          required: true
-          description: |
-            Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-          schema:
-            type: integer
+        - Account
       responses:
         "200":
-          description: Array of site notifications (empty array when none are pending).
+          description: Your account and site information.
           content:
             application/json:
               schema:
-                type: array
-                description: Site-level notifications for the given context; empty array when none are pending.
-                items:
-                  $ref: "#/components/schemas/SiteNotification"
+                $ref: "#/components/schemas/SiteInfo"
         "400":
           description: Bad request or Moodle exception.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MoodleError"
-      x-codeSamples:
-        - lang: typescript
-          label: TypeScript
-          source: |-
-            const contextid = 156;
-
-            try {
-              const response = await notificationsApi.fetchNotifications(contextid);
-
-              // Extracting fully parsed response body.
-              console.log(response.result);
-
-              // Extracting response status code.
-              console.log(response.statusCode);
-              // Extracting response headers.
-              console.log(response.headers);
-              // Extracting response body of type `string | Stream`
-              console.log(response.body);
-            } catch (error) {
-              if (error instanceof ApiError) {
-                // Extracting response error status code.
-                console.log(error.statusCode);
-                // Extracting response error headers.
-                console.log(error.headers);
-                // Extracting response error body of type `string | Stream`.
-                console.log(error.body);
-                if (error instanceof MoodleError) {
-                  console.log(error.result);
-                }
-              }
-            }
-        - lang: python
-          label: Python
-          source: |-
-            contextid = 156
-
-            result = notifications_api.fetch_notifications(contextid)
-
-            if result.is_success():
-                print(result.body)
-            elif result.is_error():
-                print(result.errors)
-        - lang: java
-          label: Java
-          source: |-
-            int contextid = 156;
-
-            notificationsApi.fetchNotificationsAsync(contextid).thenAccept(result -> {
-                // TODO success callback handler
-                System.out.println(result);
-            }).exceptionally(exception -> {
-                Throwable cause = exception.getCause();
-
-                if (cause instanceof MoodleErrorException) {
-                    MoodleErrorException moodleErrorException = (MoodleErrorException) cause;
-                    moodleErrorException.printStackTrace();
-                } else {
-                    // fallback for unexpected errors
-                    exception.printStackTrace();
-                }
-
-                return null;
-            });
-        - lang: csharp
-          label: .NET (C#)
-          source: |-
-            int contextid = 156;
-            try
-            {
-                ApiResponse<List<SiteNotification>> result = await notificationsApi.FetchNotificationsAsync(contextid);
-            }
-            catch (ApiException e)
-            {
-                Console.WriteLine(e.Message);
-                if (e is MoodleErrorException)
-                {
-                   // TODO: Handle MoodleErrorException exception here
-                }
-            }
-        - lang: go
-          label: Go
-          source: |-
-            ctx := context.Background()
-
-            contextid := 156
-
-            apiResponse, err := notificationsApi.FetchNotifications(ctx, contextid)
-            if err != nil {
-                switch typedErr := err.(type) {
-                    case *errors.MoodleError:
-                        log.Fatalln("MoodleErrorException: ", typedErr)
-                    default:
-                        log.Fatalln(err)
-                }
-            } else {
-                // Printing the result and response
-                fmt.Println(apiResponse.Data)
-                fmt.Println(apiResponse.Response.StatusCode)
-            }
-        - lang: php
-          label: PHP
-          source: |-
-            $contextid = 156;
-
-            $notificationsApi = $client->getNotificationsApi();
-            $apiResponse = $notificationsApi->fetchNotifications($contextid);
-
-            // Extracting response status code
-            var_dump($apiResponse->getStatusCode());
-            // Extracting response headers
-            var_dump($apiResponse->getHeaders());
-
-            if ($apiResponse->isSuccess()) {
-                echo 'SiteNotification[]:';
-                var_dump($apiResponse->getResult());
-            } else {
-                $error = $apiResponse->getResult();
-                var_dump($error);
-            }
-        - lang: ruby
-          label: Ruby
-          source: |-
-            contextid = 156
-
-            result = notifications_api.fetch_notifications(contextid)
-
-            if result.success?
-              puts result.data
-            elsif result.error?
-              warn result.errors
-            end
   /service/core_calendar_get_action_events_by_timesort:
     get:
       operationId: getCalendarEventsByTimesort
@@ -2292,7 +2180,8 @@ paths:
         - name: useridto
           in: query
           required: true
-          description: ID of the recipient user, passed as a string.
+          description: |
+            ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.
           schema:
             type: string
         - name: limit
