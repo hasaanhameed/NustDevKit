@@ -265,6 +265,14 @@
           button[role="search"] > span:last-child {
             display: none !important;
           }
+
+          /* Hide Scalar's built-in "Generate MCP" button. It points at Scalar's own
+             hosted MCP product (needs a Scalar account), not our self-hosted /mcp, so
+             it's misleading here. The button's icon carries the unique class .mcp-nav;
+             :has() lets us hide its containing button without a brittle generated class. */
+          :has(> .mcp-nav) {
+            display: none !important;
+          }
         `,
       });
     </script>

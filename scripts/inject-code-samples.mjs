@@ -219,6 +219,40 @@ if (sdkItems.length && spec.info) {
   spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${gettingStarted}\n`;
 }
 
+// Append the "Connect an AI assistant (MCP)" section AFTER the SDK getting-started,
+// so the overview reads SDKs first, then MCP. Static text (not derived from the SDKs),
+// but appended here to control its order relative to the SDK block.
+if (spec.info) {
+  const mcpSection = [
+    "",
+    "## Connect an AI assistant (MCP)",
+    "",
+    "Beyond the SDKs, this API is also an **MCP server**, so AI assistants (Claude",
+    "Desktop, Cursor, VS Code, Claude.ai, ChatGPT) can call it as tools — for example,",
+    '*"what deadlines do I have this week?"*. The login step is never exposed to the',
+    "assistant: you authenticate yourself and hand it a token.",
+    "",
+    "Every client connects the same way — your server URL plus your bearer token:",
+    "",
+    "1. Get a token from `POST /auth/login`.",
+    "2. **Desktop / editor clients** (Claude Desktop, Cursor, VS Code) — add it to the MCP config:",
+    "",
+    "   ```json",
+    '   { "mcpServers": { "nust-lms": {',
+    '       "url": "https://<your-host>/mcp",',
+    '       "headers": { "Authorization": "Bearer <token>" } } } }',
+    "   ```",
+    "",
+    "3. **Web clients** (Claude.ai, ChatGPT) — open Settings → Connectors and add the same URL.",
+    "",
+    "Web clients reach the server from the cloud, so this needs the gateway on a public",
+    "**HTTPS** URL. `http://127.0.0.1:8000/mcp` only works for desktop clients running on",
+    "your own machine.",
+    "",
+  ].join("\n");
+  spec.info.description = `${(spec.info.description ?? "").trimEnd()}\n${mcpSection}\n`;
+}
+
 if (errors.length) {
   console.error("✗ Code-sample injection failed:");
   for (const e of errors) console.error(`  - ${e}`);
