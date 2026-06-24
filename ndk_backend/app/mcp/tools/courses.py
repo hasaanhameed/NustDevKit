@@ -44,3 +44,20 @@ def register(mcp: FastMCP) -> None:
                 "limit": limit,
             },
         )
+
+    @mcp.tool
+    async def list_course_contents(courseid: int) -> Any:
+        """List everything posted in a course — sections, activities, and uploaded files.
+
+        Returns the course's weeks/topics and the items in each (files, pages, URLs,
+        assignments, ...), with file names and download URLs. Get `courseid` from
+        list_recent_courses or list_courses_by_timeline. Use for "what readings are
+        posted in my OS course?" or "what files are in week 3?".
+
+        (File URLs need the session/token to actually download; names and metadata
+        come back directly.)
+        """
+        session = await current_session()
+        # Not an AJAX-enabled Moodle function — goes through the token-based REST
+        # transport, same as the REST route.
+        return await session.call_rest("core_course_get_contents", {"courseid": courseid})
