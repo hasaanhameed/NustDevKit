@@ -138,6 +138,35 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
 
 
 
+## Service Core Course Get Contents [/service/core_course_get_contents{?courseid}]
+
+### getCourseContents [GET]
+Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.
+Note: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.
+Moodle method: `core_course_get_contents`
++ Parameters
+    + courseid (number, required)
+
+        ID of the course whose contents to retrieve.
+
+
++ Response 200 (application/json)
+
+        Course sections, each with its modules and their uploaded files.
+
+    + Attributes (array[CourseSection])
+
+
+
++ Response 400 (application/json)
+
+        Bad request or Moodle exception.
+
+    + Attributes (MoodleError)
+
+
+
+
 
 # Group Calendar
 
@@ -152,12 +181,14 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 + Parameters
     + limitnum (number, required)
 
-        Maximum number of events to return.
+        Maximum number of events to return (e.g. 20 for one page of results).
 
+        + Sample: 20
     + timesortfrom (number, required)
 
-        Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+        Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 | 0` in JS or `int(time.time())` in Python).
 
+        + Sample: 0
     + timesortto (number, optional)
 
         Only return events with timesort <= this Unix timestamp.
@@ -216,81 +247,6 @@ Moodle method: `core_calendar_get_action_events_by_course`
         Calendar events for the specified course.
 
     + Attributes (CalendarEventsResponse)
-
-
-
-+ Response 400 (application/json)
-
-        Bad request or Moodle exception.
-
-    + Attributes (MoodleError)
-
-
-
-
-
-# Group Users
-
-User profile and preferences operations
-
-## Service Core User Get Users By Field [/service/core_user_get_users_by_field{?field,values}]
-
-### getUsersByField [GET]
-Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
-Moodle method: `core_user_get_users_by_field`
-+ Parameters
-    + field (enum[string], required)
-
-        User profile field to match against when searching for users.
-
-        + Members
-            + `id` 
-            + `idnumber` 
-            + `username` 
-            + `email` 
-
-    + values (array[string], required)
-
-        List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
-
-
-+ Response 200 (application/json)
-
-        List of matching user profiles.
-
-    + Attributes (array[UserProfile])
-
-
-
-+ Response 400 (application/json)
-
-        Bad request or Moodle exception.
-
-    + Attributes (MoodleError)
-
-
-
-
-## Service Core User Get User Preferences [/service/core_user_get_user_preferences{?userid,name}]
-
-### getUserPreferences [GET]
-Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
-Moodle method: `core_user_get_user_preferences`
-+ Parameters
-    + userid (number, required)
-
-        ID of the user whose preferences to retrieve.
-
-    + name (string, optional)
-
-        Specific preference name to retrieve. Omit to retrieve all preferences.
-
-
-+ Response 200 (application/json)
-
-        User preferences list and optional warnings.
-
-    + Attributes (UserPreferencesResponse)
 
 
 
@@ -484,6 +440,50 @@ Paginated enrolled-courses response.
 + `nextoffset`: `29` (number, required) - Offset to pass on the next page request; -1 when no further pages exist.
 
 
+## CourseContentFile (object)
+A single file (or link) uploaded inside a course module.
+
+### Properties
++ `type`: `file` (string, required) - Content type, e.g. 'file' or 'url'.
++ `filename`: `Lecture01-Intro.pdf` (string, required) - Name of the file (or title of the link).
++ `filepath`: `/` (string, optional, nullable) - Folder path within the module; "/" for the module root.
++ `filesize`: `482133` (number, optional) - File size in bytes (0 for links).
++ `fileurl`: `https://lms.nust.edu.pk/portal/webservice/pluginfile.php/123456/mod_resource/content/1/Lecture01-Intro.pdf` (string, required) - Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable.
++ `mimetype`: `application/pdf` (string, optional, nullable) - MIME type of the file when applicable.
++ `timemodified`: `1707745200` (number, optional) - Unix timestamp of the last modification.
+
+
+## CourseModule (object)
+An item on the course page — an activity or resource (file, page, URL, assignment, ...).
+
+### Properties
++ `id`: `987654` (number, required) - Course module ID (cmid).
++ `name`: `Lecture 01 — Introduction` (string, required) - Display name of the module.
++ `modname`: `resource` (string, required) - Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'.
++ `modplural`: `Files` (string, optional) - Human-readable plural label for the module type.
++ `instance`: `45678` (number, optional) - Instance ID of the activity within its module type.
++ `description`: `<p>Course introduction and logistics.</p>` (string, optional, nullable) - HTML description/intro for the module, when present.
++ `visible`: `1` (number, optional) - Whether the module is visible (1) or hidden (0).
++ `uservisible`: `true` (boolean, optional) - Whether the module is visible to the current user.
++ `url`: `https://lms.nust.edu.pk/portal/mod/resource/view.php?id=987654` (string, optional, nullable) - Link to open the activity/resource, when applicable.
++ `modicon`: `https://lms.nust.edu.pk/portal/theme/image.php/moove/core/1/f/pdf` (string, optional, nullable) - URL of the module's type icon.
++ `contents` (array[CourseContentFile], optional) - Uploaded files/links for this module (present for resource/folder modules).
+
+
+## CourseSection (object)
+A section (week/topic) of the course, containing its modules.
+
+### Properties
++ `id`: `33445` (number, required) - Section ID.
++ `name`: `Week 1` (string, required) - Section title (e.g. a week or topic name).
++ `section`: `1` (number, required) - Zero-based section number within the course.
++ `visible`: `1` (number, optional) - Whether the section is visible (1) or hidden (0).
++ `summary`: `<p>Introduction and course overview.</p>` (string, optional, nullable) - HTML summary shown at the top of the section.
++ `summaryformat`: `1` (number, optional) - Moodle text format of the summary (1 = HTML).
++ `uservisible`: `true` (boolean, optional) - Whether the section is visible to the current user.
++ `modules` (array[CourseModule], required) - The activities and resources in this section.
+
+
 ## EventIcon (object)
 Icon metadata for a calendar event.
 
@@ -560,55 +560,6 @@ A list of calendar events with pagination boundary IDs.
 + `events` (array[CalendarEvent], required) - List of calendar action events for the current result set.
 + `firstid`: `149885` (number, required) - Event ID of the first item in the result set.
 + `lastid`: `151886` (number, required) - Event ID of the last item in the result set.
-
-
-## CustomField (object)
-A custom profile field value attached to a user.
-
-### Properties
-+ `type`: `text` (string, required) - Data type of the custom field (e.g., 'text', 'select').
-+ `value`: `SEECS` (string, required) - Value stored in the custom field.
-+ `name`: `Institute` (string, required) - Display label of the custom field.
-+ `shortname`: `institution` (string, required) - Machine-readable shortname identifier for the custom field.
-
-
-## UserPreference (object)
-A single user preference setting.
-
-### Properties
-+ `name`: `block_myoverview_user_sort_preference` (string, required) - Unique key identifying the preference.
-+ `value`: `title` (string, required) - Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.
-
-
-## UserProfile (object)
-Complete user profile.
-
-### Properties
-+ `id`: `123456` (number, required) - Unique numeric user identifier.
-+ `username`: `johndoe.bscs23seecs` (string, required) - Login username for the user.
-+ `fullname`: `John Doe` (string, required) - Full display name of the user.
-+ `email`: `johndoe.bscs23seecs@seecs.edu.pk` (string, required) - Email address of the user.
-+ `department`: `FoC` (string, required) - Department the user belongs to within the institution.
-+ `institution`: `SEECS` (string, required) - Name of the institution the user is affiliated with.
-+ `idnumber`: `00000454987` (string, required) - Institution-assigned student or staff ID number.
-+ `auth`: `ldap` (string, required) - Authentication method used by the user (e.g., 'ldap', 'manual').
-+ `confirmed`: `true` (boolean, required) - Whether the user's account has been confirmed.
-+ `lang`: `en` (string, required) - Preferred interface language code (e.g., 'en').
-+ `theme` (string, required) - Preferred LMS theme; empty string means use the site default.
-+ `timezone`: `99` (string, required) - Timezone identifier. "99" means use the server default.
-+ `mailformat`: `1` (number, required) - Email format preference (1 = HTML).
-+ `profileimageurlsmall`: `https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894` (string, required) - URL to the user's small profile image (thumbnail).
-+ `profileimageurl`: `https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894` (string, required) - URL to the user's full-size profile image.
-+ `customfields` (array[CustomField], optional) - List of custom profile field values for the user.
-+ `preferences` (array[UserPreference], optional) - List of stored preference key/value pairs for the user.
-
-
-## UserPreferencesResponse (object)
-Response envelope for the user-preferences endpoint.
-
-### Properties
-+ `preferences` (array[UserPreference], required) - List of user preference key/value pairs.
-+ `warnings` (array[MoodleWarning], required) - Array of warning objects. Empty when no warnings are present.
 
 
 ## Notification (object)
@@ -701,26 +652,6 @@ Request parameters for retrieving calendar action events for a specific course.
 + `timesortto` (number, optional) - Only return events with timesort <= this Unix timestamp. Optional.
 + `aftereventid` (number, optional) - Cursor-based pagination — return events after this event ID. Optional.
 + `limitnum` (number, optional) - Maximum number of events to return. Optional.
-
-
-## GetUsersByFieldRequest (object)
-Request parameters for retrieving user profiles by a profile field value.
-
-### Properties
-+ `field` (enum[string], required) - User profile field to match against when searching for users.
-    + `id`
-    + `idnumber`
-    + `username`
-    + `email`
-+ `values`: `["123456"]` (array[string], required) - List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
-
-
-## GetUserPreferencesRequest (object)
-Request parameters for retrieving user preferences.
-
-### Properties
-+ `userid`: `123456` (number, required) - ID of the user whose preferences to retrieve.
-+ `name` (string, optional) - Specific preference name to retrieve. Omit to retrieve all preferences.
 
 
 ## GetPopupNotificationsRequest (object)

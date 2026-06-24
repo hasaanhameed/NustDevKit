@@ -23,8 +23,8 @@ This endpoint requires [BearerAuth](/llms-pages/net-standard-library/getting-sta
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `limitnum` | `int` | Query, Required | Maximum number of events to return. |
-| `timesortfrom` | `int` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `limitnum` | `int` | Query, Required | Maximum number of events to return (e.g. 20 for one page of results). |
+| `timesortfrom` | `int` | Query, Required | Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 \| 0` in JS or `int(time.time())` in Python). |
 | `timesortto` | `int?` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
 | `aftereventid` | `int?` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
@@ -39,8 +39,8 @@ This method returns an [`ApiResponse`](/llms-pages/net-standard-library/sdk-infr
 # Example Usage
 
 ```csharp
-int limitnum = 32;
-int timesortfrom = 58;
+int limitnum = 20;
+int timesortfrom = 0;
 try
 {
     ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(

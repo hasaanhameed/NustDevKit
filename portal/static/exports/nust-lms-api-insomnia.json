@@ -6,42 +6,35 @@
     {
       "name": "NUST LMS API",
       "_type": "workspace",
-      "_id": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
+      "_id": "wrk_dd7cee456ea140d3ab82fdcaf445bb22",
       "description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).\nAuthenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.\n"
     },
     {
       "name": "Authentication",
       "_type": "request_group",
-      "_id": "fld_70d2df90fd6c4f34a7b14434212648f9",
-      "parentId": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
+      "_id": "fld_2c2a8344a2b3466c85c26f59794ec339",
+      "parentId": "wrk_dd7cee456ea140d3ab82fdcaf445bb22",
       "description": "Exchange NUST LMS credentials for a gateway bearer token"
     },
     {
       "name": "Courses",
       "_type": "request_group",
-      "_id": "fld_14ef31abbc1b445d824535d90d2504ca",
-      "parentId": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
+      "_id": "fld_5728a28abfed446ab53e3a548fe5e6e0",
+      "parentId": "wrk_dd7cee456ea140d3ab82fdcaf445bb22",
       "description": "Course listing and enrollment operations"
     },
     {
       "name": "Calendar",
       "_type": "request_group",
-      "_id": "fld_21196c9f01c444d4914c63ef5ef5622d",
-      "parentId": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
+      "_id": "fld_c542a56baaaf4692be702a76364a3718",
+      "parentId": "wrk_dd7cee456ea140d3ab82fdcaf445bb22",
       "description": "Calendar operations. On NUST LMS, these \"action events\" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.\n"
-    },
-    {
-      "name": "Users",
-      "_type": "request_group",
-      "_id": "fld_c2f9138f746643fb917ab36ad89569e6",
-      "parentId": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
-      "description": "User profile and preferences operations"
     },
     {
       "name": "Notifications",
       "_type": "request_group",
-      "_id": "fld_f49104b4e82146e1928f3bc04630f529",
-      "parentId": "wrk_b85a3d5aade24bf2b5811aea80b77d28",
+      "_id": "fld_4e0f0fb659b0474eb959236a7c93b979",
+      "parentId": "wrk_dd7cee456ea140d3ab82fdcaf445bb22",
       "description": "Notification retrieval operations"
     },
     {
@@ -50,7 +43,7 @@
       "url": "http://127.0.0.1:8000/auth/login",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"username\": \"johndoe.bscs23seecs\",\n  \"password\": \"password76\"\n}"
+        "text": "{\n  \"username\": \"johndoe.bscs23seecs\",\n  \"password\": \"password88\"\n}"
       },
       "headers": [
         {
@@ -61,8 +54,8 @@
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_667341a740fd44d9af72f0bfbb7d5c4f",
-      "parentId": "fld_70d2df90fd6c4f34a7b14434212648f9",
+      "_id": "req_911057d2b2ae43e786fda3e7c5cde5b7",
+      "parentId": "fld_2c2a8344a2b3466c85c26f59794ec339",
       "description": "Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.\n"
     },
     {
@@ -78,8 +71,8 @@
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_43dd642693cc4a4f9344f2f7aec1d25b",
-      "parentId": "fld_14ef31abbc1b445d824535d90d2504ca",
+      "_id": "req_6fcb75b665a34b4189ea37a8606259b2",
+      "parentId": "fld_5728a28abfed446ab53e3a548fe5e6e0",
       "description": "Returns the courses the authenticated user has accessed most recently, ordered by last access time.\nMoodle method: `core_course_get_recent_courses`\n"
     },
     {
@@ -99,20 +92,37 @@
         },
         {
           "name": "classification",
-          "value": "favourites",
+          "value": "past",
           "disabled": false
         },
         {
           "name": "sort",
-          "value": "shortname",
+          "value": "fullname",
           "disabled": false
         }
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_562337507aaf46bca4da20d433898304",
-      "parentId": "fld_14ef31abbc1b445d824535d90d2504ca",
+      "_id": "req_35b2f1bea79c49c58cbe4a12bd8801ab",
+      "parentId": "fld_5728a28abfed446ab53e3a548fe5e6e0",
       "description": "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`\n"
+    },
+    {
+      "name": "getCourseContents",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/service/core_course_get_contents",
+      "parameters": [
+        {
+          "name": "courseid",
+          "value": "1",
+          "disabled": false
+        }
+      ],
+      "authentication": {},
+      "_type": "request",
+      "_id": "req_37d05edfd4b4438e9a2317a8dc177cb1",
+      "parentId": "fld_5728a28abfed446ab53e3a548fe5e6e0",
+      "description": "Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.\nNote: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.\nMoodle method: `core_course_get_contents`\n"
     },
     {
       "name": "getCalendarEventsByTimesort",
@@ -121,29 +131,29 @@
       "parameters": [
         {
           "name": "limitnum",
-          "value": "111",
+          "value": "20",
           "disabled": false
         },
         {
           "name": "timesortfrom",
-          "value": "148",
+          "value": "0",
           "disabled": false
         },
         {
           "name": "timesortto",
-          "value": "248",
+          "value": "137",
           "disabled": false
         },
         {
           "name": "aftereventid",
-          "value": "219",
+          "value": "18",
           "disabled": false
         }
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_41c5f4c08b274eed8e7386d580f91a37",
-      "parentId": "fld_21196c9f01c444d4914c63ef5ef5622d",
+      "_id": "req_fda3a1c86d2342abb2e1dc11fd429f1a",
+      "parentId": "fld_c542a56baaaf4692be702a76364a3718",
       "description": "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`\n"
     },
     {
@@ -153,79 +163,35 @@
       "parameters": [
         {
           "name": "courseid",
-          "value": "46",
+          "value": "134",
           "disabled": false
         },
         {
           "name": "timesortfrom",
-          "value": "121",
+          "value": "125",
           "disabled": false
         },
         {
           "name": "timesortto",
-          "value": "41",
+          "value": "49",
           "disabled": false
         },
         {
           "name": "aftereventid",
-          "value": "211",
+          "value": "113",
           "disabled": false
         },
         {
           "name": "limitnum",
-          "value": "46",
+          "value": "185",
           "disabled": false
         }
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_f5e33acda8ed4100b571913f51b9bfc1",
-      "parentId": "fld_21196c9f01c444d4914c63ef5ef5622d",
+      "_id": "req_fa8b600c9dce487d8a22287c57a451aa",
+      "parentId": "fld_c542a56baaaf4692be702a76364a3718",
       "description": "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`\n"
-    },
-    {
-      "name": "getUsersByField",
-      "method": "GET",
-      "url": "http://127.0.0.1:8000/service/core_user_get_users_by_field",
-      "parameters": [
-        {
-          "name": "field",
-          "value": "username",
-          "disabled": false
-        },
-        {
-          "name": "values",
-          "value": "[\"values74\"]",
-          "disabled": false
-        }
-      ],
-      "authentication": {},
-      "_type": "request",
-      "_id": "req_2f622c6c14084becb2e68e74785d312a",
-      "parentId": "fld_c2f9138f746643fb917ab36ad89569e6",
-      "description": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n"
-    },
-    {
-      "name": "getUserPreferences",
-      "method": "GET",
-      "url": "http://127.0.0.1:8000/service/core_user_get_user_preferences",
-      "parameters": [
-        {
-          "name": "userid",
-          "value": "149",
-          "disabled": false
-        },
-        {
-          "name": "name",
-          "value": "name84",
-          "disabled": false
-        }
-      ],
-      "authentication": {},
-      "_type": "request",
-      "_id": "req_3f5d578359c04cc38c2dd85a6a6115c6",
-      "parentId": "fld_c2f9138f746643fb917ab36ad89569e6",
-      "description": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n"
     },
     {
       "name": "fetchNotifications",
@@ -234,14 +200,14 @@
       "parameters": [
         {
           "name": "contextid",
-          "value": "245",
+          "value": "5",
           "disabled": false
         }
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_a66c3d008d0941349582c3ccdefc343f",
-      "parentId": "fld_f49104b4e82146e1928f3bc04630f529",
+      "_id": "req_4a63901aa19a41b9a1df8503bc3e8cb3",
+      "parentId": "fld_4e0f0fb659b0474eb959236a7c93b979",
       "description": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n"
     },
     {
@@ -251,12 +217,12 @@
       "parameters": [
         {
           "name": "useridto",
-          "value": "useridto41",
+          "value": "useridto43",
           "disabled": false
         },
         {
           "name": "limit",
-          "value": "120",
+          "value": "37",
           "disabled": false
         },
         {
@@ -267,8 +233,8 @@
       ],
       "authentication": {},
       "_type": "request",
-      "_id": "req_d4b5d122636f4e78bf2aaf50388ca3d1",
-      "parentId": "fld_f49104b4e82146e1928f3bc04630f529",
+      "_id": "req_55da0cd9e0594a508b6a14191b89860c",
+      "parentId": "fld_4e0f0fb659b0474eb959236a7c93b979",
       "description": "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`\n"
     }
   ]

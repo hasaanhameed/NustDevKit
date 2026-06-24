@@ -97,6 +97,10 @@ const byLang = LANGS.map(([zipName, meta]) => ({
 // --- Inject into the spec artifact. ---
 const spec = parse(readFileSync(specPath, "utf8"));
 const errors = [];
+// Missing SDK samples are non-fatal: a newly-added endpoint has no generated
+// sample until the SDKs are regenerated via APIMatic. The operation still renders
+// (without a Code Examples panel) and gains samples on the next regeneration.
+const warnings = [];
 
 for (const [path, ops] of Object.entries(spec.paths ?? {})) {
   // Only the proxied LMS endpoints map to an APIMatic SDK method. Skip gateway
@@ -111,7 +115,7 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
   for (const { meta, samples } of byLang) {
     const source = samples[moodleMethod];
     if (!source) {
-      errors.push(`missing ${meta.label} sample for ${path}`);
+      warnings.push(`missing ${meta.label} sample for ${path} (regenerate SDKs)`);
       continue;
     }
     if (source.includes("{%")) {
@@ -120,7 +124,9 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
     }
     codeSamples.push({ lang: meta.lang, label: meta.label, source });
   }
-  op["x-codeSamples"] = codeSamples;
+  // Only attach when we actually have samples — a new endpoint awaiting SDK
+  // regeneration shouldn't render an empty Code Examples panel.
+  if (codeSamples.length) op["x-codeSamples"] = codeSamples;
 }
 
 // Login isn't a Moodle method (no /service/ path), so inject its sample
@@ -257,6 +263,11 @@ if (errors.length) {
   console.error("✗ Code-sample injection failed:");
   for (const e of errors) console.error(`  - ${e}`);
   process.exit(1);
+}
+
+if (warnings.length) {
+  console.warn("! Code samples skipped (endpoint(s) awaiting SDK regeneration):");
+  for (const w of warnings) console.warn(`  - ${w}`);
 }
 
 const total = Object.values(spec.paths).filter(

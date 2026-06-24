@@ -19,8 +19,8 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `limitnum` | `Number` | Query, Required | Maximum number of events to return. |
-| `timesortfrom` | `Number` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `limitnum` | `Number` | Query, Required | Maximum number of events to return (e.g. 20 for one page of results). |
+| `timesortfrom` | `Number` | Query, Required | Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 \| 0` in JS or `int(time.time())` in Python). |
 | `timesortto` | `Number` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
 | `aftereventid` | `Number` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 
@@ -39,8 +39,8 @@ curl -X GET -G \
   --url 'http://127.0.0.1:8000/service/core_calendar_get_action_events_by_timesort'  \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer AccessToken' \
-  -d 'limitnum=32' \
-  -d 'timesortfrom=58'
+  -d 'limitnum=20' \
+  -d 'timesortfrom=0'
 ```
 
 

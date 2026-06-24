@@ -181,6 +181,48 @@
       ]
     },
     {
+      "path": "/service/core_course_get_contents",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.\nNote: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.\nMoodle method: `core_course_get_contents`\n",
+          "nickname": "getCourseContents",
+          "parameters": [
+            {
+              "name": "courseid",
+              "description": "ID of the course whose contents to retrieve.",
+              "paramType": "query",
+              "required": true,
+              "allowMultiple": false,
+              "minimum": "",
+              "maximum": "",
+              "uniqueItems": false,
+              "type": "integer",
+              "format": "int32"
+            }
+          ],
+          "authorizations": {
+            "BearerAuth": []
+          },
+          "produces": [
+            "application/json"
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": "MoodleError",
+              "message": "Bad request or Moodle exception."
+            }
+          ],
+          "items": {
+            "$ref": "CourseSection"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      ]
+    },
+    {
       "path": "/service/core_calendar_get_action_events_by_timesort",
       "operations": [
         {
@@ -190,7 +232,7 @@
           "parameters": [
             {
               "name": "limitnum",
-              "description": "Maximum number of events to return.",
+              "description": "Maximum number of events to return (e.g. 20 for one page of results).",
               "paramType": "query",
               "required": true,
               "allowMultiple": false,
@@ -202,7 +244,7 @@
             },
             {
               "name": "timesortfrom",
-              "description": "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.",
+              "description": "Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 | 0` in JS or `int(time.time())` in Python).",
               "paramType": "query",
               "required": true,
               "allowMultiple": false,
@@ -339,111 +381,6 @@
           ],
           "uniqueItems": false,
           "$ref": "CalendarEventsResponse"
-        }
-      ]
-    },
-    {
-      "path": "/service/core_user_get_users_by_field",
-      "operations": [
-        {
-          "method": "GET",
-          "summary": "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`\n",
-          "nickname": "getUsersByField",
-          "parameters": [
-            {
-              "name": "field",
-              "description": "User profile field to match against when searching for users.",
-              "paramType": "query",
-              "required": true,
-              "allowMultiple": false,
-              "enum": [
-                "id",
-                "idnumber",
-                "username",
-                "email"
-              ],
-              "uniqueItems": false,
-              "type": "string"
-            },
-            {
-              "name": "values",
-              "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
-              "paramType": "query",
-              "required": true,
-              "allowMultiple": false,
-              "items": {
-                "type": "string"
-              },
-              "uniqueItems": false,
-              "type": "array"
-            }
-          ],
-          "authorizations": {
-            "BearerAuth": []
-          },
-          "produces": [
-            "application/json"
-          ],
-          "responseMessages": [
-            {
-              "code": 400,
-              "responseModel": "MoodleError",
-              "message": "Bad request or Moodle exception."
-            }
-          ],
-          "items": {
-            "$ref": "UserProfile"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        }
-      ]
-    },
-    {
-      "path": "/service/core_user_get_user_preferences",
-      "operations": [
-        {
-          "method": "GET",
-          "summary": "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`\n",
-          "nickname": "getUserPreferences",
-          "parameters": [
-            {
-              "name": "userid",
-              "description": "ID of the user whose preferences to retrieve.",
-              "paramType": "query",
-              "required": true,
-              "allowMultiple": false,
-              "minimum": "",
-              "maximum": "",
-              "uniqueItems": false,
-              "type": "integer",
-              "format": "int32"
-            },
-            {
-              "name": "name",
-              "description": "Specific preference name to retrieve. Omit to retrieve all preferences.",
-              "paramType": "query",
-              "required": false,
-              "allowMultiple": false,
-              "uniqueItems": false,
-              "type": "string"
-            }
-          ],
-          "authorizations": {
-            "BearerAuth": []
-          },
-          "produces": [
-            "application/json"
-          ],
-          "responseMessages": [
-            {
-              "code": 400,
-              "responseModel": "MoodleError",
-              "message": "Bad request or Moodle exception."
-            }
-          ],
-          "uniqueItems": false,
-          "$ref": "UserPreferencesResponse"
         }
       ]
     },
@@ -982,6 +919,203 @@
         }
       }
     },
+    "CourseContentFile": {
+      "id": "CourseContentFile",
+      "description": "A single file (or link) uploaded inside a course module.",
+      "required": [
+        "type",
+        "filename",
+        "fileurl"
+      ],
+      "properties": {
+        "type": {
+          "description": "Content type, e.g. 'file' or 'url'.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "filename": {
+          "description": "Name of the file (or title of the link).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "filepath": {
+          "description": "Folder path within the module; \"/\" for the module root.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "filesize": {
+          "description": "File size in bytes (0 for links).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "fileurl": {
+          "description": "Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "mimetype": {
+          "description": "MIME type of the file when applicable.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "timemodified": {
+          "description": "Unix timestamp of the last modification.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CourseModule": {
+      "id": "CourseModule",
+      "description": "An item on the course page — an activity or resource (file, page, URL, assignment, ...).",
+      "required": [
+        "id",
+        "name",
+        "modname"
+      ],
+      "properties": {
+        "id": {
+          "description": "Course module ID (cmid).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Display name of the module.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "modname": {
+          "description": "Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "modplural": {
+          "description": "Human-readable plural label for the module type.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "instance": {
+          "description": "Instance ID of the activity within its module type.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": {
+          "description": "HTML description/intro for the module, when present.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "visible": {
+          "description": "Whether the module is visible (1) or hidden (0).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "uservisible": {
+          "description": "Whether the module is visible to the current user.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "url": {
+          "description": "Link to open the activity/resource, when applicable.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "modicon": {
+          "description": "URL of the module's type icon.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "contents": {
+          "description": "Uploaded files/links for this module (present for resource/folder modules).",
+          "items": {
+            "$ref": "CourseContentFile"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      }
+    },
+    "CourseSection": {
+      "id": "CourseSection",
+      "description": "A section (week/topic) of the course, containing its modules.",
+      "required": [
+        "id",
+        "name",
+        "section",
+        "modules"
+      ],
+      "properties": {
+        "id": {
+          "description": "Section ID.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Section title (e.g. a week or topic name).",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "section": {
+          "description": "Zero-based section number within the course.",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "visible": {
+          "description": "Whether the section is visible (1) or hidden (0).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "summary": {
+          "description": "HTML summary shown at the top of the section.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "summaryformat": {
+          "description": "Moodle text format of the summary (1 = HTML).",
+          "minimum": "",
+          "maximum": "",
+          "uniqueItems": false,
+          "type": "integer",
+          "format": "int32"
+        },
+        "uservisible": {
+          "description": "Whether the section is visible to the current user.",
+          "uniqueItems": false,
+          "type": "boolean"
+        },
+        "modules": {
+          "description": "The activities and resources in this section.",
+          "items": {
+            "$ref": "CourseModule"
+          },
+          "uniqueItems": false,
+          "type": "array"
+        }
+      }
+    },
     "EventIcon": {
       "id": "EventIcon",
       "description": "Icon metadata for a calendar event.",
@@ -1354,204 +1488,6 @@
         }
       }
     },
-    "CustomField": {
-      "id": "CustomField",
-      "description": "A custom profile field value attached to a user.",
-      "required": [
-        "type",
-        "value",
-        "name",
-        "shortname"
-      ],
-      "properties": {
-        "type": {
-          "description": "Data type of the custom field (e.g., 'text', 'select').",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "value": {
-          "description": "Value stored in the custom field.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "name": {
-          "description": "Display label of the custom field.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "shortname": {
-          "description": "Machine-readable shortname identifier for the custom field.",
-          "uniqueItems": false,
-          "type": "string"
-        }
-      }
-    },
-    "UserPreference": {
-      "id": "UserPreference",
-      "description": "A single user preference setting.",
-      "required": [
-        "name",
-        "value"
-      ],
-      "properties": {
-        "name": {
-          "description": "Unique key identifying the preference.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "value": {
-          "description": "Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.",
-          "uniqueItems": false,
-          "type": "string"
-        }
-      }
-    },
-    "UserProfile": {
-      "id": "UserProfile",
-      "description": "Complete user profile.",
-      "required": [
-        "id",
-        "username",
-        "fullname",
-        "email",
-        "department",
-        "institution",
-        "idnumber",
-        "auth",
-        "confirmed",
-        "lang",
-        "theme",
-        "timezone",
-        "mailformat",
-        "profileimageurlsmall",
-        "profileimageurl"
-      ],
-      "properties": {
-        "id": {
-          "description": "Unique numeric user identifier.",
-          "minimum": "",
-          "maximum": "",
-          "uniqueItems": false,
-          "type": "integer",
-          "format": "int32"
-        },
-        "username": {
-          "description": "Login username for the user.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "fullname": {
-          "description": "Full display name of the user.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "email": {
-          "description": "Email address of the user.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "department": {
-          "description": "Department the user belongs to within the institution.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "institution": {
-          "description": "Name of the institution the user is affiliated with.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "idnumber": {
-          "description": "Institution-assigned student or staff ID number.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "auth": {
-          "description": "Authentication method used by the user (e.g., 'ldap', 'manual').",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "confirmed": {
-          "description": "Whether the user's account has been confirmed.",
-          "uniqueItems": false,
-          "type": "boolean"
-        },
-        "lang": {
-          "description": "Preferred interface language code (e.g., 'en').",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "theme": {
-          "description": "Preferred LMS theme; empty string means use the site default.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "timezone": {
-          "description": "Timezone identifier. \"99\" means use the server default.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "mailformat": {
-          "description": "Email format preference (1 = HTML).",
-          "minimum": "",
-          "maximum": "",
-          "uniqueItems": false,
-          "type": "integer",
-          "format": "int32"
-        },
-        "profileimageurlsmall": {
-          "description": "URL to the user's small profile image (thumbnail).",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "profileimageurl": {
-          "description": "URL to the user's full-size profile image.",
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "customfields": {
-          "description": "List of custom profile field values for the user.",
-          "items": {
-            "$ref": "CustomField"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        },
-        "preferences": {
-          "description": "List of stored preference key/value pairs for the user.",
-          "items": {
-            "$ref": "UserPreference"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        }
-      }
-    },
-    "UserPreferencesResponse": {
-      "id": "UserPreferencesResponse",
-      "description": "Response envelope for the user-preferences endpoint.",
-      "required": [
-        "preferences",
-        "warnings"
-      ],
-      "properties": {
-        "preferences": {
-          "description": "List of user preference key/value pairs.",
-          "items": {
-            "$ref": "UserPreference"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        },
-        "warnings": {
-          "description": "Array of warning objects. Empty when no warnings are present.",
-          "items": {
-            "$ref": "MoodleWarning"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        }
-      }
-    },
     "Notification": {
       "id": "Notification",
       "description": "A popup notification message delivered to a user.",
@@ -1908,57 +1844,6 @@
           "uniqueItems": false,
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "GetUsersByFieldRequest": {
-      "id": "GetUsersByFieldRequest",
-      "description": "Request parameters for retrieving user profiles by a profile field value.",
-      "required": [
-        "field",
-        "values"
-      ],
-      "properties": {
-        "field": {
-          "description": "User profile field to match against when searching for users.",
-          "enum": [
-            "id",
-            "idnumber",
-            "username",
-            "email"
-          ],
-          "uniqueItems": false,
-          "type": "string"
-        },
-        "values": {
-          "description": "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID).",
-          "items": {
-            "type": "string"
-          },
-          "uniqueItems": false,
-          "type": "array"
-        }
-      }
-    },
-    "GetUserPreferencesRequest": {
-      "id": "GetUserPreferencesRequest",
-      "description": "Request parameters for retrieving user preferences.",
-      "required": [
-        "userid"
-      ],
-      "properties": {
-        "userid": {
-          "description": "ID of the user whose preferences to retrieve.",
-          "minimum": "",
-          "maximum": "",
-          "uniqueItems": false,
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "description": "Specific preference name to retrieve. Omit to retrieve all preferences.",
-          "uniqueItems": false,
-          "type": "string"
         }
       }
     },

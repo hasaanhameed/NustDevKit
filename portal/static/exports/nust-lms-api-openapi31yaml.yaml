@@ -171,6 +171,52 @@ paths:
                 contentMediaType: application/json
       deprecated: false
     parameters: []
+  /service/core_course_get_contents:
+    get:
+      tags:
+      - Courses
+      summary: getCourseContents
+      description: >
+        Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.
+
+        Note: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.
+
+        Moodle method: `core_course_get_contents`
+      operationId: getCourseContents
+      parameters:
+      - name: courseid
+        in: query
+        description: ID of the course whose contents to retrieve.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      responses:
+        '200':
+          description: Course sections, each with its modules and their uploaded files.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseSection'
+                description: The course's sections, in display order.
+                contentMediaType: application/json
+        '400':
+          description: Bad request or Moodle exception.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/MoodleError'
+                - description: Error returned by the LMS on a failed operation.
+                contentMediaType: application/json
+      deprecated: false
+    parameters: []
   /service/core_calendar_get_action_events_by_timesort:
     get:
       tags:
@@ -184,22 +230,26 @@ paths:
       parameters:
       - name: limitnum
         in: query
-        description: Maximum number of events to return.
+        description: Maximum number of events to return (e.g. 20 for one page of results).
         required: true
         style: form
         explode: true
         schema:
           type: integer
           contentEncoding: int32
+          examples:
+          - 20
       - name: timesortfrom
         in: query
-        description: Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound.
+        description: Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 | 0` in JS or `int(time.time())` in Python).
         required: true
         style: form
         explode: true
         schema:
           type: integer
           contentEncoding: int32
+          examples:
+          - 0
       - name: timesortto
         in: query
         description: Only return events with timesort <= this Unix timestamp.
@@ -301,111 +351,6 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/CalendarEventsResponse'
                 - description: A list of calendar events with pagination boundary IDs.
-                contentMediaType: application/json
-        '400':
-          description: Bad request or Moodle exception.
-          headers: {}
-          content:
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/MoodleError'
-                - description: Error returned by the LMS on a failed operation.
-                contentMediaType: application/json
-      deprecated: false
-    parameters: []
-  /service/core_user_get_users_by_field:
-    get:
-      tags:
-      - Users
-      summary: getUsersByField
-      description: >
-        Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
-
-        Moodle method: `core_user_get_users_by_field`
-      operationId: getUsersByField
-      parameters:
-      - name: field
-        in: query
-        description: User profile field to match against when searching for users.
-        required: true
-        style: form
-        explode: true
-        schema:
-          allOf:
-          - $ref: '#/components/schemas/UserProfileField'
-          - description: User profile field to match against when searching for users.
-      - name: values
-        in: query
-        description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      responses:
-        '200':
-          description: List of matching user profiles.
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserProfile'
-                description: User profiles matching the specified field value.
-                contentMediaType: application/json
-        '400':
-          description: Bad request or Moodle exception.
-          headers: {}
-          content:
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/MoodleError'
-                - description: Error returned by the LMS on a failed operation.
-                contentMediaType: application/json
-      deprecated: false
-    parameters: []
-  /service/core_user_get_user_preferences:
-    get:
-      tags:
-      - Users
-      summary: getUserPreferences
-      description: >
-        Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
-
-        Moodle method: `core_user_get_user_preferences`
-      operationId: getUserPreferences
-      parameters:
-      - name: userid
-        in: query
-        description: ID of the user whose preferences to retrieve.
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          contentEncoding: int32
-      - name: name
-        in: query
-        description: Specific preference name to retrieve. Omit to retrieve all preferences.
-        style: form
-        explode: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: User preferences list and optional warnings.
-          headers: {}
-          content:
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/UserPreferencesResponse'
-                - description: Response envelope for the user-preferences endpoint.
                 contentMediaType: application/json
         '400':
           description: Bad request or Moodle exception.
@@ -579,15 +524,6 @@ components:
       - timeaccess
       type: string
       description: Field used to sort enrolled course results.
-    UserProfileField:
-      title: UserProfileField
-      enum:
-      - id
-      - idnumber
-      - username
-      - email
-      type: string
-      description: User profile field to match against when searching for users.
     MoodleWarning:
       title: MoodleWarning
       type: object
@@ -908,6 +844,185 @@ components:
           examples:
           - 29
       description: Paginated enrolled-courses response.
+    CourseContentFile:
+      title: CourseContentFile
+      required:
+      - type
+      - filename
+      - fileurl
+      type: object
+      properties:
+        type:
+          type: string
+          description: Content type, e.g. 'file' or 'url'.
+          examples:
+          - file
+        filename:
+          type: string
+          description: Name of the file (or title of the link).
+          examples:
+          - Lecture01-Intro.pdf
+        filepath:
+          type:
+          - string
+          - 'null'
+          description: Folder path within the module; "/" for the module root.
+          examples:
+          - /
+        filesize:
+          type: integer
+          description: File size in bytes (0 for links).
+          contentEncoding: int32
+          examples:
+          - 482133
+        fileurl:
+          type: string
+          description: Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable.
+          examples:
+          - https://lms.nust.edu.pk/portal/webservice/pluginfile.php/123456/mod_resource/content/1/Lecture01-Intro.pdf
+        mimetype:
+          type:
+          - string
+          - 'null'
+          description: MIME type of the file when applicable.
+          examples:
+          - application/pdf
+        timemodified:
+          type: integer
+          description: Unix timestamp of the last modification.
+          contentEncoding: int32
+          examples:
+          - 1707745200
+      description: A single file (or link) uploaded inside a course module.
+    CourseModule:
+      title: CourseModule
+      required:
+      - id
+      - name
+      - modname
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Course module ID (cmid).
+          contentEncoding: int32
+          examples:
+          - 987654
+        name:
+          type: string
+          description: Display name of the module.
+          examples:
+          - Lecture 01 — Introduction
+        modname:
+          type: string
+          description: Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'.
+          examples:
+          - resource
+        modplural:
+          type: string
+          description: Human-readable plural label for the module type.
+          examples:
+          - Files
+        instance:
+          type: integer
+          description: Instance ID of the activity within its module type.
+          contentEncoding: int32
+          examples:
+          - 45678
+        description:
+          type:
+          - string
+          - 'null'
+          description: HTML description/intro for the module, when present.
+          examples:
+          - <p>Course introduction and logistics.</p>
+        visible:
+          type: integer
+          description: Whether the module is visible (1) or hidden (0).
+          contentEncoding: int32
+          examples:
+          - 1
+        uservisible:
+          type: boolean
+          description: Whether the module is visible to the current user.
+          examples:
+          - true
+        url:
+          type:
+          - string
+          - 'null'
+          description: Link to open the activity/resource, when applicable.
+          examples:
+          - https://lms.nust.edu.pk/portal/mod/resource/view.php?id=987654
+        modicon:
+          type:
+          - string
+          - 'null'
+          description: URL of the module's type icon.
+          examples:
+          - https://lms.nust.edu.pk/portal/theme/image.php/moove/core/1/f/pdf
+        contents:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseContentFile'
+          description: Uploaded files/links for this module (present for resource/folder modules).
+      description: An item on the course page — an activity or resource (file, page, URL, assignment, ...).
+    CourseSection:
+      title: CourseSection
+      required:
+      - id
+      - name
+      - section
+      - modules
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Section ID.
+          contentEncoding: int32
+          examples:
+          - 33445
+        name:
+          type: string
+          description: Section title (e.g. a week or topic name).
+          examples:
+          - Week 1
+        section:
+          type: integer
+          description: Zero-based section number within the course.
+          contentEncoding: int32
+          examples:
+          - 1
+        visible:
+          type: integer
+          description: Whether the section is visible (1) or hidden (0).
+          contentEncoding: int32
+          examples:
+          - 1
+        summary:
+          type:
+          - string
+          - 'null'
+          description: HTML summary shown at the top of the section.
+          examples:
+          - <p>Introduction and course overview.</p>
+        summaryformat:
+          type: integer
+          description: Moodle text format of the summary (1 = HTML).
+          contentEncoding: int32
+          examples:
+          - 1
+        uservisible:
+          type: boolean
+          description: Whether the section is visible to the current user.
+          examples:
+          - true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseModule'
+          description: The activities and resources in this section.
+      description: A section (week/topic) of the course, containing its modules.
     EventIcon:
       title: EventIcon
       required:
@@ -1227,178 +1342,6 @@ components:
           examples:
           - 151886
       description: A list of calendar events with pagination boundary IDs.
-    CustomField:
-      title: CustomField
-      required:
-      - type
-      - value
-      - name
-      - shortname
-      type: object
-      properties:
-        type:
-          type: string
-          description: Data type of the custom field (e.g., 'text', 'select').
-          examples:
-          - text
-        value:
-          type: string
-          description: Value stored in the custom field.
-          examples:
-          - SEECS
-        name:
-          type: string
-          description: Display label of the custom field.
-          examples:
-          - Institute
-        shortname:
-          type: string
-          description: Machine-readable shortname identifier for the custom field.
-          examples:
-          - institution
-      description: A custom profile field value attached to a user.
-    UserPreference:
-      title: UserPreference
-      required:
-      - name
-      - value
-      type: object
-      properties:
-        name:
-          type: string
-          description: Unique key identifying the preference.
-          examples:
-          - block_myoverview_user_sort_preference
-        value:
-          type: string
-          description: Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.
-          examples:
-          - title
-      description: A single user preference setting.
-    UserProfile:
-      title: UserProfile
-      required:
-      - id
-      - username
-      - fullname
-      - email
-      - department
-      - institution
-      - idnumber
-      - auth
-      - confirmed
-      - lang
-      - theme
-      - timezone
-      - mailformat
-      - profileimageurlsmall
-      - profileimageurl
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric user identifier.
-          contentEncoding: int32
-          examples:
-          - 123456
-        username:
-          type: string
-          description: Login username for the user.
-          examples:
-          - johndoe.bscs23seecs
-        fullname:
-          type: string
-          description: Full display name of the user.
-          examples:
-          - John Doe
-        email:
-          type: string
-          description: Email address of the user.
-          examples:
-          - johndoe.bscs23seecs@seecs.edu.pk
-        department:
-          type: string
-          description: Department the user belongs to within the institution.
-          examples:
-          - FoC
-        institution:
-          type: string
-          description: Name of the institution the user is affiliated with.
-          examples:
-          - SEECS
-        idnumber:
-          type: string
-          description: Institution-assigned student or staff ID number.
-          examples:
-          - '00000454987'
-        auth:
-          type: string
-          description: Authentication method used by the user (e.g., 'ldap', 'manual').
-          examples:
-          - ldap
-        confirmed:
-          type: boolean
-          description: Whether the user's account has been confirmed.
-          examples:
-          - true
-        lang:
-          type: string
-          description: Preferred interface language code (e.g., 'en').
-          examples:
-          - en
-        theme:
-          type: string
-          description: Preferred LMS theme; empty string means use the site default.
-        timezone:
-          type: string
-          description: Timezone identifier. "99" means use the server default.
-          examples:
-          - '99'
-        mailformat:
-          type: integer
-          description: Email format preference (1 = HTML).
-          contentEncoding: int32
-          examples:
-          - 1
-        profileimageurlsmall:
-          type: string
-          description: URL to the user's small profile image (thumbnail).
-          examples:
-          - https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f2?rev=14452894
-        profileimageurl:
-          type: string
-          description: URL to the user's full-size profile image.
-          examples:
-          - https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1?rev=14452894
-        customfields:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomField'
-          description: List of custom profile field values for the user.
-        preferences:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserPreference'
-          description: List of stored preference key/value pairs for the user.
-      description: Complete user profile.
-    UserPreferencesResponse:
-      title: UserPreferencesResponse
-      required:
-      - preferences
-      - warnings
-      type: object
-      properties:
-        preferences:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserPreference'
-          description: List of user preference key/value pairs.
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/MoodleWarning'
-          description: Array of warning objects. Empty when no warnings are present.
-      description: Response envelope for the user-preferences endpoint.
     Notification:
       title: Notification
       required:
@@ -1666,41 +1609,6 @@ components:
           description: Maximum number of events to return. Optional.
           contentEncoding: int32
       description: Request parameters for retrieving calendar action events for a specific course.
-    GetUsersByFieldRequest:
-      title: GetUsersByFieldRequest
-      required:
-      - field
-      - values
-      type: object
-      properties:
-        field:
-          allOf:
-          - $ref: '#/components/schemas/UserProfileField'
-          - description: User profile field to match against when searching for users.
-        values:
-          type: array
-          items:
-            type: string
-          description: List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).
-          examples:
-          - - '123456'
-      description: Request parameters for retrieving user profiles by a profile field value.
-    GetUserPreferencesRequest:
-      title: GetUserPreferencesRequest
-      required:
-      - userid
-      type: object
-      properties:
-        userid:
-          type: integer
-          description: ID of the user whose preferences to retrieve.
-          contentEncoding: int32
-          examples:
-          - 123456
-        name:
-          type: string
-          description: Specific preference name to retrieve. Omit to retrieve all preferences.
-      description: Request parameters for retrieving user preferences.
     GetPopupNotificationsRequest:
       title: GetPopupNotificationsRequest
       required:
@@ -1752,7 +1660,5 @@ tags:
 - name: Calendar
   description: >
     Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
-- name: Users
-  description: User profile and preferences operations
 - name: Notifications
   description: Notification retrieval operations

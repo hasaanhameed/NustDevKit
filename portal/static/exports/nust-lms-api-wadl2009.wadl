@@ -9,7 +9,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="TokenResponse" type="schemas:TokenResponse" />
       <xs:element name="CourseTimelineClassification" type="schemas:CourseTimelineClassification" />
       <xs:element name="CourseTimelineSortField" type="schemas:CourseTimelineSortField" />
-      <xs:element name="UserProfileField" type="schemas:UserProfileField" />
       <xs:element name="MoodleWarning" type="schemas:MoodleWarning" />
       <xs:element name="SiteNotification" type="schemas:SiteNotification" />
       <xs:element name="MoodleError" type="schemas:MoodleError" />
@@ -17,15 +16,14 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="RecentCourseFields" type="schemas:RecentCourseFields" />
       <xs:element name="RecentCourse" type="schemas:RecentCourse" />
       <xs:element name="EnrolledCoursesResponse" type="schemas:EnrolledCoursesResponse" />
+      <xs:element name="CourseContentFile" type="schemas:CourseContentFile" />
+      <xs:element name="CourseModule" type="schemas:CourseModule" />
+      <xs:element name="CourseSection" type="schemas:CourseSection" />
       <xs:element name="EventIcon" type="schemas:EventIcon" />
       <xs:element name="EventSubscription" type="schemas:EventSubscription" />
       <xs:element name="EventAction" type="schemas:EventAction" />
       <xs:element name="CalendarEvent" type="schemas:CalendarEvent" />
       <xs:element name="CalendarEventsResponse" type="schemas:CalendarEventsResponse" />
-      <xs:element name="CustomField" type="schemas:CustomField" />
-      <xs:element name="UserPreference" type="schemas:UserPreference" />
-      <xs:element name="UserProfile" type="schemas:UserProfile" />
-      <xs:element name="UserPreferencesResponse" type="schemas:UserPreferencesResponse" />
       <xs:element name="Notification" type="schemas:Notification" />
       <xs:element name="PopupNotificationsResponse" type="schemas:PopupNotificationsResponse" />
       <xs:element name="GetRecentCoursesRequest" type="schemas:GetRecentCoursesRequest" />
@@ -33,8 +31,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="FetchNotificationsRequest" type="schemas:FetchNotificationsRequest" />
       <xs:element name="GetCalendarEventsByTimesortRequest" type="schemas:GetCalendarEventsByTimesortRequest" />
       <xs:element name="GetCalendarEventsByCourseRequest" type="schemas:GetCalendarEventsByCourseRequest" />
-      <xs:element name="GetUsersByFieldRequest" type="schemas:GetUsersByFieldRequest" />
-      <xs:element name="GetUserPreferencesRequest" type="schemas:GetUserPreferencesRequest" />
       <xs:element name="GetPopupNotificationsRequest" type="schemas:GetPopupNotificationsRequest" />
       <xs:element name="AuthLogin401Error1" type="schemas:AuthLogin401Error1" />
       <xs:element name="login_Request" type="schemas:login_Request" />
@@ -44,14 +40,12 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="getCoreRecentCourses400_Response0" type="schemas:getCoreRecentCourses400_Response0" />
       <xs:element name="getEnrolledCoursesByTimeline200_Response0" type="schemas:getEnrolledCoursesByTimeline200_Response0" />
       <xs:element name="getEnrolledCoursesByTimeline400_Response0" type="schemas:getEnrolledCoursesByTimeline400_Response0" />
+      <xs:element name="getCourseContents200_Response0" type="schemas:getCourseContents200_Response0" />
+      <xs:element name="getCourseContents400_Response0" type="schemas:getCourseContents400_Response0" />
       <xs:element name="getCalendarEventsByTimesort200_Response0" type="schemas:getCalendarEventsByTimesort200_Response0" />
       <xs:element name="getCalendarEventsByTimesort400_Response0" type="schemas:getCalendarEventsByTimesort400_Response0" />
       <xs:element name="getCalendarEventsByCourse200_Response0" type="schemas:getCalendarEventsByCourse200_Response0" />
       <xs:element name="getCalendarEventsByCourse400_Response0" type="schemas:getCalendarEventsByCourse400_Response0" />
-      <xs:element name="getUsersByField200_Response0" type="schemas:getUsersByField200_Response0" />
-      <xs:element name="getUsersByField400_Response0" type="schemas:getUsersByField400_Response0" />
-      <xs:element name="getUserPreferences200_Response0" type="schemas:getUserPreferences200_Response0" />
-      <xs:element name="getUserPreferences400_Response0" type="schemas:getUserPreferences400_Response0" />
       <xs:element name="fetchNotifications200_Response0" type="schemas:fetchNotifications200_Response0" />
       <xs:element name="fetchNotifications400_Response0" type="schemas:fetchNotifications400_Response0" />
       <xs:element name="getPopupNotifications200_Response0" type="schemas:getPopupNotifications200_Response0" />
@@ -110,17 +104,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           <xs:enumeration value="id" />
           <xs:enumeration value="idnumber" />
           <xs:enumeration value="timeaccess" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType name="UserProfileField">
-        <xs:annotation>
-          <xs:documentation>User profile field to match against when searching for users.</xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="id" />
-          <xs:enumeration value="idnumber" />
-          <xs:enumeration value="username" />
-          <xs:enumeration value="email" />
         </xs:restriction>
       </xs:simpleType>
       <xs:complexType name="MoodleWarning">
@@ -434,6 +417,157 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="CourseContentFile">
+        <xs:annotation>
+          <xs:documentation>A single file (or link) uploaded inside a course module.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="type" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Content type, e.g. 'file' or 'url'.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="filename" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the file (or title of the link).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="filepath" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Folder path within the module; "/" for the module root.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="filesize" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>File size in bytes (0 for links).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fileurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="mimetype" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>MIME type of the file when applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="timemodified" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Unix timestamp of the last modification.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CourseModule">
+        <xs:annotation>
+          <xs:documentation>An item on the course page — an activity or resource (file, page, URL, assignment, ...).</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Course module ID (cmid).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Display name of the module.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="modname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="modplural" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Human-readable plural label for the module type.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="instance" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Instance ID of the activity within its module type.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="description" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML description/intro for the module, when present.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="visible" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Whether the module is visible (1) or hidden (0).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="uservisible" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the module is visible to the current user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="url" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Link to open the activity/resource, when applicable.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="modicon" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL of the module's type icon.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="contents" type="schemas:CourseContentFile">
+            <xs:annotation>
+              <xs:documentation>Uploaded files/links for this module (present for resource/folder modules).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CourseSection">
+        <xs:annotation>
+          <xs:documentation>A section (week/topic) of the course, containing its modules.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="id" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Section ID.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Section title (e.g. a week or topic name).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="section" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Zero-based section number within the course.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="visible" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Whether the section is visible (1) or hidden (0).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="summary" nillable="true" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>HTML summary shown at the top of the section.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="summaryformat" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Moodle text format of the summary (1 = HTML).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="uservisible" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Whether the section is visible to the current user.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="modules" type="schemas:CourseModule">
+            <xs:annotation>
+              <xs:documentation>The activities and resources in this section.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="EventIcon">
         <xs:annotation>
           <xs:documentation>Icon metadata for a calendar event.</xs:documentation>
@@ -709,159 +843,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="CustomField">
-        <xs:annotation>
-          <xs:documentation>A custom profile field value attached to a user.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="type" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Data type of the custom field (e.g., 'text', 'select').</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="value" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Value stored in the custom field.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="name" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Display label of the custom field.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="shortname" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Machine-readable shortname identifier for the custom field.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="UserPreference">
-        <xs:annotation>
-          <xs:documentation>A single user preference setting.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="name" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Unique key identifying the preference.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="value" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="UserProfile">
-        <xs:annotation>
-          <xs:documentation>Complete user profile.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="id" type="xs:integer">
-            <xs:annotation>
-              <xs:documentation>Unique numeric user identifier.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="username" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Login username for the user.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="fullname" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Full display name of the user.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="email" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Email address of the user.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="department" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Department the user belongs to within the institution.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="institution" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Name of the institution the user is affiliated with.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="idnumber" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Institution-assigned student or staff ID number.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="auth" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Authentication method used by the user (e.g., 'ldap', 'manual').</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="confirmed" type="xs:boolean">
-            <xs:annotation>
-              <xs:documentation>Whether the user's account has been confirmed.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="lang" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Preferred interface language code (e.g., 'en').</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="theme" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Preferred LMS theme; empty string means use the site default.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="timezone" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Timezone identifier. "99" means use the server default.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="mailformat" type="xs:integer">
-            <xs:annotation>
-              <xs:documentation>Email format preference (1 = HTML).</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="profileimageurlsmall" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>URL to the user's small profile image (thumbnail).</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" name="profileimageurl" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>URL to the user's full-size profile image.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="0" maxOccurs="unbounded" name="customfields" type="schemas:CustomField">
-            <xs:annotation>
-              <xs:documentation>List of custom profile field values for the user.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="0" maxOccurs="unbounded" name="preferences" type="schemas:UserPreference">
-            <xs:annotation>
-              <xs:documentation>List of stored preference key/value pairs for the user.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="UserPreferencesResponse">
-        <xs:annotation>
-          <xs:documentation>Response envelope for the user-preferences endpoint.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="preferences" type="schemas:UserPreference">
-            <xs:annotation>
-              <xs:documentation>List of user preference key/value pairs.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="warnings" type="schemas:MoodleWarning">
-            <xs:annotation>
-              <xs:documentation>Array of warning objects. Empty when no warnings are present.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="Notification">
         <xs:annotation>
           <xs:documentation>A popup notification message delivered to a user.</xs:documentation>
@@ -1101,40 +1082,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="GetUsersByFieldRequest">
-        <xs:annotation>
-          <xs:documentation>Request parameters for retrieving user profiles by a profile field value.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="field" type="schemas:UserProfileField">
-            <xs:annotation>
-              <xs:documentation>User profile field to match against when searching for users.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="values" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="GetUserPreferencesRequest">
-        <xs:annotation>
-          <xs:documentation>Request parameters for retrieving user preferences.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="userid" type="xs:integer">
-            <xs:annotation>
-              <xs:documentation>ID of the user whose preferences to retrieve.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element minOccurs="0" name="name" type="xs:string">
-            <xs:annotation>
-              <xs:documentation>Specific preference name to retrieve. Omit to retrieve all preferences.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="GetPopupNotificationsRequest">
         <xs:annotation>
           <xs:documentation>Request parameters for retrieving popup notifications for a user.</xs:documentation>
@@ -1225,6 +1172,24 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="getCourseContents200_Response0">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:CourseSection">
+            <xs:annotation>
+              <xs:documentation>The course's sections, in display order.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getCourseContents400_Response0">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
+            <xs:annotation>
+              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="getCalendarEventsByTimesort200_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" name="response200" type="schemas:CalendarEventsResponse">
@@ -1253,42 +1218,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="getCalendarEventsByCourse400_Response0">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
-            <xs:annotation>
-              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUsersByField200_Response0">
-        <xs:sequence>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:UserProfile">
-            <xs:annotation>
-              <xs:documentation>User profiles matching the specified field value.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUsersByField400_Response0">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
-            <xs:annotation>
-              <xs:documentation>Error returned by the LMS on a failed operation.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUserPreferences200_Response0">
-        <xs:sequence>
-          <xs:element minOccurs="1" name="response200" type="schemas:UserPreferencesResponse">
-            <xs:annotation>
-              <xs:documentation>Response envelope for the user-preferences endpoint.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUserPreferences400_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1441,6 +1370,27 @@ Moodle method: `core_course_get_enrolled_courses_by_timeline_classification`
         </response>
       </method>
     </resource>
+    <resource id="_servicecore_course_get_contents" path="/service/core_course_get_contents">
+      <method id="getCourseContents" name="GET">
+        <doc title="getCourseContents" xml:lang="en">Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.
+Note: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.
+Moodle method: `core_course_get_contents`
+</doc>
+        <request>
+          <param name="courseid" style="query" type="xsd:integer" required="true">
+            <doc title="courseid" xml:lang="en">ID of the course whose contents to retrieve.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">Course sections, each with its modules and their uploaded files.</doc>
+          <representation element="schemas:getCourseContents200_Response0" mediaType="application/json" />
+        </response>
+        <response status="400">
+          <doc title="400" xml:lang="en">Bad request or Moodle exception.</doc>
+          <representation element="schemas:getCourseContents400_Response0" mediaType="application/json" />
+        </response>
+      </method>
+    </resource>
     <resource id="_servicecore_calendar_get_action_events_by_timesort" path="/service/core_calendar_get_action_events_by_timesort">
       <method id="getCalendarEventsByTimesort" name="GET">
         <doc title="getCalendarEventsByTimesort" xml:lang="en">Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
@@ -1448,10 +1398,10 @@ Moodle method: `core_calendar_get_action_events_by_timesort`
 </doc>
         <request>
           <param name="limitnum" style="query" type="xsd:integer" required="true">
-            <doc title="limitnum" xml:lang="en">Maximum number of events to return.</doc>
+            <doc title="limitnum" xml:lang="en">Maximum number of events to return (e.g. 20 for one page of results).</doc>
           </param>
           <param name="timesortfrom" style="query" type="xsd:integer" required="true">
-            <doc title="timesortfrom" xml:lang="en">Only return events with timesort &gt;= this Unix timestamp. Pass 0 for no lower bound.</doc>
+            <doc title="timesortfrom" xml:lang="en">Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 | 0` in JS or `int(time.time())` in Python).</doc>
           </param>
           <param name="timesortto" style="query" type="xsd:integer">
             <doc title="timesortto" xml:lang="en">Only return events with timesort &lt;= this Unix timestamp.</doc>
@@ -1499,64 +1449,6 @@ Moodle method: `core_calendar_get_action_events_by_course`
         <response status="400">
           <doc title="400" xml:lang="en">Bad request or Moodle exception.</doc>
           <representation element="schemas:getCalendarEventsByCourse400_Response0" mediaType="application/json" />
-        </response>
-      </method>
-    </resource>
-    <resource id="_servicecore_user_get_users_by_field" path="/service/core_user_get_users_by_field">
-      <method id="getUsersByField" name="GET">
-        <doc title="getUsersByField" xml:lang="en">Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.
-Moodle method: `core_user_get_users_by_field`
-</doc>
-        <request>
-          <param name="field" style="query" required="true">
-            <doc title="field" xml:lang="en">User profile field to match against when searching for users.</doc>
-            <option value="id">
-              <doc title="id" xml:lang="en" />
-            </option>
-            <option value="idnumber">
-              <doc title="idnumber" xml:lang="en" />
-            </option>
-            <option value="username">
-              <doc title="username" xml:lang="en" />
-            </option>
-            <option value="email">
-              <doc title="email" xml:lang="en" />
-            </option>
-          </param>
-          <param name="values" style="query" type="xsd:string" required="true" repeating="true">
-            <doc title="values" xml:lang="en">List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., "123456" for an integer ID).</doc>
-          </param>
-        </request>
-        <response status="200">
-          <doc title="200" xml:lang="en">List of matching user profiles.</doc>
-          <representation element="schemas:getUsersByField200_Response0" mediaType="application/json" />
-        </response>
-        <response status="400">
-          <doc title="400" xml:lang="en">Bad request or Moodle exception.</doc>
-          <representation element="schemas:getUsersByField400_Response0" mediaType="application/json" />
-        </response>
-      </method>
-    </resource>
-    <resource id="_servicecore_user_get_user_preferences" path="/service/core_user_get_user_preferences">
-      <method id="getUserPreferences" name="GET">
-        <doc title="getUserPreferences" xml:lang="en">Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.
-Moodle method: `core_user_get_user_preferences`
-</doc>
-        <request>
-          <param name="userid" style="query" type="xsd:integer" required="true">
-            <doc title="userid" xml:lang="en">ID of the user whose preferences to retrieve.</doc>
-          </param>
-          <param name="name" style="query" type="xsd:string">
-            <doc title="name" xml:lang="en">Specific preference name to retrieve. Omit to retrieve all preferences.</doc>
-          </param>
-        </request>
-        <response status="200">
-          <doc title="200" xml:lang="en">User preferences list and optional warnings.</doc>
-          <representation element="schemas:getUserPreferences200_Response0" mediaType="application/json" />
-        </response>
-        <response status="400">
-          <doc title="400" xml:lang="en">Bad request or Moodle exception.</doc>
-          <representation element="schemas:getUserPreferences400_Response0" mediaType="application/json" />
         </response>
       </method>
     </resource>

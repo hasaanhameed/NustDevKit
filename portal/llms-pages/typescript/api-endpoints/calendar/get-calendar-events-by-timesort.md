@@ -25,8 +25,8 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `limitnum` | `number` | Query, Required | Maximum number of events to return. |
-| `timesortfrom` | `number` | Query, Required | Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound. |
+| `limitnum` | `number` | Query, Required | Maximum number of events to return (e.g. 20 for one page of results). |
+| `timesortfrom` | `number` | Query, Required | Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 \| 0` in JS or `int(time.time())` in Python). |
 | `timesortto` | `number \| undefined` | Query, Optional | Only return events with timesort <= this Unix timestamp. |
 | `aftereventid` | `number \| undefined` | Query, Optional | Return events whose ID is greater than this value (cursor pagination). |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
@@ -42,9 +42,9 @@ This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure
 # Example Usage
 
 ```ts
-const limitnum = 32;
+const limitnum = 20;
 
-const timesortfrom = 58;
+const timesortfrom = 0;
 
 try {
   const response = await calendarApi.getCalendarEventsByTimesort(

@@ -22,14 +22,6 @@ enum CourseTimelineSortField {
     TIMEACCESS
 }
 
-"User profile field to match against when searching for users."
-enum UserProfileField {
-    EMAIL
-    ID
-    IDNUMBER
-    USERNAME
-}
-
 "NUST LMS credentials used to obtain a gateway bearer token."
 type LoginRequest {
     "NUST LMS username."
@@ -173,6 +165,70 @@ type EnrolledCoursesResponse {
     nextoffset: Int!
 }
 
+"A single file (or link) uploaded inside a course module."
+type CourseContentFile {
+    "Content type, e.g. 'file' or 'url'."
+    type: String!
+    "Name of the file (or title of the link)."
+    filename: String!
+    "Folder path within the module; \"/\" for the module root."
+    filepath: String
+    "File size in bytes (0 for links)."
+    filesize: Int!
+    "Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable."
+    fileurl: String!
+    "MIME type of the file when applicable."
+    mimetype: String
+    "Unix timestamp of the last modification."
+    timemodified: Int!
+}
+
+"An item on the course page — an activity or resource (file, page, URL, assignment, ...)."
+type CourseModule {
+    "Course module ID (cmid)."
+    id: Int!
+    "Display name of the module."
+    name: String!
+    "Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'."
+    modname: String!
+    "Human-readable plural label for the module type."
+    modplural: String!
+    "Instance ID of the activity within its module type."
+    instance: Int!
+    "HTML description/intro for the module, when present."
+    description: String
+    "Whether the module is visible (1) or hidden (0)."
+    visible: Int!
+    "Whether the module is visible to the current user."
+    uservisible: Boolean!
+    "Link to open the activity/resource, when applicable."
+    url: String
+    "URL of the module's type icon."
+    modicon: String
+    "Uploaded files/links for this module (present for resource/folder modules)."
+    contents: [CourseContentFile!]
+}
+
+"A section (week/topic) of the course, containing its modules."
+type CourseSection {
+    "Section ID."
+    id: Int!
+    "Section title (e.g. a week or topic name)."
+    name: String!
+    "Zero-based section number within the course."
+    section: Int!
+    "Whether the section is visible (1) or hidden (0)."
+    visible: Int!
+    "HTML summary shown at the top of the section."
+    summary: String
+    "Moodle text format of the summary (1 = HTML)."
+    summaryformat: Int!
+    "Whether the section is visible to the current user."
+    uservisible: Boolean!
+    "The activities and resources in this section."
+    modules: [CourseModule!]
+}
+
 "Icon metadata for a calendar event."
 type EventIcon {
     "Icon key name used to locate the icon asset."
@@ -289,72 +345,6 @@ type CalendarEventsResponse {
     lastid: Int!
 }
 
-"A custom profile field value attached to a user."
-type CustomField {
-    "Data type of the custom field (e.g., 'text', 'select')."
-    type: String!
-    "Value stored in the custom field."
-    value: String!
-    "Display label of the custom field."
-    name: String!
-    "Machine-readable shortname identifier for the custom field."
-    shortname: String!
-}
-
-"A single user preference setting."
-type UserPreference {
-    "Unique key identifying the preference."
-    name: String!
-    "Preference value as a string. Note that the internal _lastloaded preference is returned as an integer by the LMS."
-    value: String!
-}
-
-"Complete user profile."
-type UserProfile {
-    "Unique numeric user identifier."
-    id: Int!
-    "Login username for the user."
-    username: String!
-    "Full display name of the user."
-    fullname: String!
-    "Email address of the user."
-    email: String!
-    "Department the user belongs to within the institution."
-    department: String!
-    "Name of the institution the user is affiliated with."
-    institution: String!
-    "Institution-assigned student or staff ID number."
-    idnumber: String!
-    "Authentication method used by the user (e.g., 'ldap', 'manual')."
-    auth: String!
-    "Whether the user's account has been confirmed."
-    confirmed: Boolean!
-    "Preferred interface language code (e.g., 'en')."
-    lang: String!
-    "Preferred LMS theme; empty string means use the site default."
-    theme: String!
-    "Timezone identifier. \"99\" means use the server default."
-    timezone: String!
-    "Email format preference (1 = HTML)."
-    mailformat: Int!
-    "URL to the user's small profile image (thumbnail)."
-    profileimageurlsmall: String!
-    "URL to the user's full-size profile image."
-    profileimageurl: String!
-    "List of custom profile field values for the user."
-    customfields: [CustomField!]
-    "List of stored preference key/value pairs for the user."
-    preferences: [UserPreference!]
-}
-
-"Response envelope for the user-preferences endpoint."
-type UserPreferencesResponse {
-    "List of user preference key/value pairs."
-    preferences: [UserPreference!]
-    "Array of warning objects. Empty when no warnings are present."
-    warnings: [MoodleWarning!]
-}
-
 "A popup notification message delivered to a user."
 type Notification {
     "Unique notification identifier."
@@ -459,22 +449,6 @@ type GetCalendarEventsByCourseRequest {
     limitnum: Int!
 }
 
-"Request parameters for retrieving user profiles by a profile field value."
-type GetUsersByFieldRequest {
-    "User profile field to match against when searching for users."
-    field: UserProfileField!
-    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID)."
-    values: [String!]
-}
-
-"Request parameters for retrieving user preferences."
-type GetUserPreferencesRequest {
-    "ID of the user whose preferences to retrieve."
-    userid: Int!
-    "Specific preference name to retrieve. Omit to retrieve all preferences."
-    name: String!
-}
-
 "Request parameters for retrieving popup notifications for a user."
 type GetPopupNotificationsRequest {
     "ID of the recipient user, passed as a string."
@@ -519,10 +493,15 @@ input GetEnrolledCoursesByTimelineInput {
     sort: CourseTimelineSortField!
 }
 
+input GetCourseContentsInput {
+    "ID of the course whose contents to retrieve."
+    courseid: Int!
+}
+
 input GetCalendarEventsByTimesortInput {
-    "Maximum number of events to return."
+    "Maximum number of events to return (e.g. 20 for one page of results)."
     limitnum: Int!
-    "Only return events with timesort >= this Unix timestamp. Pass 0 for no lower bound."
+    "Unix timestamp (seconds since epoch). Only events with a sort time at or after this value are returned. Pass `0` for no lower bound (all upcoming and past events). To see only upcoming deadlines, pass the current epoch time (e.g. the output of `Date.now() / 1000 | 0` in JS or `int(time.time())` in Python)."
     timesortfrom: Int!
     "Only return events with timesort <= this Unix timestamp."
     timesortto: Int!
@@ -541,20 +520,6 @@ input GetCalendarEventsByCourseInput {
     aftereventid: Int!
     "Maximum number of events to return."
     limitnum: Int!
-}
-
-input GetUsersByFieldInput {
-    "User profile field to match against when searching for users."
-    field: UserProfileField!
-    "List of field values to look up. All values must be provided as strings even when the field is numeric (e.g., \"123456\" for an integer ID)."
-    values: [String!]
-}
-
-input GetUserPreferencesInput {
-    "ID of the user whose preferences to retrieve."
-    userid: Int!
-    "Specific preference name to retrieve. Omit to retrieve all preferences."
-    name: String!
 }
 
 input FetchNotificationsInput {
@@ -576,14 +541,12 @@ type Query {
     getCoreRecentCourses(input: GetCoreRecentCoursesInput!): [RecentCourse!]
     "Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.\nMoodle method: `core_course_get_enrolled_courses_by_timeline_classification`"
     getEnrolledCoursesByTimeline(input: GetEnrolledCoursesByTimelineInput!): EnrolledCoursesResponse!
+    "Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.\nNote: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.\nMoodle method: `core_course_get_contents`"
+    getCourseContents(input: GetCourseContentsInput!): [CourseSection!]
     "Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.\nMoodle method: `core_calendar_get_action_events_by_timesort`"
     getCalendarEventsByTimesort(input: GetCalendarEventsByTimesortInput!): CalendarEventsResponse!
     "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`"
     getCalendarEventsByCourse(input: GetCalendarEventsByCourseInput!): CalendarEventsResponse!
-    "Retrieves one or more user profiles by matching a specific profile field. Commonly used to look up the authenticated user's own profile by their ID.\nMoodle method: `core_user_get_users_by_field`"
-    getUsersByField(input: GetUsersByFieldInput!): [UserProfile!]
-    "Returns all stored preference key/value pairs for the specified user. Optionally filter to a single preference by name.\nMoodle method: `core_user_get_user_preferences`"
-    getUserPreferences(input: GetUserPreferencesInput!): UserPreferencesResponse!
     "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`"
     fetchNotifications(input: FetchNotificationsInput!): [SiteNotification!]
     "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`"

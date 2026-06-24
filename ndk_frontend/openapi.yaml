@@ -322,6 +322,145 @@ components:
           type: integer
           description: Offset to pass on the next page request; -1 when no further pages exist.
           example: 29
+    CourseContentFile:
+      type: object
+      description: A single file (or link) uploaded inside a course module.
+      required:
+        - type
+        - filename
+        - fileurl
+      properties:
+        type:
+          type: string
+          description: Content type, e.g. 'file' or 'url'.
+          example: file
+        filename:
+          type: string
+          description: Name of the file (or title of the link).
+          example: Lecture01-Intro.pdf
+        filepath:
+          type: string
+          nullable: true
+          description: Folder path within the module; "/" for the module root.
+          example: /
+        filesize:
+          type: integer
+          description: File size in bytes (0 for links).
+          example: 482133
+        fileurl:
+          type: string
+          description: |
+            Moodle pluginfile.php URL for the content. Downloading the bytes requires authentication (a webservice token or the active session); the URL alone is not publicly fetchable.
+          example: https://lms.nust.edu.pk/portal/webservice/pluginfile.php/123456/mod_resource/content/1/Lecture01-Intro.pdf
+        mimetype:
+          type: string
+          nullable: true
+          description: MIME type of the file when applicable.
+          example: application/pdf
+        timemodified:
+          type: integer
+          description: Unix timestamp of the last modification.
+          example: 1707745200
+    CourseModule:
+      type: object
+      description: An item on the course page — an activity or resource (file, page, URL, assignment, ...).
+      required:
+        - id
+        - name
+        - modname
+      properties:
+        id:
+          type: integer
+          description: Course module ID (cmid).
+          example: 987654
+        name:
+          type: string
+          description: Display name of the module.
+          example: Lecture 01 — Introduction
+        modname:
+          type: string
+          description: |
+            Module type, e.g. 'resource' (file), 'folder', 'url', 'page', 'label', 'assign', 'quiz', 'forum'.
+          example: resource
+        modplural:
+          type: string
+          description: Human-readable plural label for the module type.
+          example: Files
+        instance:
+          type: integer
+          description: Instance ID of the activity within its module type.
+          example: 45678
+        description:
+          type: string
+          nullable: true
+          description: HTML description/intro for the module, when present.
+          example: <p>Course introduction and logistics.</p>
+        visible:
+          type: integer
+          description: Whether the module is visible (1) or hidden (0).
+          example: 1
+        uservisible:
+          type: boolean
+          description: Whether the module is visible to the current user.
+          example: true
+        url:
+          type: string
+          nullable: true
+          description: Link to open the activity/resource, when applicable.
+          example: https://lms.nust.edu.pk/portal/mod/resource/view.php?id=987654
+        modicon:
+          type: string
+          nullable: true
+          description: URL of the module's type icon.
+          example: https://lms.nust.edu.pk/portal/theme/image.php/moove/core/1/f/pdf
+        contents:
+          type: array
+          description: Uploaded files/links for this module (present for resource/folder modules).
+          items:
+            $ref: "#/components/schemas/CourseContentFile"
+    CourseSection:
+      type: object
+      description: A section (week/topic) of the course, containing its modules.
+      required:
+        - id
+        - name
+        - section
+        - modules
+      properties:
+        id:
+          type: integer
+          description: Section ID.
+          example: 33445
+        name:
+          type: string
+          description: Section title (e.g. a week or topic name).
+          example: Week 1
+        section:
+          type: integer
+          description: Zero-based section number within the course.
+          example: 1
+        visible:
+          type: integer
+          description: Whether the section is visible (1) or hidden (0).
+          example: 1
+        summary:
+          type: string
+          nullable: true
+          description: HTML summary shown at the top of the section.
+          example: <p>Introduction and course overview.</p>
+        summaryformat:
+          type: integer
+          description: Moodle text format of the summary (1 = HTML).
+          example: 1
+        uservisible:
+          type: boolean
+          description: Whether the section is visible to the current user.
+          example: true
+        modules:
+          type: array
+          description: The activities and resources in this section.
+          items:
+            $ref: "#/components/schemas/CourseModule"
     EventIcon:
       type: object
       description: Icon metadata for a calendar event.
@@ -1420,6 +1559,170 @@ paths:
             elsif result.error?
               warn result.errors
             end
+  /service/core_course_get_contents:
+    get:
+      operationId: getCourseContents
+      summary: Get all content for a course
+      description: |
+        Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.
+        Note: file URLs point at Moodle's `pluginfile.php` and require authentication (a webservice token or the active session) to download — the URL alone is not publicly fetchable.
+        Moodle method: `core_course_get_contents`
+      tags:
+        - Courses
+      parameters:
+        - name: courseid
+          in: query
+          required: true
+          description: ID of the course whose contents to retrieve.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course sections, each with its modules and their uploaded files.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: The course's sections, in display order.
+                items:
+                  $ref: "#/components/schemas/CourseSection"
+        "400":
+          description: Bad request or Moodle exception.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoodleError"
+      x-codeSamples:
+        - lang: typescript
+          label: TypeScript
+          source: |-
+            const courseid = 74;
+
+            try {
+              const response = await coursesApi.getCourseContents(courseid);
+
+              // Extracting fully parsed response body.
+              console.log(response.result);
+
+              // Extracting response status code.
+              console.log(response.statusCode);
+              // Extracting response headers.
+              console.log(response.headers);
+              // Extracting response body of type `string | Stream`
+              console.log(response.body);
+            } catch (error) {
+              if (error instanceof ApiError) {
+                // Extracting response error status code.
+                console.log(error.statusCode);
+                // Extracting response error headers.
+                console.log(error.headers);
+                // Extracting response error body of type `string | Stream`.
+                console.log(error.body);
+                if (error instanceof MoodleError) {
+                  console.log(error.result);
+                }
+              }
+            }
+        - lang: python
+          label: Python
+          source: |-
+            courseid = 74
+
+            result = courses_api.get_course_contents(courseid)
+
+            if result.is_success():
+                print(result.body)
+            elif result.is_error():
+                print(result.errors)
+        - lang: java
+          label: Java
+          source: |-
+            int courseid = 74;
+
+            coursesApi.getCourseContentsAsync(courseid).thenAccept(result -> {
+                // TODO success callback handler
+                System.out.println(result);
+            }).exceptionally(exception -> {
+                Throwable cause = exception.getCause();
+
+                if (cause instanceof MoodleErrorException) {
+                    MoodleErrorException moodleErrorException = (MoodleErrorException) cause;
+                    moodleErrorException.printStackTrace();
+                } else {
+                    // fallback for unexpected errors
+                    exception.printStackTrace();
+                }
+
+                return null;
+            });
+        - lang: csharp
+          label: .NET (C#)
+          source: |-
+            int courseid = 74;
+            try
+            {
+                ApiResponse<List<CourseSection>> result = await coursesApi.GetCourseContentsAsync(courseid);
+            }
+            catch (ApiException e)
+            {
+                Console.WriteLine(e.Message);
+                if (e is MoodleErrorException)
+                {
+                   // TODO: Handle MoodleErrorException exception here
+                }
+            }
+        - lang: go
+          label: Go
+          source: |-
+            ctx := context.Background()
+
+            courseid := 74
+
+            apiResponse, err := coursesApi.GetCourseContents(ctx, courseid)
+            if err != nil {
+                switch typedErr := err.(type) {
+                    case *errors.MoodleError:
+                        log.Fatalln("MoodleErrorException: ", typedErr)
+                    default:
+                        log.Fatalln(err)
+                }
+            } else {
+                // Printing the result and response
+                fmt.Println(apiResponse.Data)
+                fmt.Println(apiResponse.Response.StatusCode)
+            }
+        - lang: php
+          label: PHP
+          source: |-
+            $courseid = 74;
+
+            $coursesApi = $client->getCoursesApi();
+            $apiResponse = $coursesApi->getCourseContents($courseid);
+
+            // Extracting response status code
+            var_dump($apiResponse->getStatusCode());
+            // Extracting response headers
+            var_dump($apiResponse->getHeaders());
+
+            if ($apiResponse->isSuccess()) {
+                echo 'CourseSection[]:';
+                var_dump($apiResponse->getResult());
+            } else {
+                $error = $apiResponse->getResult();
+                var_dump($error);
+            }
+        - lang: ruby
+          label: Ruby
+          source: |-
+            courseid = 74
+
+            result = courses_api.get_course_contents(courseid)
+
+            if result.success?
+              puts result.data
+            elsif result.error?
+              warn result.errors
+            end
   /service/core_fetch_notifications:
     get:
       operationId: fetchNotifications
@@ -1638,9 +1941,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
-            const limitnum = 32;
+            const limitnum = 20;
 
-            const timesortfrom = 58;
+            const timesortfrom = 0;
 
             try {
               const response = await calendarApi.getCalendarEventsByTimesort(
@@ -1673,9 +1976,9 @@ paths:
         - lang: python
           label: Python
           source: |-
-            limitnum = 32
+            limitnum = 20
 
-            timesortfrom = 58
+            timesortfrom = 0
 
             result = calendar_api.get_calendar_events_by_timesort(
                 limitnum,
@@ -1689,8 +1992,8 @@ paths:
         - lang: java
           label: Java
           source: |-
-            int limitnum = 32;
-            int timesortfrom = 58;
+            int limitnum = 20;
+            int timesortfrom = 0;
 
             calendarApi.getCalendarEventsByTimesortAsync(limitnum, timesortfrom, null, null).thenAccept(result -> {
                 // TODO success callback handler
@@ -1711,8 +2014,8 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
-            int limitnum = 32;
-            int timesortfrom = 58;
+            int limitnum = 20;
+            int timesortfrom = 0;
             try
             {
                 ApiResponse<CalendarEventsResponse> result = await calendarApi.GetCalendarEventsByTimesortAsync(
@@ -1733,9 +2036,9 @@ paths:
           source: |-
             ctx := context.Background()
 
-            limitnum := 32
+            limitnum := 20
 
-            timesortfrom := 58
+            timesortfrom := 0
 
             apiResponse, err := calendarApi.GetCalendarEventsByTimesort(ctx, limitnum, timesortfrom, nil, nil)
             if err != nil {
@@ -1753,9 +2056,9 @@ paths:
         - lang: php
           label: PHP
           source: |-
-            $limitnum = 32;
+            $limitnum = 20;
 
-            $timesortfrom = 58;
+            $timesortfrom = 0;
 
             $calendarApi = $client->getCalendarApi();
             $apiResponse = $calendarApi->getCalendarEventsByTimesort(
@@ -1778,9 +2081,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
-            limitnum = 32
+            limitnum = 20
 
-            timesortfrom = 58
+            timesortfrom = 0
 
             result = calendar_api.get_calendar_events_by_timesort(
               limitnum,
