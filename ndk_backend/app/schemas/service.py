@@ -38,6 +38,10 @@ class GetEnrolledCoursesByTimelineRequest(BaseModel):
     sort: CourseTimelineSortField
 
 
+class GetCourseContentsRequest(BaseModel):
+    courseid: int = Field(..., description="ID of the course whose contents to retrieve.")
+
+
 class FetchNotificationsRequest(BaseModel):
     contextid: int = Field(..., description="Moodle context ID to fetch notifications for.")
 

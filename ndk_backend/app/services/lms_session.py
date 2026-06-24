@@ -17,6 +17,29 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 
+def _flatten_params(args: dict[str, Any]) -> dict[str, Any]:
+    """Encode (possibly nested) args into Moodle REST's bracketed form-field convention.
+
+    Moodle's REST endpoint expects parameters as form fields, with arrays/objects
+    flattened like `options[0][name]=excludecontents`. Scalars pass through as-is;
+    booleans become 0/1.
+    """
+    out: dict[str, Any] = {}
+
+    def walk(prefix: str, value: Any) -> None:
+        if isinstance(value, dict):
+            for key, val in value.items():
+                walk(f"{prefix}[{key}]" if prefix else str(key), val)
+        elif isinstance(value, (list, tuple)):
+            for i, val in enumerate(value):
+                walk(f"{prefix}[{i}]", val)
+        else:
+            out[prefix] = int(value) if isinstance(value, bool) else value
+
+    walk("", args)
+    return out
+
+
 class LMSAuthError(Exception):
     """Authentication/session against the LMS failed (e.g. expired session)."""
 
@@ -35,7 +58,10 @@ class LMSSession:
         self.login_url = f"{base}/login/index.php"
         self.ajax_url = f"{base}/lib/ajax/service.php"
         self.dashboard_url = f"{base}/my/"
+        self.token_url = f"{base}/login/token.php"
+        self.rest_url = f"{base}/webservice/rest/server.php"
         self._sesskey: str | None = None
+        self._token: str | None = None
         self.client = httpx.AsyncClient(
             follow_redirects=True,
             verify=settings.lms_verify_ssl,
@@ -80,6 +106,9 @@ class LMSSession:
                     self.client.cookies
                 ):
                     logger.info("Authenticated %s with NUST LMS", username)
+                    # Also grab a Web Service token so REST-only functions (those not
+                    # exposed via the AJAX service) are callable. Best-effort.
+                    await self._fetch_ws_token(username, password)
                     return True
 
             logger.warning(
@@ -90,6 +119,59 @@ class LMSSession:
         except Exception as exc:  # noqa: BLE001 — surface as auth failure to caller
             logger.error("Critical error during LMS login: %s", exc)
             return False
+
+    async def _fetch_ws_token(self, username: str, password: str) -> None:
+        """Best-effort: obtain a Moodle Web Service token for the mobile service.
+
+        The token unlocks the token-based REST endpoint (webservice/rest/server.php),
+        which exposes functions not available through lib/ajax/service.php — e.g.
+        `core_course_get_contents`. If the LMS has web services disabled, this is a
+        no-op and only the AJAX-backed endpoints remain available.
+        """
+        try:
+            resp = await self.client.get(
+                self.token_url,
+                params={
+                    "username": username,
+                    "password": password,
+                    "service": "moodle_mobile_app",
+                },
+            )
+            data = resp.json()
+            self._token = data.get("token")
+            if not self._token:
+                logger.warning(
+                    "No WS token returned; REST endpoints unavailable: %s",
+                    data.get("error"),
+                )
+        except Exception as exc:  # noqa: BLE001 — REST simply stays unavailable
+            logger.warning("WS token fetch failed; REST endpoints unavailable: %s", exc)
+
+    async def call_rest(self, method: str, args: dict[str, Any]) -> Any:
+        """Invoke a Moodle external function via the token-based REST endpoint.
+
+        Used for functions not exposed through the AJAX service. Returns the parsed
+        JSON result; raises LMSAjaxError on a Moodle exception, or LMSAuthError if no
+        token was obtained at login.
+        """
+        if not self._token:
+            raise LMSAuthError(
+                "No web service token for this session; REST functions are unavailable."
+            )
+        params = {
+            "wstoken": self._token,
+            "wsfunction": method,
+            "moodlewsrestformat": "json",
+        }
+        resp = await self.client.post(
+            self.rest_url, params=params, data=_flatten_params(args)
+        )
+        resp.raise_for_status()
+        result = resp.json()
+        # REST errors arrive as HTTP 200 with an {exception, errorcode, message} body.
+        if isinstance(result, dict) and result.get("exception"):
+            raise LMSAjaxError(result)
+        return result
 
     async def get_sesskey(self) -> str | None:
         """Extract the sesskey for AJAX calls from the dashboard HTML."""

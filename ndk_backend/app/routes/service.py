@@ -14,6 +14,7 @@ from app.schemas.service import (
     FetchNotificationsRequest,
     GetCalendarEventsByCourseRequest,
     GetCalendarEventsByTimesortRequest,
+    GetCourseContentsRequest,
     GetEnrolledCoursesByTimelineRequest,
     GetPopupNotificationsRequest,
     GetRecentCoursesRequest,
@@ -41,6 +42,18 @@ async def get_enrolled_courses_by_timeline(
     return await session.call_ajax(
         "core_course_get_enrolled_courses_by_timeline_classification",
         params.model_dump(exclude_none=True),
+    )
+
+
+@router.get("/core_course_get_contents")
+async def get_course_contents(
+    params: Annotated[GetCourseContentsRequest, Query()],
+    session: LMSSession = Depends(get_current_session),
+) -> Any:
+    # Not exposed via the AJAX service, so this goes through the token-based REST
+    # transport (see LMSSession.call_rest / _fetch_ws_token).
+    return await session.call_rest(
+        "core_course_get_contents", params.model_dump(exclude_none=True)
     )
 
 
