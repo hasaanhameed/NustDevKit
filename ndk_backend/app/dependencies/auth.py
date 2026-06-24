@@ -1,5 +1,8 @@
-"""Shared FastAPI dependencies — primarily resolving the bearer token to a
-live, server-side LMS session.
+"""Auth dependencies — resolving the bearer token to a live, server-side LMS session.
+
+The single source of truth for bearer auth: both the REST routes (token from
+FastAPI's HTTPBearer dependency) and the MCP tools (token from the raw
+Authorization header) resolve through `resolve_session_from_token`.
 """
 import jwt
 from fastapi import Depends, HTTPException, status

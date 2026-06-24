@@ -1,20 +1,13 @@
-"""NustDevKit gateway — entrypoint.
-
-Run from the backend/ directory:
-    uvicorn main:app --reload
-"""
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.mcp_server import mcp
+from app.mcp import mcp
 from app.routes import auth, service
 from app.services.lms_session import LMSAjaxError, LMSAuthError
 
-# Build the MCP ASGI app first: it carries a lifespan that initializes FastMCP's
-# session manager. That lifespan MUST be handed to FastAPI below — without it,
-# every request to /mcp fails because the session manager never starts.
+
 mcp_app = mcp.http_app(path="/")
 
 app = FastAPI(
