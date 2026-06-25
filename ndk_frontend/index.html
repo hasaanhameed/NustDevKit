@@ -480,6 +480,11 @@
         // Where the gateway lives. Override for a deployed portal.
         const GATEWAY = "http://127.0.0.1:8000";
         const MAX_HISTORY = 8;
+        // Typewriter pacing for the streamed reply — Groq delivers far faster (and in
+        // bigger bursts) than is pleasant to read, so we reveal at a steady rate instead.
+        // Raise CHARS_PER_TICK or lower TICK_MS to speed it up; lower it to slow down.
+        const TYPE_TICK_MS = 20;
+        const TYPE_CHARS_PER_TICK = 2;
 
         const panel = document.getElementById("ndkAiPanel");
         const msgs = document.getElementById("ndkAiMsgs");
@@ -525,10 +530,14 @@
           sendBtn.disabled = true;
           addUser(q);
           const bot = addBot("…");
-          let acc = "";
+          const finish = () => {
+            sendBtn.disabled = false;
+            input.focus();
+          };
 
+          let resp;
           try {
-            const resp = await fetch(GATEWAY + "/assistant/ask", {
+            resp = await fetch(GATEWAY + "/assistant/ask", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -537,36 +546,60 @@
                 history: history.slice(-MAX_HISTORY),
               }),
             });
+          } catch (e) {
+            bot.innerHTML = "Sorry — couldn't reach the assistant. Is the gateway running?";
+            return finish();
+          }
 
-            if (resp.status === 429) {
-              bot.innerHTML = "You're sending messages too fast — please wait a moment and try again.";
-              return;
-            }
-            if (resp.status === 503) {
-              bot.innerHTML = "The assistant isn't configured on the server yet.";
-              return;
-            }
-            if (!resp.ok || !resp.body) {
-              bot.innerHTML = "Sorry — the assistant is unavailable right now.";
-              return;
-            }
+          if (resp.status === 429) {
+            bot.innerHTML = "You're sending messages too fast — please wait a moment and try again.";
+            return finish();
+          }
+          if (resp.status === 503) {
+            bot.innerHTML = "The assistant isn't configured on the server yet.";
+            return finish();
+          }
+          if (!resp.ok || !resp.body) {
+            bot.innerHTML = "Sorry — the assistant is unavailable right now.";
+            return finish();
+          }
 
+          // Network fills `target`; a steady timer reveals it up to `shown` characters,
+          // so render pace is independent of how fast Groq streams.
+          let target = "";
+          let shown = 0;
+          let streaming = true;
+
+          const timer = setInterval(() => {
+            if (shown < target.length) {
+              shown = Math.min(target.length, shown + TYPE_CHARS_PER_TICK);
+              bot.innerHTML = DOMPurify.sanitize(marked.parse(target.slice(0, shown)));
+              scrollDown();
+            } else if (!streaming) {
+              clearInterval(timer);
+              bot.innerHTML = DOMPurify.sanitize(marked.parse(target));
+              history.push({ role: "user", content: q });
+              history.push({ role: "assistant", content: target });
+              finish();
+            }
+          }, TYPE_TICK_MS);
+
+          try {
             const reader = resp.body.getReader();
             const dec = new TextDecoder();
             while (true) {
               const { done, value } = await reader.read();
               if (done) break;
-              acc += dec.decode(value, { stream: true });
-              bot.innerHTML = DOMPurify.sanitize(marked.parse(acc));
-              scrollDown();
+              target += dec.decode(value, { stream: true });
             }
-            history.push({ role: "user", content: q });
-            history.push({ role: "assistant", content: acc });
+            streaming = false; // let the typewriter drain the buffer, then finalize
           } catch (e) {
-            bot.innerHTML = "Sorry — couldn't reach the assistant. Is the gateway running?";
-          } finally {
-            sendBtn.disabled = false;
-            input.focus();
+            clearInterval(timer);
+            bot.innerHTML =
+              DOMPurify.sanitize(marked.parse(target)) + "<em>(stream interrupted)</em>";
+            history.push({ role: "user", content: q });
+            if (target) history.push({ role: "assistant", content: target });
+            finish();
           }
         }
 
