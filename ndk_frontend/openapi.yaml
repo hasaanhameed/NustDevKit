@@ -46,9 +46,6 @@ info:
     **HTTPS** URL. `http://127.0.0.1:8000/mcp` only works for desktop clients running on
     your own machine.
 
-  contact:
-    name: NustDevKit Support
-    url: https://github.com/hasaanhameed52/NustDevKit
 servers:
   - url: http://127.0.0.1:8000
     description: NustDevKit Gateway (local development)

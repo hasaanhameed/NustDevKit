@@ -10,9 +10,6 @@ info:
     bearer token, then call any operation with `Authorization: Bearer <token>`. The
     NustDevKit gateway logs into the LMS on your behalf and manages the underlying
     session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
-  contact:
-    name: NustDevKit Support
-    url: https://github.com/hasaanhameed52/NustDevKit
 
 servers:
   - url: http://127.0.0.1:8000
