@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.mcp import mcp
-from app.routes import auth, service
+from app.routes import assistant, auth, service
 from app.services.lms_session import LMSAjaxError, LMSAuthError
 
 
@@ -31,8 +33,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Per-IP rate limiting for the assistant route (slowapi). Registered on app.state so
+# the @limiter.limit decorator and the 429 handler share one limiter instance.
+app.state.limiter = assistant.limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.include_router(auth.router)
 app.include_router(service.router)
+app.include_router(assistant.router)
 
 # Mount the MCP server. AI assistants connect to http://<host>/mcp with their
 # bearer token; each tool resolves that token to the caller's live LMS session.

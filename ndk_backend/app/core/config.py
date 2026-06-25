@@ -34,6 +34,14 @@ class Settings(BaseSettings):
     # --- CORS ---
     cors_origins: list[str] = ["*"]
 
+    # --- Docs assistant (Groq) ---
+    # Required to run the assistant; leave empty to disable it (route returns 503).
+    groq_api_key: str = ""
+    assistant_model: str = "openai/gpt-oss-120b"
+    assistant_rate_limit: str = "15/minute"  # per client IP (slowapi)
+    assistant_max_question_chars: int = 2000
+    assistant_max_history: int = 8  # messages of context kept per request
+
 
 @lru_cache
 def get_settings() -> Settings:

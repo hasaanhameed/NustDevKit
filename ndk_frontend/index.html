@@ -145,6 +145,17 @@
         <span class="title">NUST LMS Developer Hub</span>
       </div>
       <div class="ndk-spacer"></div>
+      <button
+        class="ndk-btn ndk-ai-trigger"
+        id="ndkAiOpen"
+        type="button"
+        aria-label="Ask the docs assistant"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 2 8.6 7.6 3 10l5.6 2.4L11 18l2.4-5.6L19 10l-5.6-2.4L11 2zm8 9-1.2 2.8L15 15l2.8 1.2L19 19l1.2-2.8L23 15l-2.8-1.2L19 11z" />
+        </svg>
+        Ask AI
+      </button>
       <a
         class="ndk-btn"
         href="./openapi.yaml"
@@ -190,6 +201,9 @@
         hideDownloadButton: true,
         // Remove the "Open API Client" button (keep the inline Test Request).
         hideClientButton: true,
+        // Disable Scalar's built-in "Ask AI" agent — we ship our own grounded docs
+        // assistant (the floating widget below) instead.
+        agent: { disabled: true },
         // Don't auto-expand the first tag (Authentication); let it collapse behind
         // "Show More" like every other section, for consistency.
         defaultOpenFirstTag: false,
@@ -275,6 +289,295 @@
           }
         `,
       });
+    </script>
+
+    <!-- ============================================================
+         NUST LMS docs assistant — our own grounded chatbot widget.
+         Calls the gateway's POST /assistant/ask and streams the reply.
+         Hand-written and owned by us, so it survives APIMatic regen.
+         ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <style>
+      /* "Ask AI" trigger sits in our top bar, styled to match the header buttons. */
+      .ndk-ai-trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--nust-navy);
+        background: transparent;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 6px;
+        border: 1px solid #d6e4f3;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .ndk-ai-trigger:hover { background: var(--nust-sky); }
+      .ndk-ai-trigger svg { width: 16px; height: 16px; fill: currentColor; display: block; }
+
+      /* Right-docked, full-height chat panel (sits below the fixed header). */
+      .ndk-ai-panel {
+        position: fixed;
+        top: var(--nust-header-h);
+        right: 0;
+        bottom: 0;
+        z-index: 1100;
+        width: 400px;
+        max-width: 100vw;
+        background: #fff;
+        border-left: 1px solid #d6e4f3;
+        box-shadow: -10px 0 30px rgba(4, 44, 83, 0.13);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+        transform: translateX(8px);
+        opacity: 0;
+        transition: transform 0.18s ease, opacity 0.18s ease;
+      }
+      .ndk-ai-panel.open { display: flex; transform: translateX(0); opacity: 1; }
+
+      .ndk-ai-head {
+        background: #378add;
+        color: #fff;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .ndk-ai-head .title { font-weight: 700; font-size: 14px; }
+      .ndk-ai-head .spacer { flex: 1 1 auto; }
+      /* Light dropdown (white field, navy text) to match the portal's other
+         selects — and so the open option list is readable, not white-on-white. */
+      .ndk-ai-head select {
+        font-size: 12px;
+        border-radius: 6px;
+        border: 1px solid #c4dcf3;
+        background: #ffffff;
+        color: #042c53;
+        padding: 3px 22px 3px 8px;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='%23378add'%3E%3Cpath d='M3 4.5 6 8l3-3.5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 6px center;
+      }
+      .ndk-ai-head select option {
+        color: #042c53;
+        background: #ffffff;
+      }
+      .ndk-ai-head button {
+        background: transparent;
+        border: none;
+        color: #cfe3fb;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .ndk-ai-msgs {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 14px;
+        background: #f5f9fd;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .ndk-ai-msg { font-size: 13.5px; line-height: 1.5; max-width: 92%; }
+      .ndk-ai-msg.user {
+        align-self: flex-end;
+        background: #378add;
+        color: #fff;
+        padding: 8px 11px;
+        border-radius: 12px 12px 2px 12px;
+      }
+      .ndk-ai-msg.bot {
+        align-self: flex-start;
+        background: #fff;
+        color: #042c53;
+        border: 1px solid #e0ebf7;
+        padding: 8px 11px;
+        border-radius: 12px 12px 12px 2px;
+      }
+      .ndk-ai-msg.bot pre {
+        background: #042c53;
+        color: #e6f1fb;
+        padding: 10px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 12px;
+      }
+      .ndk-ai-msg.bot code { font-size: 12px; }
+      .ndk-ai-msg.bot :not(pre) > code {
+        background: #e6f1fb;
+        padding: 1px 4px;
+        border-radius: 4px;
+      }
+      .ndk-ai-msg.bot p:first-child { margin-top: 0; }
+      .ndk-ai-msg.bot p:last-child { margin-bottom: 0; }
+
+      .ndk-ai-foot {
+        border-top: 1px solid #e0ebf7;
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        background: #fff;
+      }
+      .ndk-ai-foot textarea {
+        flex: 1 1 auto;
+        resize: none;
+        border: 1px solid #c4dcf3;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font: inherit;
+        font-size: 13px;
+        height: 38px;
+        max-height: 96px;
+      }
+      .ndk-ai-foot button {
+        background: #378add;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .ndk-ai-foot button:disabled { opacity: 0.5; cursor: default; }
+      .ndk-ai-hint { font-size: 11px; color: #5a7798; padding: 0 14px 8px; background: #fff; }
+    </style>
+
+    <section class="ndk-ai-panel" id="ndkAiPanel" aria-label="NUST LMS docs assistant">
+      <div class="ndk-ai-head">
+        <span class="title">Ask the docs</span>
+        <span class="spacer"></span>
+        <select id="ndkAiLang" title="SDK language for code examples">
+          <option value="python">Python</option>
+          <option value="typescript">TypeScript</option>
+          <option value="java">Java</option>
+          <option value="csharp">.NET (C#)</option>
+          <option value="go">Go</option>
+          <option value="php">PHP</option>
+          <option value="ruby">Ruby</option>
+        </select>
+        <button id="ndkAiClose" aria-label="Close">×</button>
+      </div>
+      <div class="ndk-ai-msgs" id="ndkAiMsgs"></div>
+      <div class="ndk-ai-hint">Answers come from the API docs. Verify before relying on them.</div>
+      <div class="ndk-ai-foot">
+        <textarea id="ndkAiInput" placeholder="How do I get my deadlines?" rows="1"></textarea>
+        <button id="ndkAiSend">Send</button>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        // Where the gateway lives. Override for a deployed portal.
+        const GATEWAY = "http://127.0.0.1:8000";
+        const MAX_HISTORY = 8;
+
+        const panel = document.getElementById("ndkAiPanel");
+        const msgs = document.getElementById("ndkAiMsgs");
+        const input = document.getElementById("ndkAiInput");
+        const sendBtn = document.getElementById("ndkAiSend");
+        const langSel = document.getElementById("ndkAiLang");
+        const history = []; // completed turns only: {role, content}
+
+        const open = () => {
+          panel.classList.add("open");
+          input.focus();
+          if (!msgs.childElementCount) {
+            addBot("Hi! Ask me anything about the NUST LMS API — auth, endpoints, or SDK usage.");
+          }
+        };
+        document.getElementById("ndkAiOpen").addEventListener("click", open);
+        document.getElementById("ndkAiClose").addEventListener("click", () =>
+          panel.classList.remove("open")
+        );
+
+        function scrollDown() { msgs.scrollTop = msgs.scrollHeight; }
+
+        function addUser(text) {
+          const el = document.createElement("div");
+          el.className = "ndk-ai-msg user";
+          el.textContent = text;
+          msgs.appendChild(el);
+          scrollDown();
+        }
+        function addBot(markdown) {
+          const el = document.createElement("div");
+          el.className = "ndk-ai-msg bot";
+          el.innerHTML = DOMPurify.sanitize(marked.parse(markdown));
+          msgs.appendChild(el);
+          scrollDown();
+          return el;
+        }
+
+        async function send() {
+          const q = input.value.trim();
+          if (!q) return;
+          input.value = "";
+          sendBtn.disabled = true;
+          addUser(q);
+          const bot = addBot("…");
+          let acc = "";
+
+          try {
+            const resp = await fetch(GATEWAY + "/assistant/ask", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                question: q,
+                language: langSel.value,
+                history: history.slice(-MAX_HISTORY),
+              }),
+            });
+
+            if (resp.status === 429) {
+              bot.innerHTML = "You're sending messages too fast — please wait a moment and try again.";
+              return;
+            }
+            if (resp.status === 503) {
+              bot.innerHTML = "The assistant isn't configured on the server yet.";
+              return;
+            }
+            if (!resp.ok || !resp.body) {
+              bot.innerHTML = "Sorry — the assistant is unavailable right now.";
+              return;
+            }
+
+            const reader = resp.body.getReader();
+            const dec = new TextDecoder();
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              acc += dec.decode(value, { stream: true });
+              bot.innerHTML = DOMPurify.sanitize(marked.parse(acc));
+              scrollDown();
+            }
+            history.push({ role: "user", content: q });
+            history.push({ role: "assistant", content: acc });
+          } catch (e) {
+            bot.innerHTML = "Sorry — couldn't reach the assistant. Is the gateway running?";
+          } finally {
+            sendBtn.disabled = false;
+            input.focus();
+          }
+        }
+
+        sendBtn.addEventListener("click", send);
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            send();
+          }
+        });
+      })();
     </script>
   </body>
 </html>
