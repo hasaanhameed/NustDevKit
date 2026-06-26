@@ -9,17 +9,13 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from groq import GroqError
 from pydantic import BaseModel, Field
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from app.assistant.knowledge import SUPPORTED_LANGUAGES
 from app.assistant.service import is_configured, iter_stream, open_stream
 from app.core.config import settings
+from app.core.limiter import limiter
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
-
-# Shared with main.py (app.state.limiter) so the decorator and handler agree.
-limiter = Limiter(key_func=get_remote_address)
 
 
 class Message(BaseModel):

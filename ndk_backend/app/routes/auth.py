@@ -1,9 +1,11 @@
 """Authentication routes: exchange NUST LMS credentials for a gateway token."""
 import jwt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials
 
+from app.core.limiter import limiter
 from app.core.security import create_access_token, decode_access_token
+from app.core.config import settings
 from app.dependencies import bearer_scheme
 from app.schemas.auth import LoginRequest, TokenResponse
 from app.services.lms_session import LMSSession
@@ -13,7 +15,9 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit(settings.auth_login_rate_limit)
 async def login(
+    request: Request,
     body: LoginRequest,
     store: InMemorySessionStore = Depends(get_session_store),
 ) -> TokenResponse:

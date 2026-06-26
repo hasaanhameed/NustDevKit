@@ -5,6 +5,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.mcp import mcp
 from app.routes import assistant, auth, service
 from app.services.lms_session import LMSAjaxError, LMSAuthError
@@ -32,7 +33,7 @@ app.add_middleware(
 )
 
 # slowapi needs the limiter on app.state so the route decorator and 429 handler share it.
-app.state.limiter = assistant.limiter
+app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.include_router(auth.router)
