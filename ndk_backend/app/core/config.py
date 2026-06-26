@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 720  # 12 hours
     # Throttle the unauthenticated login endpoint (brute-force / session-spam guard).
     auth_login_rate_limit: str = "5/minute"  # per client IP (slowapi)
+    # Evict an LMS session after this many minutes idle (sliding), roughly matching the
+    # LMS's own ~1h timeout — so abandoned sessions free their memory and connections.
+    session_idle_minutes: int = 60
 
     # --- Upstream NUST LMS (Moodle) ---
     # Includes the /portal path segment; login + AJAX endpoints hang off this.
