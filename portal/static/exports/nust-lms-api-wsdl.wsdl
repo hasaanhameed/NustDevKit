@@ -20,9 +20,9 @@
       <xs:element name="GET_getCalendarEventsByCourse_InputMessage" type="schemas:GET_getCalendarEventsByCourse_InputMessage" />
       <xs:element name="GET_getCalendarEventsByCourse_OutputMessage" type="schemas:GET_getCalendarEventsByCourse_OutputMessage" />
       <xs:element name="GET_getCalendarEventsByCourse_400" type="schemas:GET_getCalendarEventsByCourse_400" />
-      <xs:element name="GET_fetchNotifications_InputMessage" type="schemas:GET_fetchNotifications_InputMessage" />
-      <xs:element name="GET_fetchNotifications_OutputMessage" type="schemas:GET_fetchNotifications_OutputMessage" />
-      <xs:element name="GET_fetchNotifications_400" type="schemas:GET_fetchNotifications_400" />
+      <xs:element name="GET_getSiteInfo_InputMessage" type="schemas:GET_getSiteInfo_InputMessage" />
+      <xs:element name="GET_getSiteInfo_OutputMessage" type="schemas:GET_getSiteInfo_OutputMessage" />
+      <xs:element name="GET_getSiteInfo_400" type="schemas:GET_getSiteInfo_400" />
       <xs:element name="GET_getPopupNotifications_InputMessage" type="schemas:GET_getPopupNotifications_InputMessage" />
       <xs:element name="GET_getPopupNotifications_OutputMessage" type="schemas:GET_getPopupNotifications_OutputMessage" />
       <xs:element name="GET_getPopupNotifications_400" type="schemas:GET_getPopupNotifications_400" />
@@ -109,24 +109,59 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="SiteNotification">
+      <xs:complexType name="SiteInfo">
         <xs:annotation>
-          <xs:documentation>A site-level notification (structure varies by type).</xs:documentation>
+          <xs:documentation>Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="0" name="id" type="xs:integer">
+          <xs:element minOccurs="1" name="userid" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Unique identifier for the site notification.</xs:documentation>
+              <xs:documentation>Your numeric Moodle user ID.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element minOccurs="0" name="message" type="xs:string">
+          <xs:element minOccurs="1" name="username" type="xs:string">
             <xs:annotation>
-              <xs:documentation>Notification message content.</xs:documentation>
+              <xs:documentation>Your login username.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element minOccurs="0" name="type" type="xs:string">
+          <xs:element minOccurs="0" name="firstname" type="xs:string">
             <xs:annotation>
-              <xs:documentation>Notification type identifier.</xs:documentation>
+              <xs:documentation>Your first name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="lastname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your last name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your full display name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="userpictureurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL of your profile picture.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="lang" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your preferred interface language code.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="sitename" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the LMS site.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="siteurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Base URL of the LMS site.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="release" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle release/version string of the site.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -987,18 +1022,6 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="FetchNotificationsRequest">
-        <xs:annotation>
-          <xs:documentation>Request parameters for fetching site-level notifications.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="contextid" type="xs:integer">
-            <xs:annotation>
-              <xs:documentation>Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="GetCalendarEventsByTimesortRequest">
         <xs:annotation>
           <xs:documentation>Request parameters for retrieving calendar action events sorted by time.</xs:documentation>
@@ -1298,25 +1321,21 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="GET_fetchNotifications_InputMessage">
+      <xs:complexType name="GET_getSiteInfo_InputMessage">
         <xs:sequence>
-          <xs:element minOccurs="1" name="contextid" type="xs:integer">
+          <xs:any />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GET_getSiteInfo_OutputMessage">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="response200" type="schemas:SiteInfo">
             <xs:annotation>
-              <xs:documentation>Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</xs:documentation>
+              <xs:documentation>Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="GET_fetchNotifications_OutputMessage">
-        <xs:sequence>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:SiteNotification">
-            <xs:annotation>
-              <xs:documentation>Site-level notifications for the given context; empty array when none are pending.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="GET_fetchNotifications_400">
+      <xs:complexType name="GET_getSiteInfo_400">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1329,7 +1348,7 @@
         <xs:sequence>
           <xs:element minOccurs="1" name="useridto" type="xs:string">
             <xs:annotation>
-              <xs:documentation>ID of the recipient user, passed as a string.</xs:documentation>
+              <xs:documentation>ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element minOccurs="1" name="limit" type="xs:integer">
@@ -1418,14 +1437,14 @@
   <message name="GET_getCalendarEventsByCourse_400">
     <part name="GET_getCalendarEventsByCourse_400" element="schemas:GET_getCalendarEventsByCourse_400" />
   </message>
-  <message name="GET_fetchNotifications_InputMessage">
-    <part name="GET_fetchNotifications_InputMessage" element="schemas:GET_fetchNotifications_InputMessage" />
+  <message name="GET_getSiteInfo_InputMessage">
+    <part name="GET_getSiteInfo_InputMessage" element="schemas:GET_getSiteInfo_InputMessage" />
   </message>
-  <message name="GET_fetchNotifications_OutputMessage">
-    <part name="GET_fetchNotifications_OutputMessage" element="schemas:GET_fetchNotifications_OutputMessage" />
+  <message name="GET_getSiteInfo_OutputMessage">
+    <part name="GET_getSiteInfo_OutputMessage" element="schemas:GET_getSiteInfo_OutputMessage" />
   </message>
-  <message name="GET_fetchNotifications_400">
-    <part name="GET_fetchNotifications_400" element="schemas:GET_fetchNotifications_400" />
+  <message name="GET_getSiteInfo_400">
+    <part name="GET_getSiteInfo_400" element="schemas:GET_getSiteInfo_400" />
   </message>
   <message name="GET_getPopupNotifications_InputMessage">
     <part name="GET_getPopupNotifications_InputMessage" element="schemas:GET_getPopupNotifications_InputMessage" />
@@ -1509,15 +1528,15 @@ Moodle method: `core_calendar_get_action_events_by_course`
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
-    <operation name="GET_fetchNotifications">
-      <documentation>Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
-Moodle method: `core_fetch_notifications`
+    <operation name="GET_getSiteInfo">
+      <documentation>Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
+Moodle method: `core_webservice_get_site_info`
 </documentation>
-      <input message="wsdl:GET_fetchNotifications_InputMessage" />
-      <output message="wsdl:GET_fetchNotifications_OutputMessage">
-        <documentation>Array of site notifications (empty array when none are pending).</documentation>
+      <input message="wsdl:GET_getSiteInfo_InputMessage" />
+      <output message="wsdl:GET_getSiteInfo_OutputMessage">
+        <documentation>Your account and site information.</documentation>
       </output>
-      <fault name="GET_fetchNotifications_400" message="wsdl:GET_fetchNotifications_400">
+      <fault name="GET_getSiteInfo_400" message="wsdl:GET_getSiteInfo_400">
         <documentation>Bad request or Moodle exception.</documentation>
       </fault>
     </operation>
@@ -1608,16 +1627,16 @@ Moodle method: `message_popup_get_popup_notifications`
         <soap:fault use="literal" name="GET_getCalendarEventsByCourse_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
-    <operation name="GET_fetchNotifications">
-      <soap:operation soapAction="GET_fetchNotifications" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GET_getSiteInfo">
+      <soap:operation soapAction="GET_getSiteInfo" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output>
         <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
-      <fault name="GET_fetchNotifications_400">
-        <soap:fault use="literal" name="GET_fetchNotifications_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <fault name="GET_getSiteInfo_400">
+        <soap:fault use="literal" name="GET_getSiteInfo_400" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
       </fault>
     </operation>
     <operation name="GET_getPopupNotifications">

@@ -77,26 +77,81 @@ types:
         displayName: message
         description: Human-readable warning description.
         type: string
-  SiteNotification:
-    displayName: SiteNotification
-    description: A site-level notification (structure varies by type).
+  SiteInfo:
+    displayName: SiteInfo
+    description: Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).
     type: object
     properties:
-      id:
-        required: false
-        displayName: id
-        description: Unique identifier for the site notification.
+      userid:
+        required: true
+        example:
+          value: 234567
+        displayName: userid
+        description: Your numeric Moodle user ID.
         type: integer
         format: int32
-      message:
-        required: false
-        displayName: message
-        description: Notification message content.
+      username:
+        required: true
+        example:
+          value: johndoe.bscs23seecs
+        displayName: username
+        description: Your login username.
         type: string
-      type:
+      firstname:
         required: false
-        displayName: type
-        description: Notification type identifier.
+        example:
+          value: John
+        displayName: firstname
+        description: Your first name.
+        type: string
+      lastname:
+        required: false
+        example:
+          value: Doe
+        displayName: lastname
+        description: Your last name.
+        type: string
+      fullname:
+        required: true
+        example:
+          value: John Doe
+        displayName: fullname
+        description: Your full display name.
+        type: string
+      userpictureurl:
+        required: false
+        example:
+          value: https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1
+        displayName: userpictureurl
+        description: URL of your profile picture.
+        type: string
+      lang:
+        required: false
+        example:
+          value: en
+        displayName: lang
+        description: Your preferred interface language code.
+        type: string
+      sitename:
+        required: true
+        example:
+          value: NUST LMS
+        displayName: sitename
+        description: Name of the LMS site.
+        type: string
+      siteurl:
+        required: false
+        example:
+          value: https://lms.nust.edu.pk/portal
+        displayName: siteurl
+        description: Base URL of the LMS site.
+        type: string
+      release:
+        required: false
+        example:
+          value: 4.1.2
+        displayName: release
+        description: Moodle release/version string of the site.
         type: string
   MoodleError:
     displayName: MoodleError
@@ -1248,19 +1303,6 @@ types:
         - id
         - idnumber
         - timeaccess
-  FetchNotificationsRequest:
-    displayName: FetchNotificationsRequest
-    description: Request parameters for fetching site-level notifications.
-    type: object
-    properties:
-      contextid:
-        required: true
-        example:
-          value: 1583361
-        displayName: contextid
-        description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-        type: integer
-        format: int32
   GetCalendarEventsByTimesortRequest:
     displayName: GetCalendarEventsByTimesortRequest
     description: Request parameters for retrieving calendar action events sorted by time.
@@ -1634,30 +1676,22 @@ types:
               displayName: response400
               description: Error returned by the LMS on a failed operation.
               type: MoodleError
-  /core_fetch_notifications:
+  /core_webservice_get_site_info:
     get:
-      displayName: fetchNotifications
+      displayName: getSiteInfo
       description: >
-        Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+        Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
 
-        Moodle method: `core_fetch_notifications`
-      queryParameters:
-        contextid:
-          required: true
-          displayName: contextid
-          description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-          type: integer
-          format: int32
+        Moodle method: `core_webservice_get_site_info`
       responses:
         '200':
-          description: Array of site notifications (empty array when none are pending).
+          description: Your account and site information.
           body:
             application/json:
               displayName: response200
-              description: Site-level notifications for the given context; empty array when none are pending.
-              type: array
-              items:
-                type: SiteNotification
+              description: >
+                Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).
+              type: SiteInfo
         '400':
           description: Bad request or Moodle exception.
           body:
@@ -1676,7 +1710,7 @@ types:
         useridto:
           required: true
           displayName: useridto
-          description: ID of the recipient user, passed as a string.
+          description: ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.
           type: string
         limit:
           required: true

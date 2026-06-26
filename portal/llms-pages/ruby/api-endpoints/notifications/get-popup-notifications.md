@@ -21,7 +21,7 @@ This endpoint requires [BearerAuth](/llms-pages/ruby/getting-started/sdk-quickst
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `useridto` | `String` | Query, Required | ID of the recipient user, passed as a string. |
+| `useridto` | `String` | Query, Required | ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`. |
 | `limit` | `Integer` | Query, Required | Maximum number of notifications to return. |
 | `offset` | `Integer` | Query, Required | Pagination offset. |
 

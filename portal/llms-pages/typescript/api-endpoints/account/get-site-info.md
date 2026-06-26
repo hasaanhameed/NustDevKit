@@ -1,15 +1,14 @@
-# Fetch Notifications
+# Get Site Info
 
-Source: /#/typescript/x-redirect/JTI0ZSUyRk5vdGlmaWNhdGlvbnMlMkZmZXRjaE5vdGlmaWNhdGlvbnM
+Source: /#/typescript/x-redirect/JTI0ZSUyRkFjY291bnQlMkZnZXRTaXRlSW5mbw
 
-Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
-Moodle method: `core_fetch_notifications`
+Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
+Moodle method: `core_webservice_get_site_info`
 
 ```ts
-async fetchNotifications(
-  contextid: number,
+async getSiteInfo(
   requestOptions?: RequestOptions
-): Promise<ApiResponse<SiteNotification[]>>
+): Promise<ApiResponse<SiteInfo>>
 ```
 
 
@@ -22,24 +21,21 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `contextid` | `number` | Query, Required | Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
 
 
 # Response Type
 
-**200**: Array of site notifications (empty array when none are pending).
+**200**: Your account and site information.
 
-This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure/utilities/apiresponse.md) instance. The `result` property of this instance returns the response data which is of type [`SiteNotification[]`](/llms-pages/typescript/models/structures/site-notification.md).
+This method returns an [`ApiResponse`](/llms-pages/typescript/sdk-infrastructure/utilities/apiresponse.md) instance. The `result` property of this instance returns the response data which is of type [`SiteInfo`](/llms-pages/typescript/models/structures/site-info.md).
 
 
 # Example Usage
 
 ```ts
-const contextid = 156;
-
 try {
-  const response = await notificationsApi.fetchNotifications(contextid);
+  const response = await accountApi.getSiteInfo();
 
   // Extracting fully parsed response body.
   console.log(response.result);

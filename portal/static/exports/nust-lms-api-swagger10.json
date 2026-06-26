@@ -385,26 +385,13 @@
       ]
     },
     {
-      "path": "/service/core_fetch_notifications",
+      "path": "/service/core_webservice_get_site_info",
       "operations": [
         {
           "method": "GET",
-          "summary": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n",
-          "nickname": "fetchNotifications",
-          "parameters": [
-            {
-              "name": "contextid",
-              "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
-              "paramType": "query",
-              "required": true,
-              "allowMultiple": false,
-              "minimum": "",
-              "maximum": "",
-              "uniqueItems": false,
-              "type": "integer",
-              "format": "int32"
-            }
-          ],
+          "summary": "Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).\nMoodle method: `core_webservice_get_site_info`\n",
+          "nickname": "getSiteInfo",
+          "parameters": [],
           "authorizations": {
             "BearerAuth": []
           },
@@ -418,11 +405,8 @@
               "message": "Bad request or Moodle exception."
             }
           ],
-          "items": {
-            "$ref": "SiteNotification"
-          },
           "uniqueItems": false,
-          "type": "array"
+          "$ref": "SiteInfo"
         }
       ]
     },
@@ -436,7 +420,7 @@
           "parameters": [
             {
               "name": "useridto",
-              "description": "ID of the recipient user, passed as a string.",
+              "description": "ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.",
               "paramType": "query",
               "required": true,
               "allowMultiple": false,
@@ -560,26 +544,66 @@
         }
       }
     },
-    "SiteNotification": {
-      "id": "SiteNotification",
-      "description": "A site-level notification (structure varies by type).",
-      "required": [],
+    "SiteInfo": {
+      "id": "SiteInfo",
+      "description": "Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).",
+      "required": [
+        "userid",
+        "username",
+        "fullname",
+        "sitename"
+      ],
       "properties": {
-        "id": {
-          "description": "Unique identifier for the site notification.",
+        "userid": {
+          "description": "Your numeric Moodle user ID.",
           "minimum": "",
           "maximum": "",
           "uniqueItems": false,
           "type": "integer",
           "format": "int32"
         },
-        "message": {
-          "description": "Notification message content.",
+        "username": {
+          "description": "Your login username.",
           "uniqueItems": false,
           "type": "string"
         },
-        "type": {
-          "description": "Notification type identifier.",
+        "firstname": {
+          "description": "Your first name.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "lastname": {
+          "description": "Your last name.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "fullname": {
+          "description": "Your full display name.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "userpictureurl": {
+          "description": "URL of your profile picture.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "lang": {
+          "description": "Your preferred interface language code.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "sitename": {
+          "description": "Name of the LMS site.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "siteurl": {
+          "description": "Base URL of the LMS site.",
+          "uniqueItems": false,
+          "type": "string"
+        },
+        "release": {
+          "description": "Moodle release/version string of the site.",
           "uniqueItems": false,
           "type": "string"
         }
@@ -1736,23 +1760,6 @@
           ],
           "uniqueItems": false,
           "type": "string"
-        }
-      }
-    },
-    "FetchNotificationsRequest": {
-      "id": "FetchNotificationsRequest",
-      "description": "Request parameters for fetching site-level notifications.",
-      "required": [
-        "contextid"
-      ],
-      "properties": {
-        "contextid": {
-          "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
-          "minimum": "",
-          "maximum": "",
-          "uniqueItems": false,
-          "type": "integer",
-          "format": "int32"
         }
       }
     },

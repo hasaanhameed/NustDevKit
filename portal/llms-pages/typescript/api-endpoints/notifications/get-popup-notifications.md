@@ -24,7 +24,7 @@ This endpoint requires [BearerAuth](/llms-pages/typescript/getting-started/sdk-q
 
 | Parameter | Type | Tags | Description |
 |  --- | --- | --- | --- |
-| `useridto` | `string` | Query, Required | ID of the recipient user, passed as a string. |
+| `useridto` | `string` | Query, Required | ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`. |
 | `limit` | `number` | Query, Required | Maximum number of notifications to return. |
 | `offset` | `number` | Query, Required | Pagination offset. |
 | `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |

@@ -6,9 +6,7 @@ info:
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
 
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
-  contact:
-    name: NustDevKit Support
-    url: https://github.com/hasaanhameed52/NustDevKit
+  contact: {}
 host: 127.0.0.1:8000
 basePath: /
 securityDefinitions: {}
@@ -316,16 +314,16 @@ paths:
           schema:
             $ref: '#/definitions/MoodleError'
           headers: {}
-  /service/core_fetch_notifications:
+  /service/core_webservice_get_site_info:
     get:
       description: >
-        Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+        Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
 
-        Moodle method: `core_fetch_notifications`
-      summary: fetchNotifications
+        Moodle method: `core_webservice_get_site_info`
+      summary: getSiteInfo
       tags:
-      - Notifications
-      operationId: fetchNotifications
+      - Account
+      operationId: getSiteInfo
       deprecated: false
       produces:
       - application/json
@@ -335,19 +333,11 @@ paths:
         required: false
         default: Bearer {token}
         type: string
-      - name: contextid
-        in: query
-        required: true
-        type: integer
-        format: int32
-        description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
       responses:
         '200':
-          description: Array of site notifications (empty array when none are pending).
+          description: Your account and site information.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/SiteNotification'
+            $ref: '#/definitions/SiteInfo'
           headers: {}
         '400':
           description: Bad request or Moodle exception.
@@ -377,7 +367,7 @@ paths:
         in: query
         required: true
         type: string
-        description: ID of the recipient user, passed as a string.
+        description: ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.
       - name: limit
         in: query
         required: true
@@ -474,21 +464,57 @@ definitions:
       message:
         description: Human-readable warning description.
         type: string
-  SiteNotification:
-    title: SiteNotification
-    description: A site-level notification (structure varies by type).
+  SiteInfo:
+    title: SiteInfo
+    description: Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).
     type: object
     properties:
-      id:
-        description: Unique identifier for the site notification.
+      userid:
+        description: Your numeric Moodle user ID.
+        example: 234567
         type: integer
         format: int32
-      message:
-        description: Notification message content.
+      username:
+        description: Your login username.
+        example: johndoe.bscs23seecs
         type: string
-      type:
-        description: Notification type identifier.
+      firstname:
+        description: Your first name.
+        example: John
         type: string
+      lastname:
+        description: Your last name.
+        example: Doe
+        type: string
+      fullname:
+        description: Your full display name.
+        example: John Doe
+        type: string
+      userpictureurl:
+        description: URL of your profile picture.
+        example: https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1
+        type: string
+      lang:
+        description: Your preferred interface language code.
+        example: en
+        type: string
+      sitename:
+        description: Name of the LMS site.
+        example: NUST LMS
+        type: string
+      siteurl:
+        description: Base URL of the LMS site.
+        example: https://lms.nust.edu.pk/portal
+        type: string
+      release:
+        description: Moodle release/version string of the site.
+        example: 4.1.2
+        type: string
+    required:
+    - userid
+    - username
+    - fullname
+    - sitename
   MoodleError:
     title: MoodleError
     description: Error returned by the LMS on a failed operation.
@@ -1337,18 +1363,6 @@ definitions:
     - limit
     - classification
     - sort
-  FetchNotificationsRequest:
-    title: FetchNotificationsRequest
-    description: Request parameters for fetching site-level notifications.
-    type: object
-    properties:
-      contextid:
-        description: Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-        example: 1583361
-        type: integer
-        format: int32
-    required:
-    - contextid
   GetCalendarEventsByTimesortRequest:
     title: GetCalendarEventsByTimesortRequest
     description: Request parameters for retrieving calendar action events sorted by time.
@@ -1443,5 +1457,7 @@ tags:
 - name: Calendar
   description: >
     Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
+- name: Account
+  description: Your identity and account/site information
 - name: Notifications
   description: Notification retrieval operations

@@ -260,26 +260,21 @@ Moodle method: `core_calendar_get_action_events_by_course`
 
 
 
-# Group Notifications
+# Group Account
 
-Notification retrieval operations
+Your identity and account/site information
 
-## Service Core Fetch Notifications [/service/core_fetch_notifications{?contextid}]
+## Service Core Webservice Get Site Info [/service/core_webservice_get_site_info]
 
-### fetchNotifications [GET]
-Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
-Moodle method: `core_fetch_notifications`
-+ Parameters
-    + contextid (number, required)
-
-        Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
-
+### getSiteInfo [GET]
+Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
+Moodle method: `core_webservice_get_site_info`
 
 + Response 200 (application/json)
 
-        Array of site notifications (empty array when none are pending).
+        Your account and site information.
 
-    + Attributes (array[SiteNotification])
+    + Attributes (SiteInfo)
 
 
 
@@ -292,6 +287,11 @@ Moodle method: `core_fetch_notifications`
 
 
 
+
+# Group Notifications
+
+Notification retrieval operations
+
 ## Service Message Popup Get Popup Notifications [/service/message_popup_get_popup_notifications{?useridto,limit,offset}]
 
 ### getPopupNotifications [GET]
@@ -300,7 +300,7 @@ Moodle method: `message_popup_get_popup_notifications`
 + Parameters
     + useridto (string, required)
 
-        ID of the recipient user, passed as a string.
+        ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.
 
     + limit (number, required)
 
@@ -358,13 +358,20 @@ A non-fatal warning returned alongside a successful response.
 + `message` (string, optional) - Human-readable warning description.
 
 
-## SiteNotification (object)
-A site-level notification (structure varies by type).
+## SiteInfo (object)
+Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).
 
 ### Properties
-+ `id` (number, optional) - Unique identifier for the site notification.
-+ `message` (string, optional) - Notification message content.
-+ `type` (string, optional) - Notification type identifier.
++ `userid`: `234567` (number, required) - Your numeric Moodle user ID.
++ `username`: `johndoe.bscs23seecs` (string, required) - Your login username.
++ `firstname`: `John` (string, optional) - Your first name.
++ `lastname`: `Doe` (string, optional) - Your last name.
++ `fullname`: `John Doe` (string, required) - Your full display name.
++ `userpictureurl`: `https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1` (string, optional) - URL of your profile picture.
++ `lang`: `en` (string, optional) - Your preferred interface language code.
++ `sitename`: `NUST LMS` (string, required) - Name of the LMS site.
++ `siteurl`: `https://lms.nust.edu.pk/portal` (string, optional) - Base URL of the LMS site.
++ `release`: `4.1.2` (string, optional) - Moodle release/version string of the site.
 
 
 ## MoodleError (object)
@@ -624,13 +631,6 @@ Request parameters for retrieving enrolled courses filtered by timeline classifi
     + `id`
     + `idnumber`
     + `timeaccess`
-
-
-## FetchNotificationsRequest (object)
-Request parameters for fetching site-level notifications.
-
-### Properties
-+ `contextid`: `1583361` (number, required) - Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.
 
 
 ## GetCalendarEventsByTimesortRequest (object)

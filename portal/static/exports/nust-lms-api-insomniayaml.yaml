@@ -4,31 +4,36 @@ __export_source: apimatic.transformer
 resources:
 - name: NUST LMS API
   _type: workspace
-  _id: wrk_7c2e215b49d34a06bc49d3e7e31d4937
+  _id: wrk_77854d50a51c4fb493d4815a6b54ca1c
   description: >
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
 
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 - name: Authentication
   _type: request_group
-  _id: fld_c6bd45a132474b429d8bbdf0a515cbea
-  parentId: wrk_7c2e215b49d34a06bc49d3e7e31d4937
+  _id: fld_40ba945f2ebd464eb0cc3f103ee21652
+  parentId: wrk_77854d50a51c4fb493d4815a6b54ca1c
   description: Exchange NUST LMS credentials for a gateway bearer token
 - name: Courses
   _type: request_group
-  _id: fld_b93f7ffe1eab457aa85ce41cb8c1c284
-  parentId: wrk_7c2e215b49d34a06bc49d3e7e31d4937
+  _id: fld_147722a3113749a1836a9c241f5f7560
+  parentId: wrk_77854d50a51c4fb493d4815a6b54ca1c
   description: Course listing and enrollment operations
 - name: Calendar
   _type: request_group
-  _id: fld_855a9fe563d94805a31537d5b0614003
-  parentId: wrk_7c2e215b49d34a06bc49d3e7e31d4937
+  _id: fld_0fb9452c55c94db186b12d7d00377d4b
+  parentId: wrk_77854d50a51c4fb493d4815a6b54ca1c
   description: >
     Calendar operations. On NUST LMS, these "action events" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.
+- name: Account
+  _type: request_group
+  _id: fld_678cff31c1a846cca892660a0b389cec
+  parentId: wrk_77854d50a51c4fb493d4815a6b54ca1c
+  description: Your identity and account/site information
 - name: Notifications
   _type: request_group
-  _id: fld_36552fb621c54407a6ece38f84af728d
-  parentId: wrk_7c2e215b49d34a06bc49d3e7e31d4937
+  _id: fld_d99d4898a9b449798ddddbe77ec23e2c
+  parentId: wrk_77854d50a51c4fb493d4815a6b54ca1c
   description: Notification retrieval operations
 - name: login
   method: POST
@@ -38,7 +43,7 @@ resources:
     text: >-
       {
         "username": "johndoe.bscs23seecs",
-        "password": "password21"
+        "password": "password67"
       }
   headers:
   - name: Content-Type
@@ -46,8 +51,8 @@ resources:
     disabled: false
   authentication: {}
   _type: request
-  _id: req_b0df334a2a4743329de4b9096546e5ab
-  parentId: fld_c6bd45a132474b429d8bbdf0a515cbea
+  _id: req_ebd28af41fa1442a9201c77d1074697a
+  parentId: fld_40ba945f2ebd464eb0cc3f103ee21652
   description: >
     Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer <token>` for every other operation.
 - name: getCoreRecentCourses
@@ -59,8 +64,8 @@ resources:
     disabled: false
   authentication: {}
   _type: request
-  _id: req_3489ecd0db42463a86891d93a05eb380
-  parentId: fld_b93f7ffe1eab457aa85ce41cb8c1c284
+  _id: req_4221ec3a354f412ba1b7cce3680a525e
+  parentId: fld_147722a3113749a1836a9c241f5f7560
   description: >
     Returns the courses the authenticated user has accessed most recently, ordered by last access time.
 
@@ -76,15 +81,15 @@ resources:
     value: '50'
     disabled: false
   - name: classification
-    value: hidden
+    value: past
     disabled: false
   - name: sort
-    value: id
+    value: fullname
     disabled: false
   authentication: {}
   _type: request
-  _id: req_de9a299c1da6486da27cd7a86f4f160b
-  parentId: fld_b93f7ffe1eab457aa85ce41cb8c1c284
+  _id: req_e4bdbfd1c25f450b9228e347e640aa61
+  parentId: fld_147722a3113749a1836a9c241f5f7560
   description: >
     Returns all courses the user is enrolled in, filtered by timeline classification and sorted by a chosen field. Supports pagination via offset.
 
@@ -94,12 +99,12 @@ resources:
   url: http://127.0.0.1:8000/service/core_course_get_contents
   parameters:
   - name: courseid
-    value: '167'
+    value: '38'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_9fa0f3c971764f9d9fd6a5ad1dfb32f6
-  parentId: fld_b93f7ffe1eab457aa85ce41cb8c1c284
+  _id: req_b6c23aa11e36438ba461725dc3b43f59
+  parentId: fld_147722a3113749a1836a9c241f5f7560
   description: >
     Returns the full content structure of a course — its sections (weeks/topics) and the modules within them (files, folders, pages, URLs, assignments, and other activities), including metadata for each uploaded file. This is the data the course page itself is built from.
 
@@ -117,15 +122,15 @@ resources:
     value: '0'
     disabled: false
   - name: timesortto
-    value: '181'
+    value: '92'
     disabled: false
   - name: aftereventid
-    value: '127'
+    value: '196'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_80f87484d2ee4f01a61f0409740892c9
-  parentId: fld_855a9fe563d94805a31537d5b0614003
+  _id: req_580236f58a9f497091abdfadcfa2ac76
+  parentId: fld_0fb9452c55c94db186b12d7d00377d4b
   description: >
     Returns action events (deadlines) across all enrolled courses, ordered by their sort timestamp. On NUST LMS these are submission due dates for assignments, labs, quizzes, and similar dated activities. Use `timesortfrom` to filter to upcoming deadlines only.
 
@@ -135,60 +140,56 @@ resources:
   url: http://127.0.0.1:8000/service/core_calendar_get_action_events_by_course
   parameters:
   - name: courseid
-    value: '159'
+    value: '37'
     disabled: false
   - name: timesortfrom
-    value: '65'
+    value: '129'
     disabled: false
   - name: timesortto
-    value: '173'
+    value: '243'
     disabled: false
   - name: aftereventid
-    value: '67'
+    value: '244'
     disabled: false
   - name: limitnum
-    value: '38'
+    value: '175'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_b99133da8f694ab9a944e97619223ae1
-  parentId: fld_855a9fe563d94805a31537d5b0614003
+  _id: req_eed1f909530c47ab96d67fb6212d993c
+  parentId: fld_0fb9452c55c94db186b12d7d00377d4b
   description: >
     Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.
 
     Moodle method: `core_calendar_get_action_events_by_course`
-- name: fetchNotifications
+- name: getSiteInfo
   method: GET
-  url: http://127.0.0.1:8000/service/core_fetch_notifications
-  parameters:
-  - name: contextid
-    value: '188'
-    disabled: false
+  url: http://127.0.0.1:8000/service/core_webservice_get_site_info
   authentication: {}
   _type: request
-  _id: req_7b7fde4c4f124b1a969b8b0243b65a88
-  parentId: fld_36552fb621c54407a6ece38f84af728d
+  _id: req_f776abe7c0eb483dab004ff679c9fd4d
+  parentId: fld_678cff31c1a846cca892660a0b389cec
   description: >
-    Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
+    Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
 
-    Moodle method: `core_fetch_notifications`
+    Moodle method: `core_webservice_get_site_info`
 - name: getPopupNotifications
   method: GET
   url: http://127.0.0.1:8000/service/message_popup_get_popup_notifications
   parameters:
   - name: useridto
-    value: useridto16
+    value: useridto95
     disabled: false
   - name: limit
-    value: '164'
+    value: '51'
     disabled: false
   - name: offset
     value: '0'
     disabled: false
   authentication: {}
   _type: request
-  _id: req_44504b8e4b4e43ba8f4d04187d2446c6
-  parentId: fld_36552fb621c54407a6ece38f84af728d
+  _id: req_018bd3a6f438484e8c9cce931b53bdbf
+  parentId: fld_d99d4898a9b449798ddddbe77ec23e2c
   description: >
     Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.
 

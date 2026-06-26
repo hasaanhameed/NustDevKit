@@ -49,14 +49,28 @@ type MoodleWarning {
     message: String!
 }
 
-"A site-level notification (structure varies by type)."
-type SiteNotification {
-    "Unique identifier for the site notification."
-    id: Int!
-    "Notification message content."
-    message: String!
-    "Notification type identifier."
-    type: String!
+"Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications)."
+type SiteInfo {
+    "Your numeric Moodle user ID."
+    userid: Int!
+    "Your login username."
+    username: String!
+    "Your first name."
+    firstname: String!
+    "Your last name."
+    lastname: String!
+    "Your full display name."
+    fullname: String!
+    "URL of your profile picture."
+    userpictureurl: String!
+    "Your preferred interface language code."
+    lang: String!
+    "Name of the LMS site."
+    sitename: String!
+    "Base URL of the LMS site."
+    siteurl: String!
+    "Moodle release/version string of the site."
+    release: String!
 }
 
 "Error returned by the LMS on a failed operation."
@@ -417,12 +431,6 @@ type GetEnrolledCoursesByTimelineRequest {
     sort: CourseTimelineSortField!
 }
 
-"Request parameters for fetching site-level notifications."
-type FetchNotificationsRequest {
-    "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment."
-    contextid: Int!
-}
-
 "Request parameters for retrieving calendar action events sorted by time."
 type GetCalendarEventsByTimesortRequest {
     "Maximum number of events to return."
@@ -522,13 +530,8 @@ input GetCalendarEventsByCourseInput {
     limitnum: Int!
 }
 
-input FetchNotificationsInput {
-    "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment."
-    contextid: Int!
-}
-
 input GetPopupNotificationsInput {
-    "ID of the recipient user, passed as a string."
+    "ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`."
     useridto: String!
     "Maximum number of notifications to return."
     limit: Int!
@@ -547,8 +550,8 @@ type Query {
     getCalendarEventsByTimesort(input: GetCalendarEventsByTimesortInput!): CalendarEventsResponse!
     "Returns all action events (deadlines) for a single course — assignment, lab, and quiz submission due dates, and other dated activities.\nMoodle method: `core_calendar_get_action_events_by_course`"
     getCalendarEventsByCourse(input: GetCalendarEventsByCourseInput!): CalendarEventsResponse!
-    "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`"
-    fetchNotifications(input: FetchNotificationsInput!): [SiteNotification!]
+    "Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).\nMoodle method: `core_webservice_get_site_info`"
+    getSiteInfo: SiteInfo!
     "Returns the most recent popup notifications sent to a user, with support for pagination. Also returns the total count of unread notifications.\nMoodle method: `message_popup_get_popup_notifications`"
     getPopupNotifications(input: GetPopupNotificationsInput!): PopupNotificationsResponse!
 }

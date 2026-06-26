@@ -10,7 +10,7 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="CourseTimelineClassification" type="schemas:CourseTimelineClassification" />
       <xs:element name="CourseTimelineSortField" type="schemas:CourseTimelineSortField" />
       <xs:element name="MoodleWarning" type="schemas:MoodleWarning" />
-      <xs:element name="SiteNotification" type="schemas:SiteNotification" />
+      <xs:element name="SiteInfo" type="schemas:SiteInfo" />
       <xs:element name="MoodleError" type="schemas:MoodleError" />
       <xs:element name="Course" type="schemas:Course" />
       <xs:element name="RecentCourseFields" type="schemas:RecentCourseFields" />
@@ -28,7 +28,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="PopupNotificationsResponse" type="schemas:PopupNotificationsResponse" />
       <xs:element name="GetRecentCoursesRequest" type="schemas:GetRecentCoursesRequest" />
       <xs:element name="GetEnrolledCoursesByTimelineRequest" type="schemas:GetEnrolledCoursesByTimelineRequest" />
-      <xs:element name="FetchNotificationsRequest" type="schemas:FetchNotificationsRequest" />
       <xs:element name="GetCalendarEventsByTimesortRequest" type="schemas:GetCalendarEventsByTimesortRequest" />
       <xs:element name="GetCalendarEventsByCourseRequest" type="schemas:GetCalendarEventsByCourseRequest" />
       <xs:element name="GetPopupNotificationsRequest" type="schemas:GetPopupNotificationsRequest" />
@@ -46,8 +45,8 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       <xs:element name="getCalendarEventsByTimesort400_Response0" type="schemas:getCalendarEventsByTimesort400_Response0" />
       <xs:element name="getCalendarEventsByCourse200_Response0" type="schemas:getCalendarEventsByCourse200_Response0" />
       <xs:element name="getCalendarEventsByCourse400_Response0" type="schemas:getCalendarEventsByCourse400_Response0" />
-      <xs:element name="fetchNotifications200_Response0" type="schemas:fetchNotifications200_Response0" />
-      <xs:element name="fetchNotifications400_Response0" type="schemas:fetchNotifications400_Response0" />
+      <xs:element name="getSiteInfo200_Response0" type="schemas:getSiteInfo200_Response0" />
+      <xs:element name="getSiteInfo400_Response0" type="schemas:getSiteInfo400_Response0" />
       <xs:element name="getPopupNotifications200_Response0" type="schemas:getPopupNotifications200_Response0" />
       <xs:element name="getPopupNotifications400_Response0" type="schemas:getPopupNotifications400_Response0" />
       <xs:complexType name="LoginRequest">
@@ -133,24 +132,59 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="SiteNotification">
+      <xs:complexType name="SiteInfo">
         <xs:annotation>
-          <xs:documentation>A site-level notification (structure varies by type).</xs:documentation>
+          <xs:documentation>Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="0" name="id" type="xs:integer">
+          <xs:element minOccurs="1" name="userid" type="xs:integer">
             <xs:annotation>
-              <xs:documentation>Unique identifier for the site notification.</xs:documentation>
+              <xs:documentation>Your numeric Moodle user ID.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element minOccurs="0" name="message" type="xs:string">
+          <xs:element minOccurs="1" name="username" type="xs:string">
             <xs:annotation>
-              <xs:documentation>Notification message content.</xs:documentation>
+              <xs:documentation>Your login username.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element minOccurs="0" name="type" type="xs:string">
+          <xs:element minOccurs="0" name="firstname" type="xs:string">
             <xs:annotation>
-              <xs:documentation>Notification type identifier.</xs:documentation>
+              <xs:documentation>Your first name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="lastname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your last name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="fullname" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your full display name.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="userpictureurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>URL of your profile picture.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="lang" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Your preferred interface language code.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="sitename" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the LMS site.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="siteurl" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Base URL of the LMS site.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="release" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Moodle release/version string of the site.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -1011,18 +1045,6 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="FetchNotificationsRequest">
-        <xs:annotation>
-          <xs:documentation>Request parameters for fetching site-level notifications.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="contextid" type="xs:integer">
-            <xs:annotation>
-              <xs:documentation>Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="GetCalendarEventsByTimesortRequest">
         <xs:annotation>
           <xs:documentation>Request parameters for retrieving calendar action events sorted by time.</xs:documentation>
@@ -1226,16 +1248,16 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="fetchNotifications200_Response0">
+      <xs:complexType name="getSiteInfo200_Response0">
         <xs:sequence>
-          <xs:element minOccurs="1" maxOccurs="unbounded" name="response200" type="schemas:SiteNotification">
+          <xs:element minOccurs="1" name="response200" type="schemas:SiteInfo">
             <xs:annotation>
-              <xs:documentation>Site-level notifications for the given context; empty array when none are pending.</xs:documentation>
+              <xs:documentation>Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="fetchNotifications400_Response0">
+      <xs:complexType name="getSiteInfo400_Response0">
         <xs:sequence>
           <xs:element minOccurs="1" name="response400" type="schemas:MoodleError">
             <xs:annotation>
@@ -1452,23 +1474,19 @@ Moodle method: `core_calendar_get_action_events_by_course`
         </response>
       </method>
     </resource>
-    <resource id="_servicecore_fetch_notifications" path="/service/core_fetch_notifications">
-      <method id="fetchNotifications" name="GET">
-        <doc title="fetchNotifications" xml:lang="en">Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.
-Moodle method: `core_fetch_notifications`
+    <resource id="_servicecore_webservice_get_site_info" path="/service/core_webservice_get_site_info">
+      <method id="getSiteInfo" name="GET">
+        <doc title="getSiteInfo" xml:lang="en">Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).
+Moodle method: `core_webservice_get_site_info`
 </doc>
-        <request>
-          <param name="contextid" style="query" type="xsd:integer" required="true">
-            <doc title="contextid" xml:lang="en">Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.</doc>
-          </param>
-        </request>
+        <request />
         <response status="200">
-          <doc title="200" xml:lang="en">Array of site notifications (empty array when none are pending).</doc>
-          <representation element="schemas:fetchNotifications200_Response0" mediaType="application/json" />
+          <doc title="200" xml:lang="en">Your account and site information.</doc>
+          <representation element="schemas:getSiteInfo200_Response0" mediaType="application/json" />
         </response>
         <response status="400">
           <doc title="400" xml:lang="en">Bad request or Moodle exception.</doc>
-          <representation element="schemas:fetchNotifications400_Response0" mediaType="application/json" />
+          <representation element="schemas:getSiteInfo400_Response0" mediaType="application/json" />
         </response>
       </method>
     </resource>
@@ -1479,7 +1497,7 @@ Moodle method: `message_popup_get_popup_notifications`
 </doc>
         <request>
           <param name="useridto" style="query" type="xsd:string" required="true">
-            <doc title="useridto" xml:lang="en">ID of the recipient user, passed as a string.</doc>
+            <doc title="useridto" xml:lang="en">ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.</doc>
           </param>
           <param name="limit" style="query" type="xsd:integer" required="true">
             <doc title="limit" xml:lang="en">Maximum number of notifications to return.</doc>

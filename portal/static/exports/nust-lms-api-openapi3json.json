@@ -3,10 +3,7 @@
   "info": {
     "title": "NUST LMS API",
     "description": "NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).\nAuthenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.\n",
-    "contact": {
-      "name": "NustDevKit Support",
-      "url": "https://github.com/hasaanhameed52/NustDevKit"
-    },
+    "contact": {},
     "version": "1.0.0"
   },
   "servers": [
@@ -516,40 +513,30 @@
         "deprecated": false
       }
     },
-    "/service/core_fetch_notifications": {
+    "/service/core_webservice_get_site_info": {
       "get": {
         "tags": [
-          "Notifications"
+          "Account"
         ],
-        "summary": "fetchNotifications",
-        "description": "Returns pending site-level notifications for the given Moodle context. Returns an empty array when there are no pending notifications.\nMoodle method: `core_fetch_notifications`\n",
-        "operationId": "fetchNotifications",
-        "parameters": [
-          {
-            "name": "contextid",
-            "in": "query",
-            "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
-            "required": true,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "getSiteInfo",
+        "description": "Returns your identity (user ID, username, full name, profile picture) and basic site information. Use this to discover your own `userid` — required by other endpoints such as popup notifications (`useridto`).\nMoodle method: `core_webservice_get_site_info`\n",
+        "operationId": "getSiteInfo",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Array of site notifications (empty array when none are pending).",
+            "description": "Your account and site information.",
             "headers": {},
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SiteNotification"
-                  },
-                  "description": "Site-level notifications for the given context; empty array when none are pending."
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SiteInfo"
+                    },
+                    {
+                      "description": "Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications).\n"
+                    }
+                  ]
                 }
               }
             }
@@ -588,7 +575,7 @@
           {
             "name": "useridto",
             "in": "query",
-            "description": "ID of the recipient user, passed as a string.",
+            "description": "ID of the recipient user (yourself), passed as a string. Get your numeric user ID from `GET /service/core_webservice_get_site_info`.",
             "required": true,
             "style": "form",
             "explode": true,
@@ -756,25 +743,69 @@
         },
         "description": "A non-fatal warning returned alongside a successful response."
       },
-      "SiteNotification": {
-        "title": "SiteNotification",
+      "SiteInfo": {
+        "title": "SiteInfo",
+        "required": [
+          "userid",
+          "username",
+          "fullname",
+          "sitename"
+        ],
         "type": "object",
         "properties": {
-          "id": {
+          "userid": {
             "type": "integer",
-            "description": "Unique identifier for the site notification.",
-            "format": "int32"
+            "description": "Your numeric Moodle user ID.",
+            "format": "int32",
+            "example": 234567
           },
-          "message": {
+          "username": {
             "type": "string",
-            "description": "Notification message content."
+            "description": "Your login username.",
+            "example": "johndoe.bscs23seecs"
           },
-          "type": {
+          "firstname": {
             "type": "string",
-            "description": "Notification type identifier."
+            "description": "Your first name.",
+            "example": "John"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Your last name.",
+            "example": "Doe"
+          },
+          "fullname": {
+            "type": "string",
+            "description": "Your full display name.",
+            "example": "John Doe"
+          },
+          "userpictureurl": {
+            "type": "string",
+            "description": "URL of your profile picture.",
+            "example": "https://lms.nust.edu.pk/portal/pluginfile.php/1583361/user/icon/moove/f1"
+          },
+          "lang": {
+            "type": "string",
+            "description": "Your preferred interface language code.",
+            "example": "en"
+          },
+          "sitename": {
+            "type": "string",
+            "description": "Name of the LMS site.",
+            "example": "NUST LMS"
+          },
+          "siteurl": {
+            "type": "string",
+            "description": "Base URL of the LMS site.",
+            "example": "https://lms.nust.edu.pk/portal"
+          },
+          "release": {
+            "type": "string",
+            "description": "Moodle release/version string of the site.",
+            "example": "4.1.2"
           }
         },
-        "description": "A site-level notification (structure varies by type)."
+        "description": "Your identity plus basic site information, from Moodle's site-info call. The `userid` here is what other endpoints need (e.g. it is the `useridto` for popup notifications)."
       },
       "MoodleError": {
         "title": "MoodleError",
@@ -1859,22 +1890,6 @@
         },
         "description": "Request parameters for retrieving enrolled courses filtered by timeline classification."
       },
-      "FetchNotificationsRequest": {
-        "title": "FetchNotificationsRequest",
-        "required": [
-          "contextid"
-        ],
-        "type": "object",
-        "properties": {
-          "contextid": {
-            "type": "integer",
-            "description": "Moodle context ID for which to fetch notifications. The user context ID can be found in the user profile image URL path segment.",
-            "format": "int32",
-            "example": 1583361
-          }
-        },
-        "description": "Request parameters for fetching site-level notifications."
-      },
       "GetCalendarEventsByTimesortRequest": {
         "title": "GetCalendarEventsByTimesortRequest",
         "required": [
@@ -2010,6 +2025,10 @@
     {
       "name": "Calendar",
       "description": "Calendar operations. On NUST LMS, these \"action events\" are how deadlines are surfaced — assignment, lab, quiz, and other submission due dates each appear as a calendar event on the day the work must be submitted.\n"
+    },
+    {
+      "name": "Account",
+      "description": "Your identity and account/site information"
     },
     {
       "name": "Notifications",
