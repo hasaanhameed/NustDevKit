@@ -1,10 +1,4 @@
-"""Proxied LMS service routes.
-
-These are reads, so they're exposed as GET with query parameters. The gateway
-translates each into the underlying Moodle AJAX call — which Moodle requires to be
-a POST — via `LMSSession.call_ajax`. Each endpoint requires a valid bearer token
-(resolved to a server-side LMS session).
-"""
+"""Proxied LMS read endpoints (GET), each backed by an LMSSession transport call."""
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query
@@ -49,8 +43,7 @@ async def get_course_contents(
     params: Annotated[GetCourseContentsRequest, Query()],
     session: LMSSession = Depends(get_current_session),
 ) -> Any:
-    # Not exposed via the AJAX service, so this goes through the token-based REST
-    # transport (see LMSSession.call_rest / _fetch_ws_token).
+    # REST transport — this function isn't exposed via the AJAX service.
     return await session.call_rest(
         "core_course_get_contents", params.model_dump(exclude_none=True)
     )
@@ -60,7 +53,7 @@ async def get_course_contents(
 async def get_site_info(
     session: LMSSession = Depends(get_current_session),
 ) -> Any:
-    # Returns your identity (userid, fullname, ...) + site info. REST-only function.
+    # REST-only function (not on the AJAX service).
     return await session.call_rest("core_webservice_get_site_info", {})
 
 

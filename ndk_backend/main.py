@@ -25,16 +25,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    # Auth is via the Authorization: Bearer header (not cookies), so credentialed
-    # CORS isn't needed — keeping this False lets allow_origins=["*"] work for
-    # browser-based test requests from the docs (Scalar "Send").
+    # Bearer-header auth (not cookies), so credentialed CORS isn't needed.
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Per-IP rate limiting for the assistant route (slowapi). Registered on app.state so
-# the @limiter.limit decorator and the 429 handler share one limiter instance.
+# slowapi needs the limiter on app.state so the route decorator and 429 handler share it.
 app.state.limiter = assistant.limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -42,20 +39,16 @@ app.include_router(auth.router)
 app.include_router(service.router)
 app.include_router(assistant.router)
 
-# Mount the MCP server. AI assistants connect to http://<host>/mcp with their
-# bearer token; each tool resolves that token to the caller's live LMS session.
 app.mount("/mcp", mcp_app)
 
 
 @app.exception_handler(LMSAjaxError)
 async def handle_lms_ajax_error(_: Request, exc: LMSAjaxError) -> JSONResponse:
-    # A Moodle method rejected the call — surface its exception as a 400.
     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"detail": exc.detail})
 
 
 @app.exception_handler(LMSAuthError)
 async def handle_lms_auth_error(_: Request, exc: LMSAuthError) -> JSONResponse:
-    # Lost/expired LMS session — the caller should log in again.
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={"detail": "Session expired; please log in again."},
