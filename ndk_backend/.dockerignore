@@ -1,4 +1,4 @@
-# Keep the build context (and image) lean and secret-free.
+# Read from the build-context root (ndk_backend/). Keeps the image lean and secret-free.
 # NOTE: do NOT exclude *.md — app/assistant/knowledge.md is loaded at runtime.
 __pycache__/
 *.py[cod]
@@ -10,11 +10,10 @@ venv/
 .env
 .env.*
 
-# Tooling caches / VCS / docker meta
+# Tooling caches / VCS / docker meta (the Dockerfile is read via -f, not COPY)
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .git/
 .gitignore
-Dockerfile
-.dockerignore
+docker/
