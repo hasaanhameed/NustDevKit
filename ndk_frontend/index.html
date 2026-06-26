@@ -595,6 +595,10 @@
             bot.innerHTML = "You're sending messages too fast — please wait a moment and try again.";
             return finish();
           }
+          if (resp.status === 502) {
+            bot.innerHTML = "The assistant is currently down (the AI service isn't responding). Please try again shortly.";
+            return finish();
+          }
           if (resp.status === 503) {
             bot.innerHTML = "The assistant isn't configured on the server yet.";
             return finish();
