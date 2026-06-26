@@ -44,6 +44,10 @@ class LMSAuthError(Exception):
     """Authentication/session against the LMS failed (e.g. expired session)."""
 
 
+class LMSUpstreamError(Exception):
+    """The NUST LMS is unreachable or returned an unusable response (vs. bad creds)."""
+
+
 class LMSAjaxError(Exception):
     """A Moodle AJAX method returned an error/exception."""
 
@@ -70,55 +74,62 @@ class LMSSession:
         )
 
     async def login(self, username: str, password: str) -> bool:
-        """Log into NUST LMS; returns True on success, False on bad credentials."""
+        """Authenticate against NUST LMS.
+
+        Returns True on success, False on *rejected credentials*. Raises
+        LMSUpstreamError when the LMS is unreachable or returns an unusable response,
+        so the caller can answer 502 (LMS down) instead of 401 (wrong password).
+        """
         try:
-            # 1. Fetch fresh login page to obtain the CSRF logintoken.
             response = await self.client.get(self.login_url)
-            soup = BeautifulSoup(response.text, "html.parser")
-            token_element = soup.find("input", {"name": "logintoken"})
-            if not token_element:
-                logger.error(
-                    "Could not find login token on NUST LMS page (status %s)",
-                    response.status_code,
-                )
-                return False
-            login_token = token_element["value"]
+        except httpx.HTTPError as exc:
+            raise LMSUpstreamError(f"Could not reach NUST LMS login page: {exc}") from exc
 
-            # 2. Submit credentials.
-            payload = {
-                "username": username,
-                "password": password,
-                "logintoken": login_token,
-            }
-            login_response = await self.client.post(self.login_url, data=payload)
-
-            # Explicit rejection: still on the login page with an error.
-            final_url = str(login_response.url)
-            if "login/index.php" in final_url and (
-                "error=" in login_response.text or "Invalid login" in login_response.text
-            ):
-                logger.warning("LMS login rejected credentials for %s", username)
-                return False
-
-            # Success: redirected away from login, or a session cookie is set.
-            if login_response.status_code in (200, 302, 303):
-                if "login/index.php" not in final_url or "MoodleSession" in str(
-                    self.client.cookies
-                ):
-                    logger.info("Authenticated %s with NUST LMS", username)
-                    # Also grab a Web Service token so REST-only functions (those not
-                    # exposed via the AJAX service) are callable. Best-effort.
-                    await self._fetch_ws_token(username, password)
-                    return True
-
-            logger.warning(
-                "Login failed for %s — final URL %s, status %s",
-                username, login_response.url, login_response.status_code,
+        token_element = BeautifulSoup(response.text, "html.parser").find(
+            "input", {"name": "logintoken"}
+        )
+        if not token_element:
+            raise LMSUpstreamError(
+                f"NUST LMS login page returned no login token (status {response.status_code})."
             )
+
+        payload = {
+            "username": username,
+            "password": password,
+            "logintoken": token_element["value"],
+        }
+        try:
+            login_response = await self.client.post(self.login_url, data=payload)
+        except httpx.HTTPError as exc:
+            raise LMSUpstreamError(f"NUST LMS login request failed: {exc}") from exc
+
+        if login_response.status_code >= 500:
+            raise LMSUpstreamError(
+                f"NUST LMS returned {login_response.status_code} during login."
+            )
+
+        final_url = str(login_response.url)
+        # Genuine credential rejection: back on the login page with an error.
+        if "login/index.php" in final_url and (
+            "error=" in login_response.text or "Invalid login" in login_response.text
+        ):
+            logger.warning("LMS login rejected credentials for %s", username)
             return False
-        except Exception as exc:  # noqa: BLE001 — surface as auth failure to caller
-            logger.error("Critical error during LMS login: %s", exc)
-            return False
+
+        # Success: redirected away from login, or a session cookie was set.
+        if login_response.status_code in (200, 302, 303) and (
+            "login/index.php" not in final_url
+            or "MoodleSession" in str(self.client.cookies)
+        ):
+            logger.info("Authenticated %s with NUST LMS", username)
+            await self._fetch_ws_token(username, password)  # best-effort; never raises
+            return True
+
+        logger.warning(
+            "Login for %s ended in an unexpected state (url=%s, status=%s)",
+            username, final_url, login_response.status_code,
+        )
+        return False
 
     async def _fetch_ws_token(self, username: str, password: str) -> None:
         """Best-effort: obtain a Moodle Web Service token for the mobile service.

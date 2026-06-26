@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 720  # 12 hours
     # Throttle the unauthenticated login endpoint (brute-force / session-spam guard).
-    auth_login_rate_limit: str = "10/minute"  # per client IP (slowapi)
+    auth_login_rate_limit: str = "5/minute"  # per client IP (slowapi)
 
     # --- Upstream NUST LMS (Moodle) ---
     # Includes the /portal path segment; login + AJAX endpoints hang off this.

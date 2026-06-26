@@ -8,7 +8,7 @@ from app.core.security import create_access_token, decode_access_token
 from app.core.config import settings
 from app.dependencies import bearer_scheme
 from app.schemas.auth import LoginRequest, TokenResponse
-from app.services.lms_session import LMSSession
+from app.services.lms_session import LMSSession, LMSUpstreamError
 from app.services.session_store import InMemorySessionStore, get_session_store
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -29,11 +29,11 @@ async def login(
     lms = LMSSession()
     try:
         ok = await lms.login(body.username.strip(), body.password)
-    except Exception:
+    except LMSUpstreamError:
         await lms.close()
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Upstream LMS login failed.",
+            detail="The NUST LMS is currently unreachable. Please try again shortly.",
         )
 
     if not ok:
