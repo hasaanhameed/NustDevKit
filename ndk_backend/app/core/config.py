@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     assistant_rate_limit: str = "15/minute"  # per client IP (slowapi)
     assistant_max_question_chars: int = 2000
     assistant_max_history: int = 8  # messages of context kept per request
+    # Fail fast when Groq is unreachable instead of hanging on long SDK retries.
+    assistant_timeout_seconds: float = 10.0
+    assistant_max_retries: int = 1
 
 
 @lru_cache
