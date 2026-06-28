@@ -12,8 +12,8 @@ info:
     session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 
 servers:
-  - url: http://127.0.0.1:8000
-    description: NustDevKit Gateway (local development)
+  - url: https://api.nustdevkit.com
+    description: NustDevKit Gateway
 
 # All operations require a gateway-issued bearer token, except POST /auth/login
 # (which overrides this with `security: []`).
