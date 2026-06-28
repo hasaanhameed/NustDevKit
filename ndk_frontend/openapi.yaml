@@ -49,8 +49,6 @@ info:
 servers:
   - url: https://api.nustdevkit.com
     description: NustDevKit Gateway
-  - url: http://127.0.0.1:8000
-    description: NustDevKit Gateway (local development)
 security:
   - BearerAuth: []
 tags:
