@@ -545,7 +545,8 @@
           panel.classList.remove("open")
         );
 
-        function scrollDown() { msgs.scrollTop = msgs.scrollHeight; }
+        function isNearBottom() { return msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight < 80; }
+        function scrollDown() { if (isNearBottom()) msgs.scrollTop = msgs.scrollHeight; }
 
         function addUser(text) {
           const el = document.createElement("div");
