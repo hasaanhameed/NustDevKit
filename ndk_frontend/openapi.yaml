@@ -2533,8 +2533,8 @@ paths:
         - lang: java
           label: Java
           source: |-
-            import m18000.m0.m0.m127.NustLmsApiClient;
-            import m18000.m0.m0.m127.authentication.BearerAuthModel;
+            import com.nustdevkit.api.NustLmsApiClient;
+            import com.nustdevkit.api.authentication.BearerAuthModel;
 
             public class Program {
                 public static void main(String[] args) {
