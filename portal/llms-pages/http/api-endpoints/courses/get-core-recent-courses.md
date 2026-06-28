@@ -33,7 +33,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 ```bash
 curl -X GET -G \
-  --url 'http://127.0.0.1:8000/service/core_course_get_recent_courses'  \
+  --url 'https://api.nustdevkit.com/service/core_course_get_recent_courses'  \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   -d 'limit=10'

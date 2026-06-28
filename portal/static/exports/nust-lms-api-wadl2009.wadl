@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="http://127.0.0.1:8000/schemas" xmlns="http://wadl.dev.java.net/2009/02">
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="https://api.nustdevkit.com/schemas" xmlns="http://wadl.dev.java.net/2009/02">
   <doc title="NUST LMS API" xml:lang="en">NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
 Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer &lt;token&gt;`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 </doc>
   <grammars>
-    <xs:schema xmlns:tns="http://127.0.0.1:8000/schemas" targetNamespace="http://127.0.0.1:8000/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema xmlns:tns="https://api.nustdevkit.com/schemas" targetNamespace="https://api.nustdevkit.com/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xs:element name="LoginRequest" type="schemas:LoginRequest" />
       <xs:element name="TokenResponse" type="schemas:TokenResponse" />
       <xs:element name="CourseTimelineClassification" type="schemas:CourseTimelineClassification" />
@@ -1286,7 +1286,7 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
       </xs:complexType>
     </xs:schema>
   </grammars>
-  <resources base="http://127.0.0.1:8000">
+  <resources base="https://api.nustdevkit.com">
     <resource id="_authlogin" path="/auth/login">
       <method id="login" name="POST">
         <doc title="login" xml:lang="en">Authenticates against NUST LMS on your behalf and returns a gateway JWT. The LMS session (cookie + sesskey) is created and held server-side; use the returned token as `Authorization: Bearer &lt;token&gt;` for every other operation.

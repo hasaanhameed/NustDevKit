@@ -10,7 +10,7 @@
     }
   ],
   "Name": "NUST LMS API",
-  "BaseUri": "http://127.0.0.1:8000",
+  "BaseUri": "https://api.nustdevkit.com",
   "ServerConfiguration": {
     "UseParent": false,
     "DefaultEnvironment": "production",
@@ -18,11 +18,11 @@
     "Environments": [
       {
         "Name": "production",
-        "Description": "NustDevKit Gateway (local development)",
+        "Description": "NustDevKit Gateway",
         "Servers": [
           {
             "Name": "default",
-            "Url": "http://127.0.0.1:8000",
+            "Url": "https://api.nustdevkit.com",
             "Parameters": []
           }
         ],

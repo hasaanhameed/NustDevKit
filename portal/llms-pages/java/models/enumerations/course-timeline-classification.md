@@ -26,7 +26,7 @@ Timeline classification filter for enrolled courses.
 # Example
 
 ```java
-import m18000.m0.m0.m127.models.CourseTimelineClassification;
+import com.nustdevkit.api.models.CourseTimelineClassification;
 
 CourseTimelineClassification courseTimelineClassification = CourseTimelineClassification.FUTURE;
 ```

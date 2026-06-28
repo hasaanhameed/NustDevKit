@@ -7,11 +7,11 @@ documentation:
     NUST Learning Management System API for developer integrations (Moodle AJAX wrapper).
 
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
-baseUri: http://127.0.0.1:8000
+baseUri: https://api.nustdevkit.com
 securedBy:
 - BearerAuth
 protocols:
-- HTTP
+- HTTPS
 baseUriParameters: {}
 schemas:
 - LoginRequest: |

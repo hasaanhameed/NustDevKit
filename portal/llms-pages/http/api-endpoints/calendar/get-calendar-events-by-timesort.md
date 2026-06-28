@@ -36,7 +36,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 ```bash
 curl -X GET -G \
-  --url 'http://127.0.0.1:8000/service/core_calendar_get_action_events_by_timesort'  \
+  --url 'https://api.nustdevkit.com/service/core_calendar_get_action_events_by_timesort'  \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   -d 'limitnum=20' \

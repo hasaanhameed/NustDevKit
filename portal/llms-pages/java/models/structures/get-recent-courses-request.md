@@ -23,9 +23,9 @@ Request parameters for retrieving recently accessed courses.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.GetRecentCoursesRequest;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.GetRecentCoursesRequest;
 
 GetRecentCoursesRequest getRecentCoursesRequest = new GetRecentCoursesRequest.Builder(
     10

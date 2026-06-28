@@ -26,8 +26,8 @@ To configure the SDK to use a proxy server, initialize the proxy configuration d
 # Usage Example
 
 ```java
-import m18000.m0.m0.m127.NustLmsApiClient;
-import m18000.m0.m0.m127.http.client.HttpProxyConfiguration;
+import com.nustdevkit.api.NustLmsApiClient;
+import com.nustdevkit.api.http.client.HttpProxyConfiguration;
 
 NustLmsApiClient client = new NustLmsApiClient.Builder()
   .httpClientConfig(configBuilder -> configBuilder

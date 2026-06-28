@@ -24,11 +24,11 @@ Paginated enrolled-courses response.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.Course;
+import com.nustdevkit.api.models.EnrolledCoursesResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.Course;
-import m18000.m0.m0.m127.models.EnrolledCoursesResponse;
 
 EnrolledCoursesResponse enrolledCoursesResponse = new EnrolledCoursesResponse.Builder(
     Arrays.asList(

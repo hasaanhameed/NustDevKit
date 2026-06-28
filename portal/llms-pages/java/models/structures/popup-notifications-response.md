@@ -24,11 +24,11 @@ Response envelope for the popup-notifications endpoint.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.Notification;
+import com.nustdevkit.api.models.PopupNotificationsResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.Notification;
-import m18000.m0.m0.m127.models.PopupNotificationsResponse;
 
 PopupNotificationsResponse popupNotificationsResponse = new PopupNotificationsResponse.Builder(
     Arrays.asList(

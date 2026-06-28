@@ -13,7 +13,7 @@ Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a 
 The API uses the following base URI:
 
 ```bash
-http://127.0.0.1:8000
+https://api.nustdevkit.com
 ```
 
 
@@ -31,7 +31,7 @@ This API uses the following authentication schemes.
 The bearer token is sent in the request like this:
 
 ```bash
-curl http://127.0.0.1:8000 -H 'Authorization: Bearer {OAUTH_TOKEN}'
+curl https://api.nustdevkit.com -H 'Authorization: Bearer {OAUTH_TOKEN}'
 ```
 
 ```http

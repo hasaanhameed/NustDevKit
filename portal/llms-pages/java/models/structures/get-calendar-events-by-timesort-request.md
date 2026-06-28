@@ -26,9 +26,9 @@ Request parameters for retrieving calendar action events sorted by time.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.GetCalendarEventsByTimesortRequest;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.GetCalendarEventsByTimesortRequest;
 
 GetCalendarEventsByTimesortRequest getCalendarEventsByTimesortRequest = new GetCalendarEventsByTimesortRequest.Builder(
     20,

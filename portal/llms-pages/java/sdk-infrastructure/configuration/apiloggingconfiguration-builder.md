@@ -79,7 +79,7 @@ The following example uses the `LoggerFactory.getLogger` to get the underlying l
 ```java
 package examples;
 
-import m18000.m0.m0.m127.NustLmsApiClient;
+import com.nustdevkit.api.NustLmsApiClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;

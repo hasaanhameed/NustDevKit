@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="http://127.0.0.1:8000/schemas" xmlns:wsdl="http://127.0.0.1:8000/wsdl" targetNamespace="http://127.0.0.1:8000/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:schemas="https://api.nustdevkit.com/schemas" xmlns:wsdl="https://api.nustdevkit.com/wsdl" targetNamespace="https://api.nustdevkit.com/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xs:schema xmlns:tns="http://127.0.0.1:8000/schemas" targetNamespace="http://127.0.0.1:8000/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema xmlns:tns="https://api.nustdevkit.com/schemas" targetNamespace="https://api.nustdevkit.com/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xs:element name="POST_login_InputMessage" type="schemas:POST_login_InputMessage" />
       <xs:element name="POST_login_OutputMessage" type="schemas:POST_login_OutputMessage" />
       <xs:element name="POST_login_401" type="schemas:POST_login_401" />
@@ -1657,7 +1657,7 @@ Moodle method: `message_popup_get_popup_notifications`
 Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer &lt;token&gt;`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
 </documentation>
     <port name="default_Port" binding="wsdl:NUST_x0020_LMS_x0020_API_Binding">
-      <soap:address location="http://127.0.0.1:8000" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <soap:address location="https://api.nustdevkit.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

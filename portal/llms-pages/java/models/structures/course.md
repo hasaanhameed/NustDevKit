@@ -39,9 +39,9 @@ An enrolled course.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.Course;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.Course;
 
 Course course = new Course.Builder(
     49900,

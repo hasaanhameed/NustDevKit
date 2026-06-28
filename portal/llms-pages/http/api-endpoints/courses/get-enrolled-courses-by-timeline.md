@@ -36,7 +36,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 ```bash
 curl -X GET -G \
-  --url 'http://127.0.0.1:8000/service/core_course_get_enrolled_courses_by_timeline_classification'  \
+  --url 'https://api.nustdevkit.com/service/core_course_get_enrolled_courses_by_timeline_classification'  \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   -d 'offset=0' \

@@ -30,11 +30,11 @@ A section (week/topic) of the course, containing its modules.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.CourseModule;
+import com.nustdevkit.api.models.CourseSection;
 import java.io.IOException;
 import java.util.Arrays;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.CourseModule;
-import m18000.m0.m0.m127.models.CourseSection;
 
 CourseSection courseSection = new CourseSection.Builder(
     33445,

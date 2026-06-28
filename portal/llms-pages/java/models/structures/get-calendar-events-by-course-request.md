@@ -27,9 +27,9 @@ Request parameters for retrieving calendar action events for a specific course.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.GetCalendarEventsByCourseRequest;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.GetCalendarEventsByCourseRequest;
 
 GetCalendarEventsByCourseRequest getCalendarEventsByCourseRequest = new GetCalendarEventsByCourseRequest.Builder(
     49906

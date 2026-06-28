@@ -33,9 +33,9 @@ An item on the course page — an activity or resource (file, page, URL, assignm
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.CourseModule;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.CourseModule;
 
 CourseModule courseModule = new CourseModule.Builder(
     987654,

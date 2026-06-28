@@ -7,11 +7,11 @@ info:
 
     Authenticate with your NUST LMS credentials via `POST /auth/login` to receive a bearer token, then call any operation with `Authorization: Bearer <token>`. The NustDevKit gateway logs into the LMS on your behalf and manages the underlying session (cookie + sesskey) server-side, so you never handle the ephemeral sesskey.
   contact: {}
-host: 127.0.0.1:8000
+host: api.nustdevkit.com
 basePath: /
 securityDefinitions: {}
 schemes:
-- http
+- https
 consumes:
 - application/json
 produces:

@@ -40,9 +40,9 @@ A recently accessed course, extending Course with the last-access timestamp.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.RecentCourse;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.RecentCourse;
 
 RecentCourse recentCourse = new RecentCourse.Builder(
     49900,

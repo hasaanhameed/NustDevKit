@@ -1,6 +1,6 @@
 {
   "swaggerVersion": "1.2",
-  "basePath": "http://127.0.0.1:8000",
+  "basePath": "https://api.nustdevkit.com",
   "resourcePath": "/",
   "apis": [
     {

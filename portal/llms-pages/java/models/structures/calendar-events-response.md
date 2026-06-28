@@ -25,14 +25,14 @@ A list of calendar events with pagination boundary IDs.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.CalendarEvent;
+import com.nustdevkit.api.models.CalendarEventsResponse;
+import com.nustdevkit.api.models.Course;
+import com.nustdevkit.api.models.EventIcon;
+import com.nustdevkit.api.models.EventSubscription;
 import java.io.IOException;
 import java.util.Arrays;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.CalendarEvent;
-import m18000.m0.m0.m127.models.CalendarEventsResponse;
-import m18000.m0.m0.m127.models.Course;
-import m18000.m0.m0.m127.models.EventIcon;
-import m18000.m0.m0.m127.models.EventSubscription;
 
 CalendarEventsResponse calendarEventsResponse = new CalendarEventsResponse.Builder(
     Arrays.asList(

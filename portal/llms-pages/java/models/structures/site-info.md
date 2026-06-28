@@ -32,9 +32,9 @@ Your identity plus basic site information, from Moodle's site-info call. The `us
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.SiteInfo;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.SiteInfo;
 
 SiteInfo siteInfo = new SiteInfo.Builder(
     234567,

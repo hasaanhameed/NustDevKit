@@ -35,7 +35,7 @@ This endpoint requires [BearerAuth](/llms-pages/http/getting-started/sdk-quickst
 
 ```bash
 curl -X GET -G \
-  --url 'http://127.0.0.1:8000/service/message_popup_get_popup_notifications'  \
+  --url 'https://api.nustdevkit.com/service/message_popup_get_popup_notifications'  \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer AccessToken' \
   -d 'useridto=useridto2' \

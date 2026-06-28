@@ -29,7 +29,7 @@ POST /auth/login
 
 ```bash
 curl -X POST \
-  --url 'http://127.0.0.1:8000/auth/login'  \
+  --url 'https://api.nustdevkit.com/auth/login'  \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
   --data-raw '{

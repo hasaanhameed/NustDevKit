@@ -26,9 +26,9 @@ A non-fatal warning returned alongside a successful response.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.MoodleWarning;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.MoodleWarning;
 
 MoodleWarning moodleWarning = new MoodleWarning.Builder()
     .item("item6")

@@ -25,9 +25,9 @@ Request parameters for retrieving popup notifications for a user.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.GetPopupNotificationsRequest;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.GetPopupNotificationsRequest;
 
 GetPopupNotificationsRequest getPopupNotificationsRequest = new GetPopupNotificationsRequest.Builder(
     "123456",

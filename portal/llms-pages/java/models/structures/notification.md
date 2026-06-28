@@ -43,9 +43,9 @@ A popup notification message delivered to a user.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.Notification;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.Notification;
 
 Notification notification = new Notification.Builder(
     4857819,

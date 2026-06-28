@@ -39,10 +39,10 @@ The following parameters are configurable for the API Client:
 The API client can be initialized as follows:
 
 ```java
-import m18000.m0.m0.m127.NustLmsApiClient;
-import m18000.m0.m0.m127.authentication.BearerAuthModel;
-import m18000.m0.m0.m127.exceptions.ApiException;
-import m18000.m0.m0.m127.http.response.ApiResponse;
+import com.nustdevkit.api.NustLmsApiClient;
+import com.nustdevkit.api.authentication.BearerAuthModel;
+import com.nustdevkit.api.exceptions.ApiException;
+import com.nustdevkit.api.http.response.ApiResponse;
 import org.slf4j.event.Level;
 
 public class Program {
@@ -94,8 +94,8 @@ Documentation for accessing and setting credentials for BearerAuth.
 You must provide credentials in the client as shown in the following code snippet.
 
 ```java
-import m18000.m0.m0.m127.NustLmsApiClient;
-import m18000.m0.m0.m127.authentication.BearerAuthModel;
+import com.nustdevkit.api.NustLmsApiClient;
+import com.nustdevkit.api.authentication.BearerAuthModel;
 
 public class Program {
     public static void main(String[] args) {

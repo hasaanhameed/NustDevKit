@@ -58,12 +58,12 @@ A calendar action event. On NUST LMS these represent deadlines — the due date 
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.CalendarEvent;
+import com.nustdevkit.api.models.Course;
+import com.nustdevkit.api.models.EventIcon;
+import com.nustdevkit.api.models.EventSubscription;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.CalendarEvent;
-import m18000.m0.m0.m127.models.Course;
-import m18000.m0.m0.m127.models.EventIcon;
-import m18000.m0.m0.m127.models.EventSubscription;
 
 CalendarEvent calendarEvent = new CalendarEvent.Builder(
     149885,

@@ -29,9 +29,9 @@ A single file (or link) uploaded inside a course module.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.CourseContentFile;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.CourseContentFile;
 
 CourseContentFile courseContentFile = new CourseContentFile.Builder(
     "file",

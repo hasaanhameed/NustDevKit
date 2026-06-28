@@ -17,7 +17,7 @@ Represents the result of an API call, including response metadata and the return
 
 ```java
 import java.io.IOException;
-import m18000.m0.m0.m127.exceptions;
+import com.nustdevkit.api.exceptions;
 
 exampleController.getExampleTypeAsync(body).thenAccept(result -> {
     // success callback handler

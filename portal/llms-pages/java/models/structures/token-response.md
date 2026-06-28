@@ -24,9 +24,9 @@ Bearer token issued by the gateway after a successful login.
 # Example
 
 ```java
+import com.nustdevkit.api.ApiHelper;
+import com.nustdevkit.api.models.TokenResponse;
 import java.io.IOException;
-import m18000.m0.m0.m127.ApiHelper;
-import m18000.m0.m0.m127.models.TokenResponse;
 
 TokenResponse tokenResponse = new TokenResponse.Builder(
     "access_token2",
