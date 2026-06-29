@@ -13,7 +13,7 @@ from app.services.session_store import InMemorySessionStore, get_session_store
 
 router = APIRouter(tags=["OAuth"])
 
-_LOGIN_HTML = open(os.path.join(os.path.dirname(__file__), "../oauth/login.html")).read()
+_LOGIN_HTML = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../oauth/login.html")).read()
 
 
 def _render_login(
@@ -107,7 +107,7 @@ async def authorize_get(
     return HTMLResponse(html)
 
 
-@router.post("/oauth/authorize")
+@router.post("/oauth/authorize", response_model=None)
 async def authorize_post(
     request: Request,
     client_id: str = Form(...),
