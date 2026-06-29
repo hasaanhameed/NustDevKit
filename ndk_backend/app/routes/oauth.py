@@ -2,7 +2,7 @@ import base64
 import hashlib
 import logging
 import os
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -46,6 +46,18 @@ def _verify_pkce(code_verifier: str, code_challenge: str, method: str) -> bool:
         expected = base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
         return expected == code_challenge
     return False
+
+
+def _is_loopback_redirect(uri: str) -> bool:
+    """Public OAuth clients (native apps, MCP clients) use a loopback redirect.
+
+    We don't persist per-client records (an in-memory store is wiped on every
+    redeploy, which would invalidate clients the user already registered). For
+    public PKCE clients security rests on PKCE + a loopback redirect, not on a
+    stored client secret (RFC 8252), so we validate the redirect shape instead.
+    """
+    p = urlparse(uri)
+    return p.scheme in ("http", "https") and p.hostname in ("localhost", "127.0.0.1", "::1")
 
 
 # ---------------------------------------------------------------------------
@@ -94,11 +106,9 @@ async def authorize_get(
     code_challenge: str,
     code_challenge_method: str = "S256",
     state: str = "",
-    oauth: OAuthStore = Depends(get_oauth_store),
 ) -> HTMLResponse:
-    client = oauth.get_client(client_id)
-    if client is None or redirect_uri not in client.redirect_uris:
-        return HTMLResponse("<h1>Invalid client or redirect_uri</h1>", status_code=400)
+    if not _is_loopback_redirect(redirect_uri):
+        return HTMLResponse("<h1>Invalid redirect_uri</h1>", status_code=400)
 
     html = _render_login(
         client_id=client_id,
@@ -123,9 +133,8 @@ async def authorize_post(
     oauth: OAuthStore = Depends(get_oauth_store),
     store: InMemorySessionStore = Depends(get_session_store),
 ) -> HTMLResponse | RedirectResponse:
-    client = oauth.get_client(client_id)
-    if client is None or redirect_uri not in client.redirect_uris:
-        return HTMLResponse("<h1>Invalid client or redirect_uri</h1>", status_code=400)
+    if not _is_loopback_redirect(redirect_uri):
+        return HTMLResponse("<h1>Invalid redirect_uri</h1>", status_code=400)
 
     lms = LMSSession()
     try:
