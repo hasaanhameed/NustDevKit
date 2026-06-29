@@ -240,4 +240,4 @@ Available tools: `get_account_info`, `list_recent_courses`, `list_courses_by_tim
 
 ## License
 
-MIT
+Copyright (c) 2026 Hasaan Hameed. All rights reserved. See [LICENSE](LICENSE) for details.
