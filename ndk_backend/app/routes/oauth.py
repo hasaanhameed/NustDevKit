@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import logging
 import os
 from urllib.parse import urlencode
 
@@ -12,6 +13,8 @@ from app.services.lms_session import LMSSession, LMSUpstreamError
 from app.services.session_store import InMemorySessionStore, get_session_store
 
 router = APIRouter(tags=["OAuth"])
+
+logger = logging.getLogger("uvicorn.error")
 
 _LOGIN_HTML = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../oauth/login.html")).read()
 
@@ -187,6 +190,10 @@ async def token(
 
     if grant_type == "authorization_code":
         if not code or not redirect_uri or not client_id or not code_verifier:
+            logger.warning(
+                "token exchange missing params: code=%s redirect_uri=%s client_id=%s code_verifier=%s",
+                bool(code), bool(redirect_uri), bool(client_id), bool(code_verifier),
+            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_request", "error_description": "Missing required parameters"},
@@ -194,18 +201,27 @@ async def token(
 
         auth_code = oauth.consume_auth_code(code)
         if auth_code is None:
+            logger.warning("token exchange: auth code not found or expired")
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "Authorization code is invalid or expired"},
             )
 
         if auth_code.client_id != client_id or auth_code.redirect_uri != redirect_uri:
+            logger.warning(
+                "token exchange mismatch: client_id stored=%r sent=%r | redirect_uri stored=%r sent=%r",
+                auth_code.client_id, client_id, auth_code.redirect_uri, redirect_uri,
+            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "client_id or redirect_uri mismatch"},
             )
 
         if not _verify_pkce(code_verifier, auth_code.code_challenge, auth_code.code_challenge_method):
+            logger.warning(
+                "token exchange PKCE fail: method=%r stored_challenge=%r",
+                auth_code.code_challenge_method, auth_code.code_challenge,
+            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "PKCE verification failed"},
