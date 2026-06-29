@@ -64,7 +64,9 @@ async def health() -> dict[str, str]:
 
 @app.get("/.well-known/oauth-authorization-server", tags=["Meta"], include_in_schema=False)
 async def oauth_metadata(request: Request) -> JSONResponse:
-    base = str(request.base_url).rstrip("/")
+    proto = request.headers.get("x-forwarded-proto", "https")
+    host = request.headers.get("host", "api.nustdevkit.com")
+    base = f"{proto}://{host}"
     return JSONResponse({
         "issuer": base,
         "authorization_endpoint": f"{base}/oauth/authorize",
