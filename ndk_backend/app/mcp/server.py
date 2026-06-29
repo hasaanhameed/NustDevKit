@@ -7,8 +7,9 @@ grouped by domain (mirroring the REST routes) and wired in via each module's
 from fastmcp import FastMCP
 
 from app.mcp.tools import account, calendar, courses, notifications
+from app.oauth.verifier import GatewayTokenVerifier
 
-mcp = FastMCP("NUST LMS")
+mcp = FastMCP("NUST LMS", auth=GatewayTokenVerifier())
 
 account.register(mcp)
 courses.register(mcp)
