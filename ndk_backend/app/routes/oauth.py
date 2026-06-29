@@ -2,7 +2,7 @@ import base64
 import hashlib
 import logging
 import os
-from urllib.parse import urlencode, urlparse
+from urllib.parse import unquote, urlencode, urlparse
 
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -46,6 +46,24 @@ def _verify_pkce(code_verifier: str, code_challenge: str, method: str) -> bool:
         expected = base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
         return expected == code_challenge
     return False
+
+
+def _client_id_from_basic_auth(request: Request) -> str | None:
+    """Read client_id from an HTTP Basic auth header (client_secret_basic).
+
+    Claude Code authenticates at the token endpoint with
+    `Authorization: Basic base64(client_id:client_secret)` rather than putting
+    client_id in the form body, so we fall back to parsing it from there.
+    """
+    header = request.headers.get("authorization", "")
+    if not header.lower().startswith("basic "):
+        return None
+    try:
+        decoded = base64.b64decode(header[6:]).decode()
+    except (ValueError, UnicodeDecodeError):
+        return None
+    # client_secret_basic url-encodes the two parts before joining with ':'.
+    return unquote(decoded.split(":", 1)[0])
 
 
 def _is_loopback_redirect(uri: str) -> bool:
@@ -187,6 +205,7 @@ async def authorize_post(
 
 @router.post("/oauth/token")
 async def token(
+    request: Request,
     grant_type: str = Form(...),
     code: str = Form(None),
     redirect_uri: str = Form(None),
@@ -196,6 +215,11 @@ async def token(
     oauth: OAuthStore = Depends(get_oauth_store),
     store: InMemorySessionStore = Depends(get_session_store),
 ) -> JSONResponse:
+
+    # Public PKCE clients (e.g. Claude Code) may send client_id via HTTP Basic
+    # auth instead of the form body.
+    if not client_id:
+        client_id = _client_id_from_basic_auth(request)
 
     if grant_type == "authorization_code":
         if not code or not redirect_uri or not client_id or not code_verifier:
