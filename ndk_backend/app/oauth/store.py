@@ -4,14 +4,6 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class OAuthClient:
-    client_id: str
-    client_secret: str
-    redirect_uris: list[str]
-    client_name: str = ""
-
-
-@dataclass
 class AuthCode:
     code: str
     client_id: str
@@ -35,24 +27,8 @@ class RefreshToken:
 
 class OAuthStore:
     def __init__(self) -> None:
-        self._clients: dict[str, OAuthClient] = {}
         self._codes: dict[str, AuthCode] = {}
         self._refresh_tokens: dict[str, RefreshToken] = {}
-
-    def register_client(self, redirect_uris: list[str], client_name: str = "") -> OAuthClient:
-        client_id = secrets.token_urlsafe(16)
-        client_secret = secrets.token_urlsafe(32)
-        client = OAuthClient(
-            client_id=client_id,
-            client_secret=client_secret,
-            redirect_uris=redirect_uris,
-            client_name=client_name,
-        )
-        self._clients[client_id] = client
-        return client
-
-    def get_client(self, client_id: str) -> OAuthClient | None:
-        return self._clients.get(client_id)
 
     def create_auth_code(
         self,

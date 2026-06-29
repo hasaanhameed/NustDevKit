@@ -1,12 +1,14 @@
 import base64
 import hashlib
-import logging
-import os
+import secrets
+from html import escape
+from pathlib import Path
 from urllib.parse import unquote, urlencode, urlparse
 
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
+from app.core.config import settings
 from app.core.security import create_access_token
 from app.oauth.store import OAuthStore, get_oauth_store
 from app.services.lms_session import LMSSession, LMSUpstreamError
@@ -14,9 +16,10 @@ from app.services.session_store import InMemorySessionStore, get_session_store
 
 router = APIRouter(tags=["OAuth"])
 
-logger = logging.getLogger("uvicorn.error")
+# Advertised token lifetime; kept in lock-step with the JWT the token endpoint mints.
+_ACCESS_TOKEN_TTL_SECONDS = settings.access_token_expire_minutes * 60
 
-_LOGIN_HTML = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../oauth/login.html")).read()
+_LOGIN_HTML = (Path(__file__).resolve().parent / "../oauth/login.html").read_text()
 
 
 def _render_login(
@@ -27,16 +30,19 @@ def _render_login(
     state: str,
     error: str = "",
 ) -> str:
+    # All of these are client-supplied and land inside HTML attributes / text, so
+    # escape them — otherwise a crafted authorize link could inject script into the
+    # very page where the user types their LMS password (reflected XSS).
     return (
         _LOGIN_HTML
         .replace("{% if error %}", "" if error else "<!--")
         .replace("{% endif %}", "" if error else "-->")
-        .replace("{{ error }}", error)
-        .replace('value="{{ client_id }}"', f'value="{client_id}"')
-        .replace('value="{{ redirect_uri }}"', f'value="{redirect_uri}"')
-        .replace('value="{{ code_challenge }}"', f'value="{code_challenge}"')
-        .replace('value="{{ code_challenge_method }}"', f'value="{code_challenge_method}"')
-        .replace('value="{{ state }}"', f'value="{state}"')
+        .replace("{{ error }}", escape(error))
+        .replace('value="{{ client_id }}"', f'value="{escape(client_id, quote=True)}"')
+        .replace('value="{{ redirect_uri }}"', f'value="{escape(redirect_uri, quote=True)}"')
+        .replace('value="{{ code_challenge }}"', f'value="{escape(code_challenge, quote=True)}"')
+        .replace('value="{{ code_challenge_method }}"', f'value="{escape(code_challenge_method, quote=True)}"')
+        .replace('value="{{ state }}"', f'value="{escape(state, quote=True)}"')
     )
 
 
@@ -83,10 +89,7 @@ def _is_loopback_redirect(uri: str) -> bool:
 # ---------------------------------------------------------------------------
 
 @router.post("/oauth/register", status_code=status.HTTP_201_CREATED)
-async def register_client(
-    request: Request,
-    oauth: OAuthStore = Depends(get_oauth_store),
-) -> JSONResponse:
+async def register_client(request: Request) -> JSONResponse:
     body = await request.json()
     redirect_uris = body.get("redirect_uris", [])
     client_name = body.get("client_name", "")
@@ -97,14 +100,16 @@ async def register_client(
             content={"error": "invalid_client_metadata", "error_description": "redirect_uris is required"},
         )
 
-    client = oauth.register_client(redirect_uris=redirect_uris, client_name=client_name)
+    # We don't persist client records (the flow is stateless — see
+    # _is_loopback_redirect); registration just mints the IDs the client needs to
+    # complete the authorization-code + PKCE exchange.
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content={
-            "client_id": client.client_id,
-            "client_secret": client.client_secret,
-            "redirect_uris": client.redirect_uris,
-            "client_name": client.client_name,
+            "client_id": secrets.token_urlsafe(16),
+            "client_secret": secrets.token_urlsafe(32),
+            "redirect_uris": redirect_uris,
+            "client_name": client_name,
             "grant_types": ["authorization_code"],
             "response_types": ["code"],
             "token_endpoint_auth_method": "client_secret_post",
@@ -223,10 +228,6 @@ async def token(
 
     if grant_type == "authorization_code":
         if not code or not redirect_uri or not client_id or not code_verifier:
-            logger.warning(
-                "token exchange missing params: code=%s redirect_uri=%s client_id=%s code_verifier=%s",
-                bool(code), bool(redirect_uri), bool(client_id), bool(code_verifier),
-            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_request", "error_description": "Missing required parameters"},
@@ -234,27 +235,18 @@ async def token(
 
         auth_code = oauth.consume_auth_code(code)
         if auth_code is None:
-            logger.warning("token exchange: auth code not found or expired")
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "Authorization code is invalid or expired"},
             )
 
         if auth_code.client_id != client_id or auth_code.redirect_uri != redirect_uri:
-            logger.warning(
-                "token exchange mismatch: client_id stored=%r sent=%r | redirect_uri stored=%r sent=%r",
-                auth_code.client_id, client_id, auth_code.redirect_uri, redirect_uri,
-            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "client_id or redirect_uri mismatch"},
             )
 
         if not _verify_pkce(code_verifier, auth_code.code_challenge, auth_code.code_challenge_method):
-            logger.warning(
-                "token exchange PKCE fail: method=%r stored_challenge=%r",
-                auth_code.code_challenge_method, auth_code.code_challenge,
-            )
             return JSONResponse(
                 status_code=400,
                 content={"error": "invalid_grant", "error_description": "PKCE verification failed"},
@@ -266,7 +258,7 @@ async def token(
         return JSONResponse({
             "access_token": access_token,
             "token_type": "bearer",
-            "expires_in": 720 * 60,
+            "expires_in": _ACCESS_TOKEN_TTL_SECONDS,
             "refresh_token": new_refresh,
         })
 
@@ -297,7 +289,7 @@ async def token(
         return JSONResponse({
             "access_token": access_token,
             "token_type": "bearer",
-            "expires_in": 720 * 60,
+            "expires_in": _ACCESS_TOKEN_TTL_SECONDS,
             "refresh_token": new_refresh,
         })
 
