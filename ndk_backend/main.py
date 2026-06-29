@@ -7,7 +7,7 @@ from slowapi.errors import RateLimitExceeded
 from app.core.config import settings
 from app.core.limiter import limiter
 from app.mcp import mcp
-from app.routes import assistant, auth, service
+from app.routes import assistant, auth, oauth, service
 from app.services.lms_session import LMSAjaxError, LMSAuthError
 
 
@@ -37,6 +37,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.include_router(auth.router)
+app.include_router(oauth.router)
 app.include_router(service.router)
 app.include_router(assistant.router)
 
@@ -68,7 +69,8 @@ async def oauth_metadata(request: Request) -> JSONResponse:
         "issuer": base,
         "authorization_endpoint": f"{base}/oauth/authorize",
         "token_endpoint": f"{base}/oauth/token",
+        "registration_endpoint": f"{base}/oauth/register",
         "response_types_supported": ["code"],
-        "grant_types_supported": ["authorization_code"],
+        "grant_types_supported": ["authorization_code", "refresh_token"],
         "code_challenge_methods_supported": ["S256"],
     })
