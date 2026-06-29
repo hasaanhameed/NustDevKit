@@ -59,3 +59,16 @@ async def handle_lms_auth_error(_: Request, exc: LMSAuthError) -> JSONResponse:
 @app.get("/health", tags=["Meta"])
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/.well-known/oauth-authorization-server", tags=["Meta"], include_in_schema=False)
+async def oauth_metadata(request: Request) -> JSONResponse:
+    base = str(request.base_url).rstrip("/")
+    return JSONResponse({
+        "issuer": base,
+        "authorization_endpoint": f"{base}/oauth/authorize",
+        "token_endpoint": f"{base}/oauth/token",
+        "response_types_supported": ["code"],
+        "grant_types_supported": ["authorization_code"],
+        "code_challenge_methods_supported": ["S256"],
+    })
