@@ -14,7 +14,7 @@ Live at **[nustdevkit.com](https://www.nustdevkit.com)**
 |-----------|-------------|
 | **Gateway** (`ndk_backend/`) | FastAPI app. Authenticates against the LMS, manages sessions server-side, and proxies data over a bearer-token API. |
 | **Portal** (`ndk_frontend/`) | Scalar-powered API reference. Hosted on S3 + CloudFront at `nustdevkit.com`. |
-| **MCP Server** | Self-hosted FastMCP server at `/mcp`. Lets AI assistants (Claude, Cursor, ChatGPT) call LMS data as tools. |
+| **MCP Server** | Self-hosted FastMCP server at `/mcp/` (Streamable HTTP, OAuth 2.0 + PKCE). Lets AI assistants (Claude, Cursor, etc.) call LMS data as tools. |
 | **Docs Assistant** | Groq-backed streaming chat widget embedded in the portal. Answers questions about the API and SDKs. |
 | **SDKs** | APIMatic-generated clients for TypeScript, Python, Java, .NET, Go, PHP, and Ruby — downloadable from the portal. |
 
@@ -55,10 +55,11 @@ NustDevKit/
 │   ├── main.py               # App entry point, middleware, MCP mount
 │   ├── app/
 │   │   ├── core/             # Config, JWT, rate limiter
-│   │   ├── routes/           # auth, service endpoints, assistant
+│   │   ├── routes/           # auth, oauth, service endpoints, assistant
 │   │   ├── services/         # LMSSession (httpx client), session store
 │   │   ├── schemas/          # Pydantic request/response models
 │   │   ├── dependencies/     # FastAPI dependencies (auth resolution)
+│   │   ├── oauth/            # OAuth 2.0 flow: store, token verifier, login page
 │   │   ├── mcp/              # FastMCP server + tools (courses, calendar, notifications)
 │   │   └── assistant/        # Groq streaming assistant + knowledge base
 │   ├── docker/
@@ -203,7 +204,7 @@ GET    /service/notifications/popup        # Popup notifications
 
 POST   /assistant/ask       # Streaming docs assistant (Groq)
 GET    /health              # Liveness check
-/mcp                        # FastMCP endpoint (SSE)
+/mcp/                       # FastMCP endpoint (Streamable HTTP, OAuth-protected)
 ```
 
 Full reference: [nustdevkit.com](https://www.nustdevkit.com)
@@ -212,20 +213,46 @@ Full reference: [nustdevkit.com](https://www.nustdevkit.com)
 
 ## MCP Server
 
-The gateway is also a Model Context Protocol server. AI assistants that support MCP can call it as a set of tools:
+The gateway is also a Model Context Protocol server, so AI assistants that support MCP (Claude Code, Claude Desktop, Cursor, etc.) can call the LMS as a set of tools.
+
+- **Endpoint:** `https://api.nustdevkit.com/mcp/`
+- **Transport:** Streamable HTTP
+- **Auth:** OAuth 2.0 with PKCE — you log in once through a hosted page; the client never sees your credentials and obtains tokens automatically.
+
+### Connecting (Claude Code example)
+
+Add the server to your project's `.mcp.json` — no token needed, the client runs the OAuth flow for you:
 
 ```json
 {
   "mcpServers": {
     "nust-lms": {
-      "url": "https://api.nustdevkit.com/mcp",
-      "headers": { "Authorization": "Bearer <your-token>" }
+      "type": "http",
+      "url": "https://api.nustdevkit.com/mcp/"
     }
   }
 }
 ```
 
-Available tools: `get_account_info`, `list_recent_courses`, `list_courses_by_timeline`, `list_upcoming_deadlines`, `list_course_deadlines`, `get_site_notifications`, `list_popup_notifications`.
+On first connect, the client opens a browser to the gateway's login page. Enter your NUST LMS credentials there; once it says "Authentication successful," return to the assistant and the tools are live.
+
+### Available tools
+
+| Tool | Returns |
+|------|---------|
+| `get_my_account` | User ID, name, and site info |
+| `list_recent_courses` | Recently accessed courses |
+| `list_courses_by_timeline` | Courses filtered by timeline (past / in-progress / future) |
+| `list_course_contents` | Sections and files for a course |
+| `list_upcoming_deadlines` | Upcoming deadlines across all courses |
+| `list_course_deadlines` | Deadlines for a specific course |
+| `list_popup_notifications` | Popup notifications |
+
+### How auth works
+
+The OAuth flow is **stateless** — for public PKCE clients, security rests on PKCE plus a loopback redirect, so the gateway stores no per-client records. The endpoints are: `/.well-known/oauth-authorization-server` (discovery), `/oauth/register` (dynamic client registration), `/oauth/authorize` (login page), and `/oauth/token` (code → token exchange). Tokens are verified at the MCP door by a custom `GatewayTokenVerifier`.
+
+> **Note:** LMS sessions and OAuth tokens live in the server's memory (single worker). A redeploy or a session timing out means you re-authenticate — if a tool returns `401: Session expired`, just reconnect and log in again.
 
 ---
 
