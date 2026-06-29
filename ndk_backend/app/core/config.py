@@ -37,7 +37,15 @@ class Settings(BaseSettings):
     )
 
     # --- CORS ---
-    cors_origins: list[str] = ["*"]
+    # Limited to the portal origins: only the unauthenticated assistant endpoint is
+    # reachable from a browser, and this stops other sites' JS from burning the Groq
+    # quota. Override via CORS_ORIGINS env. (Token-auth endpoints, OAuth redirects, and
+    # server-side MCP calls are unaffected — CORS only governs browser JS.)
+    cors_origins: list[str] = [
+        "https://nustdevkit.com",
+        "https://www.nustdevkit.com",
+        "http://localhost:3000",
+    ]
 
     # --- Docs assistant (Groq) ---
     # Required to run the assistant; leave empty to disable it (route returns 503).
