@@ -72,16 +72,24 @@ def _client_id_from_basic_auth(request: Request) -> str | None:
     return unquote(decoded.split(":", 1)[0])
 
 
-def _is_loopback_redirect(uri: str) -> bool:
-    """Public OAuth clients (native apps, MCP clients) use a loopback redirect.
+def _is_allowed_redirect(uri: str) -> bool:
+    """Validate the OAuth redirect target.
 
     We don't persist per-client records (an in-memory store is wiped on every
     redeploy, which would invalidate clients the user already registered). For
-    public PKCE clients security rests on PKCE + a loopback redirect, not on a
-    stored client secret (RFC 8252), so we validate the redirect shape instead.
+    public PKCE clients security rests on PKCE + a vetted redirect, not on a stored
+    client secret (RFC 8252), so we validate the redirect shape instead:
+
+    - Desktop MCP clients (Claude Code, Cursor, ...) use a loopback callback.
+    - Web connectors (Claude.ai, ChatGPT) use a hosted https callback — allowed
+      only for the hosts in `oauth_web_redirect_hosts` so this isn't an open redirect.
     """
     p = urlparse(uri)
-    return p.scheme in ("http", "https") and p.hostname in ("localhost", "127.0.0.1", "::1")
+    if p.scheme == "http" and p.hostname in ("localhost", "127.0.0.1", "::1"):
+        return True
+    if p.scheme == "https" and p.hostname in settings.oauth_web_redirect_hosts:
+        return True
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -101,7 +109,7 @@ async def register_client(request: Request) -> JSONResponse:
         )
 
     # We don't persist client records (the flow is stateless — see
-    # _is_loopback_redirect); registration just mints the IDs the client needs to
+    # _is_allowed_redirect); registration just mints the IDs the client needs to
     # complete the authorization-code + PKCE exchange.
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
@@ -130,7 +138,7 @@ async def authorize_get(
     code_challenge_method: str = "S256",
     state: str = "",
 ) -> HTMLResponse:
-    if not _is_loopback_redirect(redirect_uri):
+    if not _is_allowed_redirect(redirect_uri):
         return HTMLResponse("<h1>Invalid redirect_uri</h1>", status_code=400)
 
     html = _render_login(
@@ -156,7 +164,7 @@ async def authorize_post(
     oauth: OAuthStore = Depends(get_oauth_store),
     store: InMemorySessionStore = Depends(get_session_store),
 ) -> HTMLResponse | RedirectResponse:
-    if not _is_loopback_redirect(redirect_uri):
+    if not _is_allowed_redirect(redirect_uri):
         return HTMLResponse("<h1>Invalid redirect_uri</h1>", status_code=400)
 
     lms = LMSSession()

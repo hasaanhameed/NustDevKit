@@ -47,6 +47,12 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
+    # --- OAuth ---
+    # Desktop MCP clients redirect to a loopback callback (always allowed). Web
+    # connectors redirect to a hosted https callback instead — allow those hosts here.
+    # Override via OAUTH_WEB_REDIRECT_HOSTS to add more without a code change.
+    oauth_web_redirect_hosts: list[str] = ["claude.ai", "chatgpt.com"]
+
     # --- Docs assistant (Groq) ---
     # Required to run the assistant; leave empty to disable it (route returns 503).
     groq_api_key: str = ""

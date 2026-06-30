@@ -64,9 +64,7 @@ async def health() -> dict[str, str]:
 
 @app.get("/.well-known/oauth-authorization-server", tags=["Meta"], include_in_schema=False)
 async def oauth_metadata(request: Request) -> JSONResponse:
-    proto = request.headers.get("x-forwarded-proto", "https")
-    host = request.headers.get("host", "api.nustdevkit.com")
-    base = f"{proto}://{host}"
+    base = _base_url(request)
     return JSONResponse({
         "issuer": base,
         "authorization_endpoint": f"{base}/oauth/authorize",
@@ -75,4 +73,23 @@ async def oauth_metadata(request: Request) -> JSONResponse:
         "response_types_supported": ["code"],
         "grant_types_supported": ["authorization_code", "refresh_token"],
         "code_challenge_methods_supported": ["S256"],
+    })
+
+
+def _base_url(request: Request) -> str:
+    proto = request.headers.get("x-forwarded-proto", "https")
+    host = request.headers.get("host", "api.nustdevkit.com")
+    return f"{proto}://{host}"
+
+
+# RFC 9728 — tells an MCP client which authorization server protects /mcp. Clients
+# probe this at the site root (and the /mcp-suffixed variant), so we serve it here
+# rather than under the mounted MCP app. Required by stricter (web) MCP clients.
+@app.get("/.well-known/oauth-protected-resource", tags=["Meta"], include_in_schema=False)
+@app.get("/.well-known/oauth-protected-resource/mcp", tags=["Meta"], include_in_schema=False)
+async def oauth_protected_resource(request: Request) -> JSONResponse:
+    base = _base_url(request)
+    return JSONResponse({
+        "resource": f"{base}/mcp/",
+        "authorization_servers": [base],
     })
