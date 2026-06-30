@@ -187,22 +187,21 @@ git push
 
 ## API Overview
 
-All endpoints (except `POST /auth/login` and `GET /health`) require a bearer token.
+All `/service/*` endpoints require a bearer token. `POST /auth/login`, `POST /assistant/ask`, `GET /health`, and the OAuth/discovery routes are open (the assistant is rate-limited instead). Service routes are named after the underlying Moodle function they proxy:
 
 ```
 POST   /auth/login          # Authenticate → JWT
 POST   /auth/logout         # Invalidate session
 
-GET    /service/account/site-info          # User ID, name, site info
-GET    /service/courses/recent             # Recently accessed courses
-GET    /service/courses/by-timeline        # Courses filtered by timeline
-GET    /service/courses/{id}/contents      # Course sections and files
-GET    /service/calendar/upcoming          # Upcoming deadlines
-GET    /service/calendar/course/{id}       # Deadlines for a specific course
-GET    /service/notifications/site         # Site notifications
-GET    /service/notifications/popup        # Popup notifications
+GET    /service/core_webservice_get_site_info                                 # User ID, name, site info
+GET    /service/core_course_get_recent_courses                                # Recently accessed courses
+GET    /service/core_course_get_enrolled_courses_by_timeline_classification   # Courses filtered by timeline
+GET    /service/core_course_get_contents                                      # Course sections and files
+GET    /service/core_calendar_get_action_events_by_timesort                   # Upcoming deadlines
+GET    /service/core_calendar_get_action_events_by_course                     # Deadlines for a specific course
+GET    /service/message_popup_get_popup_notifications                         # Popup notifications
 
-POST   /assistant/ask       # Streaming docs assistant (Groq)
+POST   /assistant/ask       # Streaming docs assistant (Groq, open + rate-limited)
 GET    /health              # Liveness check
 /mcp/                       # FastMCP endpoint (Streamable HTTP, OAuth-protected)
 ```
