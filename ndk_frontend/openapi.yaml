@@ -16,9 +16,60 @@ info:
        - **Go** — [download](./sdks/nust-lms-api-go_generic_lib.zip), then add a local `replace` for the folder in your `go.mod`, then run `go get`.
        - **PHP** — [download](./sdks/nust-lms-api-php_generic_lib_v2.zip), then run `composer install` in the unzipped folder.
        - **Ruby** — [download](./sdks/nust-lms-api-ruby_generic_lib.zip), then run `gem build nust_lms_api.gemspec && gem install nust_lms_api-1.0.0.gem`.
-    2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.
-    3. **Initialize a client** with that token — see the **SDK Setup** section for the
-       per-language code. Every other sample assumes that `client`.
+    2. **Get a bearer token** — call `POST /auth/login` with your NUST LMS credentials
+       (no token needed for this call). See the **login** operation's Code Examples for a
+       per-language snippet, and read `access_token` off the response.
+    3. **Initialize a client** with that token — see the **SDK Setup** section. Every other
+       sample's `client` comes from there.
+    4. **Call an endpoint** — each operation's Code Examples include the imports it needs,
+       the controller handle, and the call.
+
+    _Each SDK's own README has fuller, IDE-specific setup if you want it._
+
+    ## Connect an AI assistant (MCP)
+
+    Beyond the SDKs, this API is also an **MCP server**, so AI assistants (Claude Code,
+    Claude Desktop, Cursor, VS Code, Claude.ai, ChatGPT) can call it as tools — for
+    example, *"what deadlines do I have this week?"*.
+
+    Auth is handled for you by **OAuth 2.0 with PKCE** — you do **not** paste a bearer
+    token. On first connect the client opens a hosted login page; enter your NUST LMS
+    credentials there and it obtains its tokens automatically (the assistant never sees
+    your password). Login is never an MCP tool.
+
+    - **Endpoint:** `https://api.nustdevkit.com/mcp/`
+    - **Transport:** Streamable HTTP
+
+    **Desktop / editor clients** (Claude Code, Claude Desktop, Cursor, VS Code) — add the
+    server to the client's MCP config; no token needed:
+
+    ```json
+    { "mcpServers": { "nust-lms": {
+        "type": "http",
+        "url": "https://api.nustdevkit.com/mcp/" } } }
+    ```
+
+    **Web assistants** (Claude.ai, ChatGPT) — open Settings → Connectors, add a custom
+    connector with the same URL `https://api.nustdevkit.com/mcp/`, then complete the login
+    when prompted.
+
+    ## Getting Started with the SDKs
+
+    1. **Get the SDK** for your language — download the zip, unzip it, and install it:
+       - **TypeScript** — [download](./sdks/nust-lms-api-ts_generic_lib.zip), then run `npm install` in the unzipped folder, then add it to your project.
+       - **Python** — [download](./sdks/nust-lms-api-python_generic_lib.zip), then run `pip install -r requirements.txt` in the unzipped folder.
+       - **Java** — [download](./sdks/nust-lms-api-java_eclipse_jre_lib.zip), then build the JAR with Gradle and add it to your project.
+       - **.NET (C#)** — [download](./sdks/nust-lms-api-cs_net_standard_lib.zip), then add a project reference to the `NustLmsApi.Standard` project.
+       - **Go** — [download](./sdks/nust-lms-api-go_generic_lib.zip), then add a local `replace` for the folder in your `go.mod`, then run `go get`.
+       - **PHP** — [download](./sdks/nust-lms-api-php_generic_lib_v2.zip), then run `composer install` in the unzipped folder.
+       - **Ruby** — [download](./sdks/nust-lms-api-ruby_generic_lib.zip), then run `gem build nust_lms_api.gemspec && gem install nust_lms_api-1.0.0.gem`.
+    2. **Get a bearer token** — call `POST /auth/login` with your NUST LMS credentials
+       (no token needed for this call). See the **login** operation's Code Examples for a
+       per-language snippet, and read `access_token` off the response.
+    3. **Initialize a client** with that token — see the **SDK Setup** section. Every other
+       sample's `client` comes from there.
+    4. **Call an endpoint** — each operation's Code Examples include the imports it needs,
+       the controller handle, and the call.
 
     _Each SDK's own README has fuller, IDE-specific setup if you want it._
 
@@ -1033,6 +1084,11 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            import { LoginRequest } from 'nust-lms-apilib';
+
+            // No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            const authenticationApi = new AuthenticationApi(client);
+
             const body: LoginRequest = {
               username: 'johndoe.bscs23seecs',
               password: 'password0',
@@ -1066,6 +1122,11 @@ paths:
         - lang: python
           label: Python
           source: |-
+            from nustlmsapi.models.login_request import LoginRequest
+
+            # No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            authentication_api = client.authentication
+
             body = LoginRequest(
                 username='johndoe.bscs23seecs',
                 password='password0'
@@ -1080,6 +1141,11 @@ paths:
         - lang: java
           label: Java
           source: |-
+            import com.nustdevkit.api.models.LoginRequest;
+
+            // No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            AuthenticationApi authenticationApi = client.getAuthenticationApi();
+
             LoginRequest body = new LoginRequest.Builder(
                 "johndoe.bscs23seecs",
                 "password0"
@@ -1105,6 +1171,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            AuthenticationApi authenticationApi = client.AuthenticationApi;
+
             LoginRequest body = new LoginRequest
             {
                 Username = "johndoe.bscs23seecs",
@@ -1126,6 +1197,17 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/models"
+                "nustLmsApi/errors"
+            )
+
+            // No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            authenticationApi := client.AuthenticationApi()
+
             ctx := context.Background()
 
             body := models.LoginRequest{
@@ -1149,6 +1231,9 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            use NustLmsApiLib\Models\Builders\LoginRequestBuilder;
+
+            // No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
             $body = LoginRequestBuilder::init(
                 'johndoe.bscs23seecs',
                 'password0'
@@ -1172,6 +1257,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # No token needed to log in — create a `client` per the SDK Setup section, then call this to get your token.
+            authentication_api = client.authentication
+
             body = LoginRequest.new(
               username: 'johndoe.bscs23seecs',
               password: 'password0'
@@ -1221,6 +1309,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const coursesApi = new CoursesApi(client);
+
             const limit = 10;
 
             try {
@@ -1251,6 +1342,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             limit = 10
 
             result = courses_api.get_core_recent_courses(limit)
@@ -1262,6 +1356,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.getCoursesApi();
+
             int limit = 10;
 
             coursesApi.getCoreRecentCoursesAsync(limit).thenAccept(result -> {
@@ -1283,6 +1380,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.CoursesApi;
+
             int limit = 10;
             try
             {
@@ -1299,6 +1401,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            coursesApi := client.CoursesApi()
+
             ctx := context.Background()
 
             limit := 10
@@ -1319,6 +1431,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $limit = 10;
 
             $coursesApi = $client->getCoursesApi();
@@ -1339,6 +1452,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             limit = 10
 
             result = courses_api.get_core_recent_courses(limit)
@@ -1401,6 +1517,12 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            import { CourseTimelineSortField } from 'nust-lms-apilib';
+            import { CourseTimelineClassification } from 'nust-lms-apilib';
+
+            // Uses the configured `client` from the SDK Setup section.
+            const coursesApi = new CoursesApi(client);
+
             const offset = 0;
 
             const limit = 50;
@@ -1442,6 +1564,12 @@ paths:
         - lang: python
           label: Python
           source: |-
+            from nustlmsapi.models.course_timeline_sort_field import CourseTimelineSortField
+            from nustlmsapi.models.course_timeline_classification import CourseTimelineClassification
+
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             offset = 0
 
             limit = 50
@@ -1464,6 +1592,12 @@ paths:
         - lang: java
           label: Java
           source: |-
+            import com.nustdevkit.api.models.CourseTimelineSortField;
+            import com.nustdevkit.api.models.CourseTimelineClassification;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.getCoursesApi();
+
             int offset = 0;
             int limit = 50;
             CourseTimelineClassification classification = CourseTimelineClassification.INPROGRESS;
@@ -1488,6 +1622,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.CoursesApi;
+
             int offset = 0;
             int limit = 50;
             CourseTimelineClassification classification = CourseTimelineClassification.Inprogress;
@@ -1512,6 +1651,17 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/models"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            coursesApi := client.CoursesApi()
+
             ctx := context.Background()
 
             offset := 0
@@ -1538,6 +1688,10 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            use NustLmsApiLib\Models\CourseTimelineSortField;
+            use NustLmsApiLib\Models\CourseTimelineClassification;
+
+            // Uses the configured `client` from the SDK Setup section.
             $offset = 0;
 
             $limit = 50;
@@ -1569,6 +1723,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             offset = 0
 
             limit = 50
@@ -1626,6 +1783,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const coursesApi = new CoursesApi(client);
+
             const courseid = 74;
 
             try {
@@ -1656,6 +1816,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             courseid = 74
 
             result = courses_api.get_course_contents(courseid)
@@ -1667,6 +1830,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.getCoursesApi();
+
             int courseid = 74;
 
             coursesApi.getCourseContentsAsync(courseid).thenAccept(result -> {
@@ -1688,6 +1854,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CoursesApi coursesApi = client.CoursesApi;
+
             int courseid = 74;
             try
             {
@@ -1704,6 +1875,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            coursesApi := client.CoursesApi()
+
             ctx := context.Background()
 
             courseid := 74
@@ -1724,6 +1905,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $courseid = 74;
 
             $coursesApi = $client->getCoursesApi();
@@ -1744,6 +1926,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            courses_api = client.courses
+
             courseid = 74
 
             result = courses_api.get_course_contents(courseid)
@@ -1779,6 +1964,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const accountApi = new AccountApi(client);
+
             try {
               const response = await accountApi.getSiteInfo();
 
@@ -1807,6 +1995,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            account_api = client.account
+
             result = account_api.get_site_info()
 
             if result.is_success():
@@ -1816,6 +2007,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            AccountApi accountApi = client.getAccountApi();
+
             accountApi.getSiteInfoAsync().thenAccept(result -> {
                 // TODO success callback handler
                 System.out.println(result);
@@ -1835,6 +2029,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            AccountApi accountApi = client.AccountApi;
+
             try
             {
                 ApiResponse<SiteInfo> result = await accountApi.GetSiteInfoAsync();
@@ -1850,6 +2049,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            accountApi := client.AccountApi()
+
             ctx := context.Background()
 
             apiResponse, err := accountApi.GetSiteInfo(ctx)
@@ -1868,6 +2077,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $accountApi = $client->getAccountApi();
             $apiResponse = $accountApi->getSiteInfo();
 
@@ -1886,6 +2096,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            account_api = client.account
+
             result = account_api.get_site_info
 
             if result.success?
@@ -1947,6 +2160,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const calendarApi = new CalendarApi(client);
+
             const limitnum = 20;
 
             const timesortfrom = 0;
@@ -1982,6 +2198,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            calendar_api = client.calendar
+
             limitnum = 20
 
             timesortfrom = 0
@@ -1998,6 +2217,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            CalendarApi calendarApi = client.getCalendarApi();
+
             int limitnum = 20;
             int timesortfrom = 0;
 
@@ -2020,6 +2242,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CalendarApi calendarApi = client.CalendarApi;
+
             int limitnum = 20;
             int timesortfrom = 0;
             try
@@ -2040,6 +2267,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            calendarApi := client.CalendarApi()
+
             ctx := context.Background()
 
             limitnum := 20
@@ -2062,6 +2299,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $limitnum = 20;
 
             $timesortfrom = 0;
@@ -2087,6 +2325,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            calendar_api = client.calendar
+
             limitnum = 20
 
             timesortfrom = 0
@@ -2158,6 +2399,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const calendarApi = new CalendarApi(client);
+
             const courseid = 74;
 
             try {
@@ -2188,6 +2432,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            calendar_api = client.calendar
+
             courseid = 74
 
             result = calendar_api.get_calendar_events_by_course(courseid)
@@ -2199,6 +2446,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            CalendarApi calendarApi = client.getCalendarApi();
+
             int courseid = 74;
 
             calendarApi.getCalendarEventsByCourseAsync(courseid, null, null, null, null).thenAccept(result -> {
@@ -2220,6 +2470,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            CalendarApi calendarApi = client.CalendarApi;
+
             int courseid = 74;
             try
             {
@@ -2236,6 +2491,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            calendarApi := client.CalendarApi()
+
             ctx := context.Background()
 
             courseid := 74
@@ -2256,6 +2521,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $courseid = 74;
 
             $calendarApi = $client->getCalendarApi();
@@ -2276,6 +2542,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            calendar_api = client.calendar
+
             courseid = 74
 
             result = calendar_api.get_calendar_events_by_course(courseid)
@@ -2332,6 +2601,9 @@ paths:
         - lang: typescript
           label: TypeScript
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            const notificationsApi = new NotificationsApi(client);
+
             const useridto = 'useridto2';
 
             const limit = 172;
@@ -2370,6 +2642,9 @@ paths:
         - lang: python
           label: Python
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            notifications_api = client.notifications
+
             useridto = 'useridto2'
 
             limit = 172
@@ -2389,6 +2664,9 @@ paths:
         - lang: java
           label: Java
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
+            NotificationsApi notificationsApi = client.getNotificationsApi();
+
             String useridto = "useridto2";
             int limit = 172;
             int offset = 0;
@@ -2412,6 +2690,11 @@ paths:
         - lang: csharp
           label: .NET (C#)
           source: |-
+            using NustLmsApi.Standard.Models;
+
+            // Uses the configured `client` from the SDK Setup section.
+            NotificationsApi notificationsApi = client.NotificationsApi;
+
             string useridto = "useridto2";
             int limit = 172;
             int offset = 0;
@@ -2434,6 +2717,16 @@ paths:
         - lang: go
           label: Go
           source: |-
+            import (
+                "context"
+                "fmt"
+                "log"
+                "nustLmsApi/errors"
+            )
+
+            // Uses the configured `client` from the SDK Setup section.
+            notificationsApi := client.NotificationsApi()
+
             ctx := context.Background()
 
             useridto := "useridto2"
@@ -2458,6 +2751,7 @@ paths:
         - lang: php
           label: PHP
           source: |-
+            // Uses the configured `client` from the SDK Setup section.
             $useridto = 'useridto2';
 
             $limit = 172;
@@ -2486,6 +2780,9 @@ paths:
         - lang: ruby
           label: Ruby
           source: |-
+            # Uses the configured `client` from the SDK Setup section.
+            notifications_api = client.notifications
+
             useridto = 'useridto2'
 
             limit = 172

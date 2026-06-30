@@ -49,6 +49,14 @@ function extractExample(section) {
   return fence ? fence[1].replace(/\s+$/, "") : null;
 }
 
+// The very first fenced block in a controller doc. APIMatic puts the controller
+// handle there (e.g. `authentication_api = client.authentication`) right under the
+// "# <Controller>" heading — extractExample drops it, so capture it separately.
+function controllerVarLine(md) {
+  const fence = md.match(/```[^\n]*\n([\s\S]*?)```/);
+  return fence ? fence[1].trim() : null;
+}
+
 // Pull the per-language "Client Initialization" snippet from an SDK's bearer-auth
 // doc, swapping the placeholder token for a clearer name.
 function extractClientInit(md) {
@@ -59,40 +67,167 @@ function extractClientInit(md) {
   return fence[1].replace(/\s+$/, "").split("AccessToken").join("YOUR_BEARER_TOKEN");
 }
 
-// Single-line comment marker for a language (used when stitching snippets).
+// Per-language test for "this line is an import" (line-based langs; Go is handled
+// separately because its imports live in a parenthesised block).
+const IMPORT_RE = {
+  typescript: /^import\b/,
+  python: /^(import|from)\b/,
+  java: /^import\b/,
+  csharp: /^using\b/,
+  php: /^use\b/,
+  ruby: /^require\b/,
+};
+
+// Single-line comment marker for a language.
 const lineComment = (lang) => (lang === "python" || lang === "ruby" ? "#" : "//");
 
-// Parse one controller markdown into { moodleMethod -> exampleCode }.
+// Split a code block into { imports, body } for line-based languages.
+function splitImports(code, lang) {
+  const re = IMPORT_RE[lang];
+  if (!re) return { imports: [], body: code.trim() };
+  const imports = [];
+  const body = [];
+  for (const raw of code.split("\n")) {
+    if (re.test(raw.trim())) imports.push(raw.trim());
+    else body.push(raw);
+  }
+  return { imports, body: body.join("\n").replace(/^\n+|\n+$/g, "") };
+}
+
+// Parse a controller doc into its handle line + { moodleMethod -> exampleCode }.
 function parseController(md) {
-  const out = {};
-  // Split on h1 headings; each endpoint lives in its own "# <Title>" section.
-  const sections = md.split(/\n(?=# )/);
-  for (const section of sections) {
+  const controllerLine = controllerVarLine(md);
+  const methods = {};
+  for (const section of md.split(/\n(?=# )/)) {
     const m = section.match(/Moodle method:\s*`([^`]+)`/);
     if (!m) continue;
     const code = extractExample(section);
-    if (code) out[m[1]] = code;
+    if (code) methods[m[1]] = code;
   }
-  return out;
+  return { controllerLine, methods };
 }
 
-// Read all controller docs from one SDK zip -> { moodleMethod -> exampleCode }.
-function samplesFromZip(zipName) {
-  const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
+// Build a line-based language's model-import index: { ModelName -> [import lines] }.
+// Extracted from each model doc's "## Example" block (which ships the real import),
+// keeping only the line(s) naming the model so unrelated helpers (jsonpickle,
+// ApiHelper, ...) don't leak in.
+function modelsFromZip(zip, lang) {
   const out = {};
   for (const entry of zip.getEntries()) {
-    if (/^doc\/controllers\/.+\.md$/.test(entry.entryName)) {
-      Object.assign(out, parseController(entry.getData().toString("utf8")));
-    }
+    if (!/^doc\/models\/.+\.md$/.test(entry.entryName)) continue;
+    const md = entry.getData().toString("utf8");
+    // Model name from the kebab-case filename (enums lack a "## Structure" heading,
+    // so deriving from the filename indexes models and enums uniformly).
+    const name = entry.entryName
+      .replace(/^.*\//, "")
+      .replace(/\.md$/, "")
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join("");
+    const exIdx = md.indexOf("## Example");
+    if (exIdx === -1) continue;
+    const fence = md.slice(exIdx).match(/```[^\n]*\n([\s\S]*?)```/);
+    if (!fence) continue;
+    const { imports } = splitImports(fence[1], lang);
+    // C# documents the model via its namespace (`using ...Models;`) with no class
+    // name, so match the Models namespace there; class-import langs (py/ts/java/php)
+    // carry the class name in the line itself.
+    const own =
+      lang === "csharp"
+        ? imports.filter((l) => /\.Models\b/.test(l))
+        : imports.filter((l) => l.includes(name));
+    if (own.length) out[name] = own;
   }
   return out;
 }
 
-// --- Build the per-method sample tables, one per language. ---
-const byLang = LANGS.map(([zipName, meta]) => ({
-  meta,
-  samples: samplesFromZip(zipName),
-}));
+// Go import paths referenced by a snippet. `base` is the SDK module path (e.g.
+// "nustLmsApi"), taken from an extracted Go import.
+function goImports(snippet, base) {
+  const map = {
+    "context.": "context",
+    "fmt.": "fmt",
+    "log.": "log",
+    "models.": `${base}/models`,
+    "errors.": `${base}/errors`,
+  };
+  const used = [];
+  for (const [tok, path] of Object.entries(map)) {
+    if (snippet.includes(tok) && !used.includes(path)) used.push(path);
+  }
+  const std = used.filter((p) => !p.includes("/")); // stdlib grouped first (gofmt)
+  const mod = used.filter((p) => p.includes("/"));
+  return [...std, ...mod];
+}
+
+// Assemble a usable sample: the imports the call needs + the controller handle +
+// the call. The `client` itself comes from the SDK Setup section (one place), so a
+// leading comment points there rather than repeating client init in every sample.
+function assemble({ lang, controllerLine, call, modelIndex, base, comment }) {
+  const head = comment ? `${comment}\n` : "";
+  // Some langs (e.g. PHP) already include the controller handle in their Example
+  // Usage — don't prepend a duplicate.
+  const handle = controllerLine && !call.includes(controllerLine) ? `${controllerLine}\n\n` : "";
+  if (lang === "go") {
+    const paths = goImports(`${controllerLine}\n${call}`, base);
+    const block = paths.length
+      ? `import (\n${paths.map((p) => `    "${p}"`).join("\n")}\n)\n\n`
+      : "";
+    return `${block}${head}${handle}${call}`;
+  }
+  // Match against code with string literals blanked out, so a type name that only
+  // appears inside a string (e.g. PHP `echo 'TokenResponse:'`) doesn't pull an
+  // unused import.
+  const code = call.replace(/'[^']*'/g, "''").replace(/"[^"]*"/g, '""');
+  const used = new Set();
+  for (const name of Object.keys(modelIndex)) {
+    // Word-boundary match so e.g. `Course` doesn't match inside
+    // `CourseTimelineClassification`; allow a trailing `Builder` (PHP uses
+    // `LoginRequestBuilder` for model `LoginRequest`).
+    if (new RegExp(`\\b${name}(?:Builder)?\\b`).test(code)) {
+      for (const imp of modelIndex[name]) used.add(imp);
+    }
+  }
+  const imports = used.size ? `${[...used].join("\n")}\n\n` : "";
+  return `${imports}${head}${handle}${call}`;
+}
+
+// --- Build the per-language extraction tables from each SDK zip. ---
+const byLang = LANGS.map(([zipName, meta]) => {
+  const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
+  const lang = meta.lang;
+
+  // Controller docs -> per-method { example, controllerLine }, plus the login bits.
+  const byMethod = {};
+  let authControllerLine = null;
+  let loginExample = null;
+  for (const entry of zip.getEntries()) {
+    if (!/^doc\/controllers\/.+\.md$/.test(entry.entryName)) continue;
+    const md = entry.getData().toString("utf8");
+    const { controllerLine, methods } = parseController(md);
+    for (const [m, ex] of Object.entries(methods)) byMethod[m] = { example: ex, controllerLine };
+    if (/\/authentication\.md$/.test(entry.entryName)) {
+      authControllerLine = controllerLine;
+      // Login has no "Moodle method:" line, so grab its "# Login" section directly.
+      const sec = md.split(/\n(?=# )/).find((s) => /^# Login\b/m.test(s));
+      loginExample = sec ? extractExample(sec) : null;
+    }
+  }
+
+  // Full client-init snippet (with imports) for the SDK Setup section.
+  const authEntry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
+  const initRaw = authEntry ? extractClientInit(authEntry.getData().toString("utf8")) : null;
+
+  // Model imports (line langs) and the Go module base for building Go import blocks.
+  const modelIndex = lang === "go" ? {} : modelsFromZip(zip, lang);
+  let base = "";
+  if (lang === "go" && initRaw) {
+    const mm = initRaw.match(/"([^"]+)"/); // first quoted import in the Go client init
+    base = mm ? mm[1] : "";
+  }
+
+  return { meta, lang, byMethod, authControllerLine, loginExample, initRaw, modelIndex, base };
+});
 
 // --- Inject into the spec artifact. ---
 const spec = parse(readFileSync(specPath, "utf8"));
@@ -112,17 +247,25 @@ for (const [path, ops] of Object.entries(spec.paths ?? {})) {
   if (!op) continue;
 
   const codeSamples = [];
-  for (const { meta, samples } of byLang) {
-    const source = samples[moodleMethod];
-    if (!source) {
-      warnings.push(`missing ${meta.label} sample for ${path} (regenerate SDKs)`);
+  for (const L of byLang) {
+    const entry = L.byMethod[moodleMethod];
+    if (!entry) {
+      warnings.push(`missing ${L.meta.label} sample for ${path} (regenerate SDKs)`);
       continue;
     }
-    if (source.includes("{%")) {
-      errors.push(`unrendered Liquid leaked into ${meta.label} sample for ${path}`);
+    if (entry.example.includes("{%")) {
+      errors.push(`unrendered Liquid leaked into ${L.meta.label} sample for ${path}`);
       continue;
     }
-    codeSamples.push({ lang: meta.lang, label: meta.label, source });
+    const source = assemble({
+      lang: L.lang,
+      controllerLine: entry.controllerLine,
+      call: entry.example,
+      modelIndex: L.modelIndex,
+      base: L.base,
+      comment: `${lineComment(L.lang)} Uses the configured \`client\` from the SDK Setup section.`,
+    });
+    codeSamples.push({ lang: L.lang, label: L.meta.label, source });
   }
   // Only attach when we actually have samples — a new endpoint awaiting SDK
   // regeneration shouldn't render an empty Code Examples panel.
@@ -137,18 +280,22 @@ const loginOp = spec.paths?.["/auth/login"]?.post;
 const initSamples = [];
 if (loginOp) {
   const loginSamples = [];
-  for (const [zipName, meta] of LANGS) {
-    const zip = new AdmZip(resolve(sdksDir, `nust-lms-api-${zipName}.zip`));
-    const callEntry = zip.getEntry("doc/controllers/authentication.md");
-    const authEntry = zip.getEntry("doc/auth/oauth-2-bearer-token.md");
-    const call = callEntry ? extractExample(callEntry.getData().toString("utf8")) : null;
-    const init = authEntry ? extractClientInit(authEntry.getData().toString("utf8")) : null;
-    if (call && !call.includes("{%")) {
-      loginSamples.push({ lang: meta.lang, label: meta.label, source: call });
+  for (const L of byLang) {
+    if (L.initRaw && !L.initRaw.includes("{%")) {
+      initSamples.push({ lang: L.lang, label: L.meta.label, source: L.initRaw });
     }
-    if (init && !init.includes("{%")) {
-      initSamples.push({ lang: meta.lang, label: meta.label, source: init });
-    }
+    if (!L.loginExample || !L.authControllerLine || L.loginExample.includes("{%")) continue;
+    const source = assemble({
+      lang: L.lang,
+      controllerLine: L.authControllerLine,
+      call: L.loginExample,
+      modelIndex: L.modelIndex,
+      base: L.base,
+      comment:
+        `${lineComment(L.lang)} No token needed to log in — create a \`client\` per the ` +
+        `SDK Setup section, then call this to get your token.`,
+    });
+    loginSamples.push({ lang: L.lang, label: L.meta.label, source });
   }
   if (loginSamples.length) loginOp["x-codeSamples"] = loginSamples;
 }
@@ -215,9 +362,13 @@ if (sdkItems.length && spec.info) {
     "",
     "1. **Get the SDK** for your language — download the zip, unzip it, and install it:",
     ...sdkItems,
-    "2. **Get a bearer token** from `POST /auth/login` with your NUST LMS credentials.",
-    "3. **Initialize a client** with that token — see the **SDK Setup** section for the",
-    "   per-language code. Every other sample assumes that `client`.",
+    "2. **Get a bearer token** — call `POST /auth/login` with your NUST LMS credentials",
+    "   (no token needed for this call). See the **login** operation's Code Examples for a",
+    "   per-language snippet, and read `access_token` off the response.",
+    "3. **Initialize a client** with that token — see the **SDK Setup** section. Every other",
+    "   sample's `client` comes from there.",
+    "4. **Call an endpoint** — each operation's Code Examples include the imports it needs,",
+    "   the controller handle, and the call.",
     "",
     "_Each SDK's own README has fuller, IDE-specific setup if you want it._",
     "",
