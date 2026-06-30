@@ -24,27 +24,30 @@ info:
 
     ## Connect an AI assistant (MCP)
 
-    Beyond the SDKs, this API is also an **MCP server**, so AI assistants (Claude
-    Desktop, Cursor, VS Code, Claude.ai, ChatGPT) can call it as tools — for example,
-    *"what deadlines do I have this week?"*. The login step is never exposed to the
-    assistant: you authenticate yourself and hand it a token.
+    Beyond the SDKs, this API is also an **MCP server**, so AI assistants (Claude Code,
+    Claude Desktop, Cursor, VS Code, Claude.ai, ChatGPT) can call it as tools — for
+    example, *"what deadlines do I have this week?"*.
 
-    Every client connects the same way — your server URL plus your bearer token:
+    Auth is handled for you by **OAuth 2.0 with PKCE** — you do **not** paste a bearer
+    token. On first connect the client opens a hosted login page; enter your NUST LMS
+    credentials there and it obtains its tokens automatically (the assistant never sees
+    your password). Login is never an MCP tool.
 
-    1. Get a token from `POST /auth/login`.
-    2. **Desktop / editor clients** (Claude Desktop, Cursor, VS Code) — add it to the MCP config:
+    - **Endpoint:** `https://api.nustdevkit.com/mcp/`
+    - **Transport:** Streamable HTTP
 
-       ```json
-       { "mcpServers": { "nust-lms": {
-           "url": "https://<your-host>/mcp",
-           "headers": { "Authorization": "Bearer <token>" } } } }
-       ```
+    **Desktop / editor clients** (Claude Code, Claude Desktop, Cursor, VS Code) — add the
+    server to the client's MCP config; no token needed:
 
-    3. **Web clients** (Claude.ai, ChatGPT) — open Settings → Connectors and add the same URL.
+    ```json
+    { "mcpServers": { "nust-lms": {
+        "type": "http",
+        "url": "https://api.nustdevkit.com/mcp/" } } }
+    ```
 
-    Web clients reach the server from the cloud, so this needs the gateway on a public
-    **HTTPS** URL. `http://127.0.0.1:8000/mcp` only works for desktop clients running on
-    your own machine.
+    **Web assistants** (Claude.ai, ChatGPT) — open Settings → Connectors, add a custom
+    connector with the same URL `https://api.nustdevkit.com/mcp/`, then complete the login
+    when prompted.
 
 servers:
   - url: https://api.nustdevkit.com
