@@ -74,6 +74,15 @@ NustDevKit/
 ├── src/                      # Source spec and portal content
 │   └── spec/openapi.yaml     # Edit this — run `npm run sync` to propagate
 │
+├── portal/                   # APIMatic-generated reference (source of the SDKs & docs)
+│   ├── static/sdks/          # SDK zips — the build copies these into ndk_frontend/sdks/
+│   └── llms-pages/           # Per-language Markdown docs, one folder per SDK:
+│       └── <language>/       #   (python, typescript, java, net-standard-library, go, php, ruby)
+│           ├── getting-started/    # Install + client initialization
+│           ├── api-endpoints/      # One doc per endpoint (params, example usage)
+│           ├── models/             # One doc per model/enum (fields + import)
+│           └── sdk-infrastructure/ # Client config, auth, errors, logging
+│
 ├── scripts/                  # Build scripts
 │   ├── sync-spec.mjs         # Copies spec + assets to ndk_frontend/
 │   └── inject-code-samples.mjs  # Injects SDK/MCP code samples into spec
@@ -82,6 +91,8 @@ NustDevKit/
     ├── deploy-backend.yml    # Build → push to ECR → redeploy on EC2
     └── deploy-frontend.yml   # Sync ndk_frontend/ to S3 + invalidate CloudFront
 ```
+
+> **Reading the SDK docs:** for hands-on usage of a specific SDK, open `portal/llms-pages/<language>/`. Start with `getting-started/` (install + client setup), then `api-endpoints/` for the call you need and `models/` for any request/response types it references. These are the per-SDK READMEs APIMatic generates; the live portal's Code Examples are extracted from the same source.
 
 ---
 
