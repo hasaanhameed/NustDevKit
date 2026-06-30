@@ -89,11 +89,16 @@ included alongside this guide show the exact method names and example usage.
 
 ## AI assistants (MCP)
 
-The same API is exposed as an **MCP server** at `/mcp`, so AI assistants (Claude Desktop,
-Cursor, VS Code, Claude.ai, ChatGPT connectors) can call it as tools. Get a token from
-`POST /auth/login`, then add the server (`url` + `Authorization: Bearer <token>` header) to
-your MCP client. Login is never an MCP tool — you authenticate yourself and hand the
-assistant a token.
+The same API is exposed as an **MCP server** at `/mcp/` (Streamable HTTP transport), so AI
+assistants can call it as tools. It is protected by **OAuth 2.0 with PKCE** — you do NOT
+paste a bearer token. Instead, add the server URL (`https://api.nustdevkit.com/mcp/`) to your
+MCP client; on first connect the client opens a hosted login page where you enter your NUST
+LMS credentials, and it obtains its tokens automatically (the assistant never sees your
+password). Desktop clients (Claude Code, Claude Desktop, Cursor, VS Code) use a config entry
+with `"type": "http"` and the URL; web assistants (Claude.ai, ChatGPT) add it as a custom
+connector with the same URL. Login/logout are never MCP tools — authentication is handled by
+the OAuth flow. The available tools are read-only: account info, recent courses, courses by
+timeline, course contents, upcoming deadlines, course deadlines, and popup notifications.
 
 ## Boundaries (what NOT to claim)
 
